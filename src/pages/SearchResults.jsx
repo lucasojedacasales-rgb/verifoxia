@@ -55,21 +55,22 @@ Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 ${productContext.contextText || "No se encontró contexto adicional."}
 === FIN DEL CONTEXTO ===
 
-=== TIENDAS POPULARES EN ${selectedCountry.name.toUpperCase()} ===
-Estas son las tiendas más populares y relevantes para este país y tipo de producto. DEBES incluir TODAS en tu análisis:
+=== TIENDAS DISPONIBLES EN ${selectedCountry.name.toUpperCase()} ===
 ${storesText}
 === FIN DE TIENDAS ===
 
-Usa el contexto real para dar datos PRECISOS. Devuelve precios realistas para ${selectedCountry.name} en cada tienda listada arriba.
+PASO 1 — Detecta la categoría exacta del producto: "${q}"
+PASO 2 — Selecciona SOLO las tiendas de esa categoría de la lista anterior. Excluye completamente las tiendas que no vendan ese tipo de producto (ej: si es un videojuego, no uses tiendas de ropa/zapatos/belleza; si es un mueble, no uses tiendas de electrónica o moda).
+PASO 3 — Devuelve precios realistas en ${selectedCountry.currency} únicamente para las tiendas seleccionadas.
 
 Devuelve un JSON con esta estructura exacta:
 {
   "name": "nombre completo y específico del producto",
   "description": "descripción detallada de 2-3 oraciones basada en el contexto real",
-  "category": "electronica|ropa|hogar|deportes|belleza|juguetes|libros|otro",
+  "category": "electronica|videojuegos|ropa|zapatos|hogar|muebles|deportes|belleza|juguetes|libros|alimentacion|herramientas|automovil|mascotas|salud|otro",
   "stores": [
     {
-      "store_name": "nombre EXACTO de la tienda de la lista de arriba",
+      "store_name": "nombre EXACTO de la tienda seleccionada",
       "price": precio_numero_en_${selectedCountry.currency},
       "currency": "${selectedCountry.currency}",
       "url": "URL de búsqueda de la tienda (usa las URLs proporcionadas arriba)",
@@ -87,7 +88,7 @@ Devuelve un JSON con esta estructura exacta:
   "verdict": "comprar|esperar|no_comprar"
 }
 
-IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.`,
+REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.`,
         response_json_schema: {
           type: "object",
           properties: {
