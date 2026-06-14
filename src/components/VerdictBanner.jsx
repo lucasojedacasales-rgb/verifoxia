@@ -1,4 +1,5 @@
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
+import TrustScore from "@/components/TrustScore";
 
 const verdictConfig = {
   comprar: {
@@ -43,19 +44,8 @@ export default function VerdictBanner({ product }) {
         <p className="text-slate-400 text-sm mt-1">{config.sublabel}</p>
       </div>
 
-      {/* Score */}
-      <div className="w-full">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-slate-400 text-xs">Puntuación IA</span>
-          <span className={`font-bold text-lg ${config.text}`}>{score}/100</span>
-        </div>
-        <div className="w-full h-3 bg-slate-700 rounded-full overflow-hidden">
-          <div
-            className={`h-full ${config.bar} rounded-full transition-all duration-700`}
-            style={{ width: `${score}%` }}
-          />
-        </div>
-      </div>
+      {/* TrustScore™ */}
+      <TrustScore score={score} size="lg" />
 
       {product.best_time_to_buy && (
         <div className="bg-white/5 rounded-xl p-3 w-full">

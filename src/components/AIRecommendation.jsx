@@ -1,12 +1,16 @@
 import { Sparkles, AlertTriangle, CheckCircle2 } from "lucide-react";
+import TrustScore from "@/components/TrustScore";
 
 export default function AIRecommendation({ product }) {
   return (
     <div className="bg-gradient-to-br from-blue-950/60 to-slate-800/60 border border-blue-500/20 rounded-2xl p-6">
-      <h2 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-        <Sparkles className="w-5 h-5 text-blue-400" />
-        Análisis de IA
-      </h2>
+      <div className="flex items-start justify-between mb-4">
+        <h2 className="text-white font-bold text-lg flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-blue-400" />
+          Análisis de IA
+        </h2>
+        <TrustScore score={product.ai_score ?? 50} size="sm" />
+      </div>
 
       <p className="text-slate-300 text-sm leading-relaxed mb-5">
         {product.ai_recommendation}
