@@ -12,6 +12,7 @@ import AIRecommendation from "@/components/AIRecommendation";
 import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
+import { getStoresPromptText } from "@/lib/storesByRegion";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -34,6 +35,9 @@ export default function SearchResults() {
     // Fetch real product context from free public APIs
     const productContext = await fetchProductContext(q);
 
+    // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
+    const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
+
     const [result, imageResult] = await Promise.all([
       base44.integrations.Core.InvokeLLM({
         prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
@@ -46,34 +50,39 @@ Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 ${productContext.contextText || "No se encontró contexto adicional."}
 === FIN DEL CONTEXTO ===
 
-Usa este contexto real para dar datos PRECISOS y concretos. Adapta el análisis al mercado de ${selectedCountry.name}.
+=== TIENDAS POPULARES EN ${selectedCountry.name.toUpperCase()} ===
+Estas son las tiendas más populares y relevantes para este país y tipo de producto. DEBES incluir TODAS en tu análisis:
+${storesText}
+=== FIN DE TIENDAS ===
+
+Usa el contexto real para dar datos PRECISOS. Devuelve precios realistas para ${selectedCountry.name} en cada tienda listada arriba.
 
 Devuelve un JSON con esta estructura exacta:
 {
   "name": "nombre completo y específico del producto",
-  "description": "descripción detallada de 2-3 oraciones",
+  "description": "descripción detallada de 2-3 oraciones basada en el contexto real",
   "category": "electronica|ropa|hogar|deportes|belleza|juguetes|libros|otro",
   "stores": [
     {
-      "store_name": "una de estas tiendas exactamente: Amazon, eBay o AliExpress",
+      "store_name": "nombre EXACTO de la tienda de la lista de arriba",
       "price": precio_numero_en_${selectedCountry.currency},
       "currency": "${selectedCountry.currency}",
-      "url": "URL real de búsqueda del producto en esa tienda (ej: https://www.amazon.com/s?k=nombre+producto para Amazon, https://www.ebay.com/sch/i.html?_nkw=nombre+producto para eBay, https://www.aliexpress.com/wholesale?SearchText=nombre+producto para AliExpress)",
+      "url": "URL de búsqueda de la tienda (usa las URLs proporcionadas arriba)",
       "in_stock": true_o_false,
       "rating": numero_1_a_5,
-      "reviews_count": numero_de_reseñas
+      "reviews_count": numero_de_reseñas_estimado
     }
   ],
   "pros": ["ventaja 1", "ventaja 2", "ventaja 3"],
   "cons": ["desventaja 1", "desventaja 2"],
-  "best_time_to_buy": "descripción de cuándo es mejor comprarlo considerando el mercado de ${selectedCountry.name}",
+  "best_time_to_buy": "cuándo es mejor comprarlo en ${selectedCountry.name}",
   "price_trend": "subiendo|bajando|estable",
-  "ai_recommendation": "párrafo detallado explicando si conviene comprar en ${selectedCountry.name}, comparando tiendas, mencionando pros/cons, costes de envío al país y el contexto del mercado local",
+  "ai_recommendation": "análisis detallado para comprar en ${selectedCountry.name}: qué tienda local conviene más, costes de envío, disponibilidad local vs importación, contexto del mercado local",
   "ai_score": numero_0_a_100,
   "verdict": "comprar|esperar|no_comprar"
 }
 
-Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben estar en ${selectedCountry.currency} y ser realistas para el mercado de ${selectedCountry.name}. AliExpress suele ser más barato pero con mayor tiempo de envío.`,
+IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.`,
         response_json_schema: {
           type: "object",
           properties: {
