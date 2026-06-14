@@ -12,6 +12,7 @@ export default function PriceAlertModal({ product, country, onClose }) {
       : ""
   );
   const [loading, setLoading] = useState(false);
+  // Optimistic: show success immediately
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,7 +29,11 @@ export default function PriceAlertModal({ product, country, onClose }) {
     setLoading(true);
     setError("");
 
-    await base44.entities.PriceAlert.create({
+    // --- Optimistic update: show success before backend finishes ---
+    setSuccess(true);
+
+    // Fire backend in background (don't block the UI)
+    base44.entities.PriceAlert.create({
       email,
       product_name: product.name,
       search_query: product.search_query,
@@ -40,13 +45,12 @@ export default function PriceAlertModal({ product, country, onClose }) {
       best_store: bestStore?.store_name || "",
       best_store_url: bestStore?.url || "",
       status: "active"
-    });
-
-    // Send confirmation email
-    await base44.integrations.Core.SendEmail({
-      to: email,
-      subject: `✅ Alerta creada: ${product.name}`,
-      body: `
+    }).then(() => {
+      // Send confirmation email after record is saved
+      base44.integrations.Core.SendEmail({
+        to: email,
+        subject: `✅ Alerta creada: ${product.name}`,
+        body: `
 <!DOCTYPE html>
 <html>
 <body style="font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; margin: 0;">
@@ -72,33 +76,35 @@ export default function PriceAlertModal({ product, country, onClose }) {
         País configurado: ${country?.flag || ""} ${country?.name || "España"}
       </p>
       <p style="color: #64748b; font-size: 12px; text-align: center; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
-        <strong>PriceWise</strong> — Comparador inteligente de precios
+        <strong>Trustify</strong> — Comparador inteligente de precios
       </p>
     </div>
   </div>
 </body>
 </html>`,
-      from_name: "PriceWise Alertas"
+        from_name: "Trustify Alertas"
+      });
     });
 
-    setSuccess(true);
     setLoading(false);
   };
 
   if (success) {
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-slate-800 border border-white/10 rounded-2xl p-8 max-w-md w-full text-center">
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+        <div className="bg-slate-800 border border-white/10 rounded-t-2xl sm:rounded-2xl p-8 w-full sm:max-w-md text-center"
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 2rem)" }}>
           <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-400" />
           </div>
           <h3 className="text-white font-bold text-xl mb-2">¡Alerta creada!</h3>
           <p className="text-slate-400 mb-2">
-            Te avisaremos a <span className="text-blue-400">{email}</span> cuando <strong className="text-white">{product.name}</strong> baje de{" "}
+            Te avisaremos a <span className="text-blue-400">{email}</span> cuando{" "}
+            <strong className="text-white">{product.name}</strong> baje de{" "}
             <span className="text-green-400 font-bold">{Number(targetPrice).toLocaleString()} {currency}</span>.
           </p>
           <p className="text-slate-500 text-sm mb-6">Revisa tu bandeja de entrada, te hemos enviado una confirmación.</p>
-          <Button onClick={onClose} className="bg-blue-500 hover:bg-blue-600 w-full">
+          <Button onClick={onClose} className="bg-blue-500 hover:bg-blue-600 w-full h-12 min-h-[44px]">
             Entendido
           </Button>
         </div>
@@ -107,8 +113,16 @@ export default function PriceAlertModal({ product, country, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 border border-white/10 rounded-2xl p-6 max-w-md w-full">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div
+        className="bg-slate-800 border border-white/10 rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
+      >
+        {/* Handle for bottom-sheet feel on mobile */}
+        <div className="flex justify-center mb-3 sm:hidden">
+          <div className="w-10 h-1 bg-white/20 rounded-full" />
+        </div>
+
         <div className="flex items-start justify-between mb-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -119,7 +133,10 @@ export default function PriceAlertModal({ product, country, onClose }) {
               <p className="text-slate-400 text-sm">Te avisamos cuando baje</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+          <button
+            onClick={onClose}
+            className="w-11 h-11 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-500 hover:text-white transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -147,7 +164,7 @@ export default function PriceAlertModal({ product, country, onClose }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-white/5 border-white/20 text-white placeholder:text-slate-500"
+              className="bg-white/5 border-white/20 text-white placeholder:text-slate-500 h-12 min-h-[44px]"
             />
           </div>
           <div>
@@ -162,7 +179,7 @@ export default function PriceAlertModal({ product, country, onClose }) {
                 onChange={(e) => setTargetPrice(e.target.value)}
                 required
                 min={1}
-                className="bg-white/5 border-white/20 text-white placeholder:text-slate-500 pr-16"
+                className="bg-white/5 border-white/20 text-white placeholder:text-slate-500 pr-16 h-12 min-h-[44px]"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">
                 {currency}
@@ -180,7 +197,7 @@ export default function PriceAlertModal({ product, country, onClose }) {
           <Button
             type="submit"
             disabled={loading || !email || !targetPrice}
-            className="w-full bg-blue-500 hover:bg-blue-600 h-11"
+            className="w-full bg-blue-500 hover:bg-blue-600 h-12 min-h-[44px]"
           >
             {loading ? (
               <span className="flex items-center gap-2">

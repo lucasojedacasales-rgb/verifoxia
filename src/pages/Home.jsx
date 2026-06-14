@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,21 @@ import LanguageSelector from "@/components/LanguageSelector";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
   const { selectedCountry, changeCountry, countries } = useCountry();
   const { lang, changeLanguage, languages, t } = useLanguage();
+
+  const onRefresh = useCallback(() => new Promise((res) => {
+    setRefreshKey((k) => k + 1);
+    setTimeout(res, 600);
+  }), []);
+  const { scrollProps, indicatorRef } = usePullToRefresh(onRefresh);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -28,7 +37,11 @@ export default function Home() {
   const popular = ["iPhone 15", "Samsung 4K TV", "Nike Air Max", "AirPods Pro", "Kindle", "PS5"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-y-auto relative"
+      {...scrollProps}
+    >
+      <PullToRefreshIndicator ref={indicatorRef} />
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-white/10" style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }}>
         <div className="flex items-center gap-2">
@@ -123,7 +136,7 @@ export default function Home() {
 
       {/* Search History */}
       <section className="px-6 pb-24 max-w-5xl mx-auto md:pb-16">
-        <SearchHistory />
+        <SearchHistory key={refreshKey} />
       </section>
     </div>
   );

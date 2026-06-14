@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { Search, ArrowLeft, Bell } from "lucide-react";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -35,6 +37,13 @@ export default function SearchResults() {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
+  const [pendingHistoryEntry, setPendingHistoryEntry] = useState(null);
+
+  const onRefresh = useCallback(() => {
+    if (query) return analyzeProduct(query);
+    return Promise.resolve();
+  }, [query, selectedCountry.code]);
+  const { scrollProps, indicatorRef } = usePullToRefresh(onRefresh);
 
   useEffect(() => {
     if (query) analyzeProduct(query);
@@ -43,6 +52,8 @@ export default function SearchResults() {
   const analyzeProduct = async (q) => {
     setLoading(true);
     setProduct(null);
+    // Optimistic history entry — shown immediately while LLM runs
+    setPendingHistoryEntry({ query: q, verdict: null, _pending: true, id: null });
 
     // Fetch real product context from free public APIs
     const productContext = await fetchProductContext(q);
@@ -185,10 +196,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
     const imageUrl = imageResult?.url || productContext.wikiImageUrl || null;
     setProduct({ ...result, image_url: imageUrl, search_query: q });
 
-    await base44.entities.SearchHistory.create({
-      query: q,
-      verdict: result.verdict
-    });
+    // Persist and clear optimistic entry
+    base44.entities.SearchHistory.create({ query: q, verdict: result.verdict });
+    setPendingHistoryEntry(null);
 
     setLoading(false);
   };
@@ -200,7 +210,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-slate-950 relative">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
         <div className="max-w-6xl mx-auto flex items-center gap-3">
@@ -243,7 +253,8 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8">
+      <PullToRefreshIndicator ref={indicatorRef} />
+      <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8" {...scrollProps}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
