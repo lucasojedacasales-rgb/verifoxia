@@ -57,9 +57,8 @@ export default function StoreComparison({ stores }) {
                   </td>
                   <td className="py-3 px-4 text-right">
                     <span className={`font-bold text-lg ${isBest ? "text-green-400" : "text-white"}`}>
-                      ${store.price?.toLocaleString()}
+                      {store.price?.toLocaleString()} <span className="text-sm font-normal">{store.currency}</span>
                     </span>
-                    <span className="text-slate-500 text-xs ml-1">{store.currency}</span>
                   </td>
                   <td className="py-3 px-4 text-right">
                     <div className="flex items-center justify-end gap-1">

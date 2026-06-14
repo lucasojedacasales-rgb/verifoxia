@@ -59,7 +59,7 @@ export default function ProductCard({ product }) {
           <p className="text-slate-500 text-xs mb-1">Rango de precio</p>
           {minPrice ? (
             <p className="text-white font-bold text-lg">
-              ${minPrice.toLocaleString()} – ${maxPrice?.toLocaleString()}
+              {minPrice.toLocaleString()} – {maxPrice?.toLocaleString()} <span className="text-sm font-normal text-slate-400">{product.stores?.[0]?.currency}</span>
             </p>
           ) : (
             <p className="text-slate-400 text-sm">No disponible</p>
