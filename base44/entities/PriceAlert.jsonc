@@ -1,0 +1,68 @@
+{
+  "name": "PriceAlert",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email del usuario para recibir la alerta"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Nombre del producto a vigilar"
+    },
+    "search_query": {
+      "type": "string",
+      "description": "Query de b\u00fasqueda original"
+    },
+    "target_price": {
+      "type": "number",
+      "description": "Precio objetivo (se alertar\u00e1 cuando baje de este precio)"
+    },
+    "current_price": {
+      "type": "number",
+      "description": "Precio actual registrado en el momento de crear la alerta"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Moneda del precio"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "C\u00f3digo de pa\u00eds del usuario"
+    },
+    "country_name": {
+      "type": "string",
+      "description": "Nombre del pa\u00eds"
+    },
+    "best_store": {
+      "type": "string",
+      "description": "Tienda con el mejor precio actual"
+    },
+    "best_store_url": {
+      "type": "string",
+      "description": "URL de la tienda con mejor precio"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "triggered",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "Estado de la alerta"
+    },
+    "last_checked": {
+      "type": "string",
+      "description": "\u00daltima vez que se comprob\u00f3 el precio"
+    }
+  },
+  "required": [
+    "email",
+    "product_name",
+    "search_query",
+    "target_price",
+    "current_price",
+    "currency"
+  ]
+}

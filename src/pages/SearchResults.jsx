@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProductCard from "@/components/ProductCard";
@@ -13,6 +13,7 @@ import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
 import { getStoresPromptText } from "@/lib/storesByRegion";
+import PriceAlertModal from "@/components/PriceAlertModal";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -23,6 +24,7 @@ export default function SearchResults() {
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
   useEffect(() => {
     if (query) analyzeProduct(query);
@@ -186,14 +188,29 @@ IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la
           </div>
         )}
 
+        {showAlertModal && product && (
+          <PriceAlertModal
+            product={product}
+            country={selectedCountry}
+            onClose={() => setShowAlertModal(false)}
+          />
+        )}
+
         {!loading && product && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <ProductCard product={product} />
               </div>
-              <div>
+              <div className="flex flex-col gap-4">
                 <VerdictBanner product={product} />
+                <button
+                  onClick={() => setShowAlertModal(true)}
+                  className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all"
+                >
+                  <Bell className="w-4 h-4" />
+                  Crear alerta de precio
+                </button>
               </div>
             </div>
             <StoreComparison stores={product.stores || []} />
