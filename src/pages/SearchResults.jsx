@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Search, ArrowLeft, Bell } from "lucide-react";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProductCard from "@/components/ProductCard";
@@ -27,6 +29,7 @@ export default function SearchResults() {
   const query = urlParams.get("q") || "";
   const navigate = useNavigate();
   const { selectedCountry, changeCountry, countries } = useCountry();
+  const { lang, changeLanguage, languages, t } = useLanguage();
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
@@ -50,6 +53,7 @@ export default function SearchResults() {
     const [result, imageResult] = await Promise.all([
       base44.integrations.Core.InvokeLLM({
         prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
+IMPORTANTE: Responde TODO el contenido textual (description, ai_recommendation, pros, cons, best_time_to_buy, ai_verdict_reasons, fraud_flags, safe_signals, best_alternative.reason, best_alternative.why_better) en el idioma: ${lang.name} (código: ${lang.code}).
       
 El usuario busca: "${q}"
 País del usuario: ${selectedCountry.name} (${selectedCountry.code})
@@ -219,7 +223,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Busca otro producto..."
+                placeholder={t.search_other}
                 className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-slate-400 h-9"
               />
             </div>
@@ -227,11 +231,14 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
               Buscar
             </Button>
           </form>
-          <CountrySelector
-            selectedCountry={selectedCountry}
-            countries={countries}
-            onChange={changeCountry}
-          />
+          <div className="flex items-center gap-2">
+            <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
+            <CountrySelector
+              selectedCountry={selectedCountry}
+              countries={countries}
+              onChange={changeCountry}
+            />
+          </div>
         </div>
       </header>
 
@@ -239,8 +246,8 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-            <p className="text-white text-lg font-medium">Analizando "{query}"...</p>
-            <p className="text-slate-400 text-sm">Consultando Wikipedia, DuckDuckGo y generando análisis con IA...</p>
+            <p className="text-white text-lg font-medium">{t.analyzing} "{query}"...</p>
+            <p className="text-slate-400 text-sm">{t.analyzing_sub}</p>
           </div>
         )}
 
@@ -263,9 +270,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                 <button
                   onClick={() => setShowAlertModal(true)}
                   className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all"
-                >
+                  >
                   <Bell className="w-4 h-4" />
-                  Crear alerta de precio
+                  {t.create_alert}
                 </button>
               </div>
             </div>

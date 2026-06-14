@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal, Bell } from "lucide-react";
+import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SearchHistory from "@/components/SearchHistory";
 import CountrySelector from "@/components/CountrySelector";
+import LanguageSelector from "@/components/LanguageSelector";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import { useCountry } from "@/hooks/useCountry";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const { selectedCountry, changeCountry, countries } = useCountry();
+  const { lang, changeLanguage, languages, t } = useLanguage();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -19,12 +22,8 @@ export default function Home() {
     navigate(`/search?q=${encodeURIComponent(query.trim())}&country=${selectedCountry.code}`);
   };
 
-  const features = [
-    { icon: TrendingUp, title: "Compara precios", desc: "Encuentra el mejor precio entre múltiples tiendas online" },
-    { icon: Star, title: "Analiza reseñas", desc: "Evaluamos miles de opiniones para darte un resumen honesto" },
-    { icon: Shield, title: "Verifica fiabilidad", desc: "Comprobamos la reputación del vendedor y la calidad del producto" },
-    { icon: Zap, title: "Predictor de precio IA", desc: "Predice si el precio subirá o bajará y cuándo es mejor comprar" },
-  ];
+  const featureIcons = [TrendingUp, Star, Shield, Zap];
+  const features = t.features.map((f, i) => ({ ...f, icon: featureIcons[i] }));
 
   const popular = ["iPhone 15", "Samsung 4K TV", "Nike Air Max", "AirPods Pro", "Kindle", "PS5"];
 
@@ -38,26 +37,29 @@ export default function Home() {
           </div>
           <span className="text-white font-bold text-xl">Trustify</span>
         </div>
-        <CountrySelector
-          selectedCountry={selectedCountry}
-          countries={countries}
-          onChange={changeCountry}
-        />
+        <div className="flex items-center gap-2">
+          <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
+          <CountrySelector
+            selectedCountry={selectedCountry}
+            countries={countries}
+            onChange={changeCountry}
+          />
+        </div>
       </header>
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-1.5 mb-6">
           <Zap className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-blue-300 text-sm font-medium">Comparación inteligente con IA</span>
+          <span className="text-blue-300 text-sm font-medium">{t.intro_badge}</span>
         </div>
 
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-          ¿Vale la pena <br />
-          <span className="text-blue-400">comprarlo?</span>
+          {t.hero_title_1} <br />
+          <span className="text-blue-400">{t.hero_title_2}</span>
         </h1>
         <p className="text-slate-400 text-lg md:text-xl max-w-xl mb-10">
-          Compara precios, reseñas y fiabilidad de cualquier producto. Nuestra IA te dice si conviene comprarlo ahora.
+          {t.hero_sub}
         </p>
 
         {/* Search bar */}
@@ -67,7 +69,7 @@ export default function Home() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Busca un producto... ej: iPhone 15 Pro"
+              placeholder={t.search_placeholder}
               className="pl-12 h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl"
             />
           </div>
@@ -76,7 +78,7 @@ export default function Home() {
             type="submit"
             className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base"
           >
-            Analizar
+            {t.search_btn}
           </Button>
         </form>
 
@@ -86,12 +88,12 @@ export default function Home() {
           className="mt-4 flex items-center gap-2 text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-full px-5 py-2 transition-all text-sm font-medium"
         >
           <SplitSquareHorizontal className="w-4 h-4" />
-          Comparar dos productos cara a cara
+          {t.compare_btn}
         </button>
 
         {/* Popular searches */}
         <div className="flex flex-wrap gap-2 mt-6 justify-center">
-          <span className="text-slate-500 text-sm">Populares:</span>
+          <span className="text-slate-500 text-sm">{t.popular}</span>
           {popular.map((p) => (
             <button
               key={p}
