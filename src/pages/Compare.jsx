@@ -78,9 +78,46 @@ Realiza una comparación exhaustiva y devuelve JSON:
         type: "object",
         required: ["product_a", "product_b", "head_to_head", "overall_winner", "winner_reason", "recommendation"],
         properties: {
-          product_a: { type: "object" },
-          product_b: { type: "object" },
-          head_to_head: { type: "array", items: { type: "object" } },
+          product_a: {
+            type: "object",
+            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for"],
+            properties: {
+              name: { type: "string" },
+              price_range: { type: "string" },
+              best_price: { type: "number" },
+              best_store: { type: "string" },
+              rating: { type: "number" },
+              pros: { type: "array", items: { type: "string" } },
+              cons: { type: "array", items: { type: "string" } },
+              best_for: { type: "string" }
+            }
+          },
+          product_b: {
+            type: "object",
+            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for"],
+            properties: {
+              name: { type: "string" },
+              price_range: { type: "string" },
+              best_price: { type: "number" },
+              best_store: { type: "string" },
+              rating: { type: "number" },
+              pros: { type: "array", items: { type: "string" } },
+              cons: { type: "array", items: { type: "string" } },
+              best_for: { type: "string" }
+            }
+          },
+          head_to_head: {
+            type: "array",
+            items: {
+              type: "object",
+              required: ["criterion", "winner", "detail"],
+              properties: {
+                criterion: { type: "string" },
+                winner: { type: "string" },
+                detail: { type: "string" }
+              }
+            }
+          },
           overall_winner: { type: "string" },
           winner_reason: { type: "string" },
           recommendation: { type: "string" }
