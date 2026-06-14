@@ -36,7 +36,7 @@ export default function Home() {
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
             <Search className="w-4 h-4 text-white" />
           </div>
-          <span className="text-white font-bold text-xl">PriceWise</span>
+          <span className="text-white font-bold text-xl">Trustify</span>
         </div>
         <CountrySelector
           selectedCountry={selectedCountry}

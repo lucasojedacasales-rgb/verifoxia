@@ -158,7 +158,7 @@ IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la
             <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
               <Search className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-white font-bold hidden sm:block">PriceWise</span>
+            <span className="text-white font-bold hidden sm:block">Trustify</span>
           </div>
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
