@@ -34,10 +34,13 @@ export default function ProductCard({ product }) {
     <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-6">
       <div className="flex gap-4">
         <img
-          src={product.image_url || `https://source.unsplash.com/200x200/?${encodeURIComponent(product.name)}`}
+          src={product.image_url}
           alt={product.name}
           className="w-24 h-24 object-cover rounded-xl bg-slate-700 shrink-0"
-          onError={(e) => { e.target.src = "https://source.unsplash.com/200x200/?product"; }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = `https://placehold.co/200x200/1e293b/94a3b8?text=${encodeURIComponent(product.name?.slice(0, 12) || 'Producto')}`;
+          }}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 flex-wrap mb-1">

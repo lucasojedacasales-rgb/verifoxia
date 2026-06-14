@@ -21,7 +21,6 @@ export default function SearchResults() {
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (query) analyzeProduct(query);
@@ -29,25 +28,23 @@ export default function SearchResults() {
 
   const analyzeProduct = async (q) => {
     setLoading(true);
-    setError(null);
     setProduct(null);
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
+    const [result, imageResult] = await Promise.all([
+      base44.integrations.Core.InvokeLLM({
+        prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
       
 El usuario busca: "${q}"
 País del usuario: ${selectedCountry.name} (${selectedCountry.code})
 Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
 Genera datos REALISTAS y detallados de comparación de este producto adaptados al mercado de ${selectedCountry.name}.
-Ten en cuenta la disponibilidad, precios y contexto del mercado local de ${selectedCountry.name}.
 
 Devuelve un JSON con esta estructura exacta:
 {
   "name": "nombre completo y específico del producto",
   "description": "descripción detallada de 2-3 oraciones",
   "category": "electronica|ropa|hogar|deportes|belleza|juguetes|libros|otro",
-  "image_url": "https://source.unsplash.com/400x400/?product,${encodeURIComponent(q)}",
   "stores": [
     {
       "store_name": "una de estas tiendas exactamente: Amazon, eBay o AliExpress",
@@ -68,43 +65,45 @@ Devuelve un JSON con esta estructura exacta:
   "verdict": "comprar|esperar|no_comprar"
 }
 
-Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben estar en ${selectedCountry.currency} y ser realistas para el mercado de ${selectedCountry.name} (incluye impuestos y costes de envío aproximados). AliExpress suele ser más barato pero con mayor tiempo de envío. El ai_score debe reflejar la relación calidad-precio para un usuario en ${selectedCountry.name}.`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          description: { type: "string" },
-          category: { type: "string" },
-          image_url: { type: "string" },
-          stores: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                store_name: { type: "string" },
-                price: { type: "number" },
-                currency: { type: "string" },
-                url: { type: "string" },
-                in_stock: { type: "boolean" },
-                rating: { type: "number" },
-                reviews_count: { type: "number" }
+Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben estar en ${selectedCountry.currency} y ser realistas para el mercado de ${selectedCountry.name}. AliExpress suele ser más barato pero con mayor tiempo de envío.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            description: { type: "string" },
+            category: { type: "string" },
+            stores: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  store_name: { type: "string" },
+                  price: { type: "number" },
+                  currency: { type: "string" },
+                  url: { type: "string" },
+                  in_stock: { type: "boolean" },
+                  rating: { type: "number" },
+                  reviews_count: { type: "number" }
+                }
               }
-            }
-          },
-          pros: { type: "array", items: { type: "string" } },
-          cons: { type: "array", items: { type: "string" } },
-          best_time_to_buy: { type: "string" },
-          price_trend: { type: "string" },
-          ai_recommendation: { type: "string" },
-          ai_score: { type: "number" },
-          verdict: { type: "string" }
+            },
+            pros: { type: "array", items: { type: "string" } },
+            cons: { type: "array", items: { type: "string" } },
+            best_time_to_buy: { type: "string" },
+            price_trend: { type: "string" },
+            ai_recommendation: { type: "string" },
+            ai_score: { type: "number" },
+            verdict: { type: "string" }
+          }
         }
-      }
-    });
+      }),
+      base44.integrations.Core.GenerateImage({
+        prompt: `Professional product photo of ${q}, clean white background, high quality, commercial photography style, studio lighting`
+      })
+    ]);
 
-    setProduct({ ...result, search_query: q });
+    setProduct({ ...result, image_url: imageResult?.url, search_query: q });
 
-    // Save to history
     await base44.entities.SearchHistory.create({
       query: q,
       verdict: result.verdict
@@ -163,17 +162,14 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben es
       <main className="max-w-6xl mx-auto px-4 py-8">
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-            </div>
+            <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
             <p className="text-white text-lg font-medium">Analizando "{query}"...</p>
-            <p className="text-slate-400 text-sm">Comparando precios y reseñas en múltiples tiendas</p>
+            <p className="text-slate-400 text-sm">Comparando precios, reseñas y generando imagen del producto</p>
           </div>
         )}
 
         {!loading && product && (
           <div className="space-y-6">
-            {/* Product overview + Verdict */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <ProductCard product={product} />
@@ -182,11 +178,7 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben es
                 <VerdictBanner product={product} />
               </div>
             </div>
-
-            {/* Store comparison */}
             <StoreComparison stores={product.stores || []} />
-
-            {/* Reviews + AI Recommendation */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ReviewSummary product={product} />
               <AIRecommendation product={product} />
@@ -194,7 +186,7 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben es
           </div>
         )}
 
-        {!loading && !product && !error && (
+        {!loading && !product && (
           <div className="text-center py-20 text-slate-400">
             Introduce un producto para analizar
           </div>
