@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import SearchResults from './pages/SearchResults';
+import Compare from './pages/Compare';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -38,6 +39,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/search" element={<SearchResults />} />
+      <Route path="/compare" element={<Compare />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

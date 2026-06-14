@@ -14,6 +14,8 @@ import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
 import { getStoresPromptText } from "@/lib/storesByRegion";
 import PriceAlertModal from "@/components/PriceAlertModal";
+import PricePrediction from "@/components/PricePrediction";
+import TotalCostCalculator from "@/components/TotalCostCalculator";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -217,6 +219,10 @@ IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ReviewSummary product={product} />
               <AIRecommendation product={product} />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PricePrediction product={product} country={selectedCountry} />
+              <TotalCostCalculator product={product} country={selectedCountry} />
             </div>
           </div>
         )}

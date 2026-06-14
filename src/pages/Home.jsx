@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, TrendingUp, Shield, Star, Zap } from "lucide-react";
+import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SearchHistory from "@/components/SearchHistory";
 import CountrySelector from "@/components/CountrySelector";
+import ImageSearchButton from "@/components/ImageSearchButton";
 import { useCountry } from "@/hooks/useCountry";
 
 export default function Home() {
@@ -22,7 +23,7 @@ export default function Home() {
     { icon: TrendingUp, title: "Compara precios", desc: "Encuentra el mejor precio entre múltiples tiendas online" },
     { icon: Star, title: "Analiza reseñas", desc: "Evaluamos miles de opiniones para darte un resumen honesto" },
     { icon: Shield, title: "Verifica fiabilidad", desc: "Comprobamos la reputación del vendedor y la calidad del producto" },
-    { icon: Zap, title: "Recomendación IA", desc: "Nuestra IA te dice si conviene o no comprar el producto ahora" },
+    { icon: Zap, title: "Predictor de precio IA", desc: "Predice si el precio subirá o bajará y cuándo es mejor comprar" },
   ];
 
   const popular = ["iPhone 15", "Samsung 4K TV", "Nike Air Max", "AirPods Pro", "Kindle", "PS5"];
@@ -70,6 +71,7 @@ export default function Home() {
               className="pl-12 h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl"
             />
           </div>
+          <ImageSearchButton />
           <Button
             type="submit"
             className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base"
@@ -77,6 +79,15 @@ export default function Home() {
             Analizar
           </Button>
         </form>
+
+        {/* Compare CTA */}
+        <button
+          onClick={() => navigate("/compare")}
+          className="mt-4 flex items-center gap-2 text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-full px-5 py-2 transition-all text-sm font-medium"
+        >
+          <SplitSquareHorizontal className="w-4 h-4" />
+          Comparar dos productos cara a cara
+        </button>
 
         {/* Popular searches */}
         <div className="flex flex-wrap gap-2 mt-6 justify-center">
