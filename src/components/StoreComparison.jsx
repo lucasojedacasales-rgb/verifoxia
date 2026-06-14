@@ -24,6 +24,7 @@ export default function StoreComparison({ stores }) {
               <th className="text-right text-slate-400 text-xs font-medium pb-3 px-4">Reseñas</th>
               <th className="text-center text-slate-400 text-xs font-medium pb-3 px-4">Stock</th>
               <th className="text-right text-slate-400 text-xs font-medium pb-3 pl-4">Ahorro</th>
+              <th className="text-right text-slate-400 text-xs font-medium pb-3 pl-4">Enlace</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +84,22 @@ export default function StoreComparison({ stores }) {
                       <span className="text-green-400 text-sm font-medium">Más barato</span>
                     )}
                   </td>
-                </tr>
+                  <td className="py-3 pl-4 text-right">
+                    <a
+                      href={store.url && store.url !== "#" ? store.url : "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                        store.in_stock
+                          ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/40 border border-blue-500/30"
+                          : "bg-slate-700/50 text-slate-500 border border-white/5 cursor-not-allowed pointer-events-none"
+                      }`}
+                    >
+                      Comprar
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </td>
+                  </tr>
               );
             })}
           </tbody>

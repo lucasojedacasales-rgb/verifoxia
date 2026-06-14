@@ -53,7 +53,7 @@ Devuelve un JSON con esta estructura exacta:
       "store_name": "una de estas tiendas exactamente: Amazon, eBay o AliExpress",
       "price": precio_numero_en_${selectedCountry.currency},
       "currency": "${selectedCountry.currency}",
-      "url": "#",
+      "url": "URL real de búsqueda del producto en esa tienda (ej: https://www.amazon.com/s?k=nombre+producto para Amazon, https://www.ebay.com/sch/i.html?_nkw=nombre+producto para eBay, https://www.aliexpress.com/wholesale?SearchText=nombre+producto para AliExpress)",
       "in_stock": true_o_false,
       "rating": numero_1_a_5,
       "reviews_count": numero_de_reseñas
