@@ -76,6 +76,7 @@ Realiza una comparación exhaustiva y devuelve JSON:
 }`,
       response_json_schema: {
         type: "object",
+        required: ["product_a", "product_b", "head_to_head", "overall_winner", "winner_reason", "recommendation"],
         properties: {
           product_a: { type: "object" },
           product_b: { type: "object" },
