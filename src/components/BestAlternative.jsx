@@ -2,10 +2,15 @@
  * BestAlternative — Mejor alternativa automática
  * Muestra la alternativa recomendada por la IA con comparativa rápida.
  */
-import { Zap, ArrowRight, TrendingUp } from "lucide-react";
+import { Zap, ArrowRight, TrendingUp, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useCountry } from "@/hooks/useCountry";
 
 export default function BestAlternative({ product }) {
   const alt = product.best_alternative;
+  const navigate = useNavigate();
+  const { selectedCountry } = useCountry();
+
   if (!alt || !alt.name) return null;
 
   const priceDiff = alt.price_diff_pct;
@@ -25,9 +30,16 @@ export default function BestAlternative({ product }) {
         <span className="text-slate-400 text-sm font-semibold uppercase tracking-wider">Mejor alternativa</span>
       </div>
 
-      {/* Alternative product */}
-      <div className="bg-white/5 rounded-xl p-4 mb-4">
-        <p className="text-white font-bold text-base leading-snug mb-1">{alt.name}</p>
+      {/* Alternative product — clickable */}
+      <div
+        className="bg-white/5 hover:bg-white/10 border border-transparent hover:border-purple-500/30 rounded-xl p-4 mb-4 cursor-pointer transition-all group"
+        onClick={() => navigate(`/search?q=${encodeURIComponent(alt.name)}&country=${selectedCountry.code}`)}
+        title={`Buscar opciones de compra para "${alt.name}"`}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-white font-bold text-base leading-snug mb-1">{alt.name}</p>
+          <ExternalLink className="w-4 h-4 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
+        </div>
         <p className="text-slate-400 text-sm mb-3">{alt.reason}</p>
 
         {/* Metrics row */}
@@ -49,6 +61,9 @@ export default function BestAlternative({ product }) {
             </div>
           )}
         </div>
+        <p className="text-purple-400 text-xs mt-3 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+          <ExternalLink className="w-3 h-3" /> Ver opciones de compra
+        </p>
       </div>
 
       {/* Why switch */}
