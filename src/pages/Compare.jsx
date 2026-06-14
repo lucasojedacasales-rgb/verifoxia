@@ -8,6 +8,7 @@ import { base44 } from "@/api/base44Client";
 import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
+import TechSpecsTable from "@/components/TechSpecsTable";
 
 export default function Compare() {
   const navigate = useNavigate();
@@ -333,43 +334,9 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
             </div>
 
             {/* Tech Specs Table */}
-            {comparison.is_tech && (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (() => {
-              const specsA = comparison.product_a?.tech_specs || [];
-              const specsB = comparison.product_b?.tech_specs || [];
-              // Merge all unique spec labels
-              const allLabels = [...new Set([...specsA.map(s => s.label), ...specsB.map(s => s.label)])];
-              const mapA = Object.fromEntries(specsA.map(s => [s.label, s.value]));
-              const mapB = Object.fromEntries(specsB.map(s => [s.label, s.value]));
-              return (
-                <div className="bg-slate-800/60 border border-white/10 rounded-2xl overflow-hidden">
-                  <div className="flex items-center gap-2 px-5 py-4 border-b border-white/10 bg-slate-900/40">
-                    <span className="text-lg">🔧</span>
-                    <h3 className="text-white font-bold">Especificaciones técnicas</h3>
-                  </div>
-                  {/* Header row */}
-                  <div className="grid grid-cols-3 gap-0 bg-slate-900/30">
-                    <div className="px-4 py-2.5 text-slate-500 text-xs font-semibold uppercase tracking-wide border-b border-white/5">Especificación</div>
-                    <div className="px-4 py-2.5 text-blue-400 text-xs font-semibold uppercase tracking-wide border-b border-white/5 border-l border-white/5">
-                      {comparison.product_a?.name?.split(" ").slice(0,3).join(" ")}
-                    </div>
-                    <div className="px-4 py-2.5 text-purple-400 text-xs font-semibold uppercase tracking-wide border-b border-white/5 border-l border-white/5">
-                      {comparison.product_b?.name?.split(" ").slice(0,3).join(" ")}
-                    </div>
-                  </div>
-                  {allLabels.map((label, i) => (
-                    <div key={label} className={`grid grid-cols-3 gap-0 ${i % 2 === 0 ? "bg-white/[0.02]" : ""} hover:bg-white/5 transition-colors`}>
-                      <div className="px-4 py-3 text-slate-400 text-sm font-medium border-b border-white/5">{label}</div>
-                      <div className={`px-4 py-3 text-sm border-b border-white/5 border-l border-white/5 ${mapA[label] ? "text-slate-200" : "text-slate-600"}`}>
-                        {mapA[label] || "—"}
-                      </div>
-                      <div className={`px-4 py-3 text-sm border-b border-white/5 border-l border-white/5 ${mapB[label] ? "text-slate-200" : "text-slate-600"}`}>
-                        {mapB[label] || "—"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
+            {comparison.is_tech && (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (
+              <TechSpecsTable productA={comparison.product_a} productB={comparison.product_b} />
+            )}
 
             {/* Head to head table */}
             {comparison.head_to_head?.length > 0 && (
