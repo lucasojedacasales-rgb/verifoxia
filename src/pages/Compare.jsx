@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, ArrowLeft, Loader2, Trophy, Star } from "lucide-react";
+import { Search, ArrowLeft, Loader2, Trophy, Star, Download } from "lucide-react";
+import { exportToCSV } from "@/utils/exportToCSV";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { base44 } from "@/api/base44Client";
@@ -197,6 +198,37 @@ Realiza una comparación exhaustiva y devuelve JSON:
 
         {!loading && comparison && (
           <div className="space-y-6">
+            {/* Export button */}
+            <div className="flex justify-end">
+              <button
+                onClick={() => {
+                  const pa = comparison.product_a;
+                  const pb = comparison.product_b;
+                  const summaryRows = [
+                    { Campo: "Producto", "Producto A": pa?.name, "Producto B": pb?.name },
+                    { Campo: "Mejor precio", "Producto A": `${pa?.best_price} ${selectedCountry.currency}`, "Producto B": `${pb?.best_price} ${selectedCountry.currency}` },
+                    { Campo: "Rango de precios", "Producto A": pa?.price_range, "Producto B": pb?.price_range },
+                    { Campo: "Mejor tienda", "Producto A": pa?.best_store, "Producto B": pb?.best_store },
+                    { Campo: "Valoración", "Producto A": pa?.rating, "Producto B": pb?.rating },
+                    { Campo: "Ideal para", "Producto A": pa?.best_for, "Producto B": pb?.best_for },
+                    { Campo: "Ganador", "Producto A": comparison.overall_winner === "A" ? "GANADOR" : "", "Producto B": comparison.overall_winner === "B" ? "GANADOR" : "" },
+                    { Campo: "Motivo", "Producto A": comparison.winner_reason, "Producto B": "" },
+                    { Campo: "Recomendación", "Producto A": comparison.recommendation, "Producto B": "" },
+                  ];
+                  exportToCSV(summaryRows, `comparativa-${pa?.name?.split(" ")[0]}-vs-${pb?.name?.split(" ")[0]}`);
+                  const h2hRows = (comparison.head_to_head || []).map((r) => ({
+                    Criterio: r.criterion,
+                    Ganador: r.winner === "A" ? pa?.name?.split(" ")[0] : r.winner === "B" ? pb?.name?.split(" ")[0] : "Empate",
+                    Detalle: r.detail,
+                  }));
+                  setTimeout(() => exportToCSV(h2hRows, `criterios-${pa?.name?.split(" ")[0]}-vs-${pb?.name?.split(" ")[0]}`), 400);
+                }}
+                className="flex items-center gap-2 text-slate-400 hover:text-white text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-4 py-2 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Exportar a CSV
+              </button>
+            </div>
             {/* Winner banner */}
             {comparison.overall_winner && comparison.overall_winner !== "empate" && (
               <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-5 flex gap-4">
