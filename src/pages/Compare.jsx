@@ -30,7 +30,7 @@ export default function Compare() {
     ]);
 
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Eres un experto en comparación de productos. El usuario quiere comparar DOS productos para decidir cuál comprar.
+      prompt: `Eres un experto en comparación de productos, especialmente de tecnología y electrónica. El usuario quiere comparar DOS productos para decidir cuál comprar.
 
 País: ${selectedCountry.name} (${selectedCountry.code})
 Moneda: ${selectedCountry.currency}
@@ -41,47 +41,64 @@ Contexto A: ${contextA.contextText || "No disponible"}
 PRODUCTO B: "${queryB}"
 Contexto B: ${contextB.contextText || "No disponible"}
 
-Realiza una comparación exhaustiva y devuelve JSON:
+INSTRUCCIONES IMPORTANTES:
+1. Detecta si los productos son de tipo tecnológico (teléfono, ordenador, tablet, portátil, smartwatch, auriculares, GPU, CPU, cámara, etc.).
+2. Si son tecnológicos, rellena el campo "tech_specs" con especificaciones técnicas REALES y PRECISAS para cada producto. Si no son tecnológicos, devuelve arrays vacíos en tech_specs.
+3. Para los criterios head_to_head de productos tecnológicos, incluye criterios como Rendimiento, Pantalla, Batería, Cámara, Almacenamiento, Conectividad, etc. según corresponda.
+
+Devuelve JSON con esta estructura exacta:
 {
+  "is_tech": true_o_false,
   "product_a": {
-    "name": "nombre completo",
+    "name": "nombre completo y modelo exacto",
     "price_range": "rango de precios en ${selectedCountry.currency}",
     "best_price": numero,
     "best_store": "tienda más barata",
     "rating": numero_1_a_5,
     "pros": ["pro1", "pro2", "pro3"],
     "cons": ["con1", "con2"],
-    "best_for": "perfil de usuario para quien es ideal"
+    "best_for": "perfil de usuario para quien es ideal",
+    "tech_specs": [
+      { "label": "Nombre de la especificación", "value": "Valor exacto" }
+    ]
   },
   "product_b": {
-    "name": "nombre completo",
+    "name": "nombre completo y modelo exacto",
     "price_range": "rango de precios en ${selectedCountry.currency}",
     "best_price": numero,
     "best_store": "tienda más barata",
     "rating": numero_1_a_5,
     "pros": ["pro1", "pro2", "pro3"],
     "cons": ["con1", "con2"],
-    "best_for": "perfil de usuario para quien es ideal"
+    "best_for": "perfil de usuario para quien es ideal",
+    "tech_specs": [
+      { "label": "Nombre de la especificación", "value": "Valor exacto" }
+    ]
   },
   "head_to_head": [
-    { "criterion": "Precio", "winner": "A|B|empate", "detail": "explicación" },
-    { "criterion": "Calidad", "winner": "A|B|empate", "detail": "explicación" },
-    { "criterion": "Durabilidad", "winner": "A|B|empate", "detail": "explicación" },
+    { "criterion": "Precio", "winner": "A|B|empate", "detail": "explicación con datos concretos" },
+    { "criterion": "Rendimiento", "winner": "A|B|empate", "detail": "explicación" },
+    { "criterion": "Calidad de pantalla", "winner": "A|B|empate", "detail": "explicación" },
+    { "criterion": "Batería / Autonomía", "winner": "A|B|empate", "detail": "explicación" },
+    { "criterion": "Cámara / Multimedia", "winner": "A|B|empate", "detail": "explicación" },
+    { "criterion": "Durabilidad y construcción", "winner": "A|B|empate", "detail": "explicación" },
     { "criterion": "Relación calidad-precio", "winner": "A|B|empate", "detail": "explicación" },
-    { "criterion": "Disponibilidad en ${selectedCountry.name}", "winner": "A|B|empate", "detail": "explicación" },
-    { "criterion": "Soporte y garantía", "winner": "A|B|empate", "detail": "explicación" }
+    { "criterion": "Ecosistema y software", "winner": "A|B|empate", "detail": "explicación" }
   ],
   "overall_winner": "A|B|empate",
   "winner_reason": "Explicación clara de 2-3 oraciones de por qué es el ganador",
   "recommendation": "Consejo personalizado para el usuario en ${selectedCountry.name}"
-}`,
+}
+
+IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: procesador, RAM, almacenamiento, pantalla (tamaño, resolución, tipo, Hz), batería (mAh, carga rápida), cámara (MP, características), sistema operativo, conectividad (5G, WiFi, Bluetooth), peso, dimensiones, materiales, etc. Usa los datos del contexto para ser preciso.`,
       response_json_schema: {
         type: "object",
-        required: ["product_a", "product_b", "head_to_head", "overall_winner", "winner_reason", "recommendation"],
+        required: ["is_tech", "product_a", "product_b", "head_to_head", "overall_winner", "winner_reason", "recommendation"],
         properties: {
+          is_tech: { type: "boolean" },
           product_a: {
             type: "object",
-            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for"],
+            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for", "tech_specs"],
             properties: {
               name: { type: "string" },
               price_range: { type: "string" },
@@ -90,12 +107,23 @@ Realiza una comparación exhaustiva y devuelve JSON:
               rating: { type: "number" },
               pros: { type: "array", items: { type: "string" } },
               cons: { type: "array", items: { type: "string" } },
-              best_for: { type: "string" }
+              best_for: { type: "string" },
+              tech_specs: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["label", "value"],
+                  properties: {
+                    label: { type: "string" },
+                    value: { type: "string" }
+                  }
+                }
+              }
             }
           },
           product_b: {
             type: "object",
-            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for"],
+            required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for", "tech_specs"],
             properties: {
               name: { type: "string" },
               price_range: { type: "string" },
@@ -104,7 +132,18 @@ Realiza una comparación exhaustiva y devuelve JSON:
               rating: { type: "number" },
               pros: { type: "array", items: { type: "string" } },
               cons: { type: "array", items: { type: "string" } },
-              best_for: { type: "string" }
+              best_for: { type: "string" },
+              tech_specs: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["label", "value"],
+                  properties: {
+                    label: { type: "string" },
+                    value: { type: "string" }
+                  }
+                }
+              }
             }
           },
           head_to_head: {
@@ -292,6 +331,45 @@ Realiza una comparación exhaustiva y devuelve JSON:
                 );
               })}
             </div>
+
+            {/* Tech Specs Table */}
+            {comparison.is_tech && (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (() => {
+              const specsA = comparison.product_a?.tech_specs || [];
+              const specsB = comparison.product_b?.tech_specs || [];
+              // Merge all unique spec labels
+              const allLabels = [...new Set([...specsA.map(s => s.label), ...specsB.map(s => s.label)])];
+              const mapA = Object.fromEntries(specsA.map(s => [s.label, s.value]));
+              const mapB = Object.fromEntries(specsB.map(s => [s.label, s.value]));
+              return (
+                <div className="bg-slate-800/60 border border-white/10 rounded-2xl overflow-hidden">
+                  <div className="flex items-center gap-2 px-5 py-4 border-b border-white/10 bg-slate-900/40">
+                    <span className="text-lg">🔧</span>
+                    <h3 className="text-white font-bold">Especificaciones técnicas</h3>
+                  </div>
+                  {/* Header row */}
+                  <div className="grid grid-cols-3 gap-0 bg-slate-900/30">
+                    <div className="px-4 py-2.5 text-slate-500 text-xs font-semibold uppercase tracking-wide border-b border-white/5">Especificación</div>
+                    <div className="px-4 py-2.5 text-blue-400 text-xs font-semibold uppercase tracking-wide border-b border-white/5 border-l border-white/5">
+                      {comparison.product_a?.name?.split(" ").slice(0,3).join(" ")}
+                    </div>
+                    <div className="px-4 py-2.5 text-purple-400 text-xs font-semibold uppercase tracking-wide border-b border-white/5 border-l border-white/5">
+                      {comparison.product_b?.name?.split(" ").slice(0,3).join(" ")}
+                    </div>
+                  </div>
+                  {allLabels.map((label, i) => (
+                    <div key={label} className={`grid grid-cols-3 gap-0 ${i % 2 === 0 ? "bg-white/[0.02]" : ""} hover:bg-white/5 transition-colors`}>
+                      <div className="px-4 py-3 text-slate-400 text-sm font-medium border-b border-white/5">{label}</div>
+                      <div className={`px-4 py-3 text-sm border-b border-white/5 border-l border-white/5 ${mapA[label] ? "text-slate-200" : "text-slate-600"}`}>
+                        {mapA[label] || "—"}
+                      </div>
+                      <div className={`px-4 py-3 text-sm border-b border-white/5 border-l border-white/5 ${mapB[label] ? "text-slate-200" : "text-slate-600"}`}>
+                        {mapB[label] || "—"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Head to head table */}
             {comparison.head_to_head?.length > 0 && (
