@@ -1,0 +1,86 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nombre del producto"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descripci\u00f3n del producto"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "electronica",
+        "ropa",
+        "hogar",
+        "deportes",
+        "belleza",
+        "juguetes",
+        "libros",
+        "otro"
+      ],
+      "description": "Categor\u00eda del producto"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL de la imagen del producto"
+    },
+    "stores": {
+      "type": "array",
+      "description": "Lista de tiendas con sus precios",
+      "items": {
+        "type": "object",
+        "properties": {
+          "store_name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "in_stock": {
+            "type": "boolean"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "reviews_count": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ai_recommendation": {
+      "type": "string",
+      "description": "Recomendaci\u00f3n generada por IA"
+    },
+    "ai_score": {
+      "type": "number",
+      "description": "Puntuaci\u00f3n de recomendaci\u00f3n (0-100)"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "comprar",
+        "esperar",
+        "no_comprar"
+      ],
+      "description": "Veredicto final"
+    },
+    "search_query": {
+      "type": "string",
+      "description": "B\u00fasqueda original del usuario"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

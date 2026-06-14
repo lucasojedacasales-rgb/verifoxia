@@ -1,0 +1,25 @@
+{
+  "name": "SearchHistory",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "T\u00e9rmino de b\u00fasqueda"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "ID del producto encontrado"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "comprar",
+        "esperar",
+        "no_comprar"
+      ]
+    }
+  },
+  "required": [
+    "query"
+  ]
+}
