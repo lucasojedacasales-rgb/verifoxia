@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, ArrowLeft, Loader2 } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProductCard from "@/components/ProductCard";
@@ -9,11 +9,14 @@ import VerdictBanner from "@/components/VerdictBanner";
 import StoreComparison from "@/components/StoreComparison";
 import ReviewSummary from "@/components/ReviewSummary";
 import AIRecommendation from "@/components/AIRecommendation";
+import CountrySelector from "@/components/CountrySelector";
+import { useCountry } from "@/hooks/useCountry";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
   const query = urlParams.get("q") || "";
   const navigate = useNavigate();
+  const { selectedCountry, changeCountry, countries } = useCountry();
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
@@ -22,7 +25,7 @@ export default function SearchResults() {
 
   useEffect(() => {
     if (query) analyzeProduct(query);
-  }, [query]);
+  }, [query, selectedCountry.code]);
 
   const analyzeProduct = async (q) => {
     setLoading(true);
@@ -33,8 +36,11 @@ export default function SearchResults() {
       prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
       
 El usuario busca: "${q}"
+País del usuario: ${selectedCountry.name} (${selectedCountry.code})
+Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
-Genera datos REALISTAS y detallados de comparación de este producto como si lo hubieras buscado en múltiples tiendas online.
+Genera datos REALISTAS y detallados de comparación de este producto adaptados al mercado de ${selectedCountry.name}.
+Ten en cuenta la disponibilidad, precios y contexto del mercado local de ${selectedCountry.name}.
 
 Devuelve un JSON con esta estructura exacta:
 {
@@ -45,8 +51,8 @@ Devuelve un JSON con esta estructura exacta:
   "stores": [
     {
       "store_name": "una de estas tiendas exactamente: Amazon, eBay o AliExpress",
-      "price": precio_numero,
-      "currency": "USD",
+      "price": precio_numero_en_${selectedCountry.currency},
+      "currency": "${selectedCountry.currency}",
       "url": "#",
       "in_stock": true_o_false,
       "rating": numero_1_a_5,
@@ -55,14 +61,14 @@ Devuelve un JSON con esta estructura exacta:
   ],
   "pros": ["ventaja 1", "ventaja 2", "ventaja 3"],
   "cons": ["desventaja 1", "desventaja 2"],
-  "best_time_to_buy": "descripción de cuándo es mejor comprarlo",
+  "best_time_to_buy": "descripción de cuándo es mejor comprarlo considerando el mercado de ${selectedCountry.name}",
   "price_trend": "subiendo|bajando|estable",
-  "ai_recommendation": "párrafo detallado explicando si conviene comprar, comparando tiendas, mencionando pros/cons y el contexto del mercado actual",
+  "ai_recommendation": "párrafo detallado explicando si conviene comprar en ${selectedCountry.name}, comparando tiendas, mencionando pros/cons, costes de envío al país y el contexto del mercado local",
   "ai_score": numero_0_a_100,
   "verdict": "comprar|esperar|no_comprar"
 }
 
-Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben ser realistas y variar entre tiendas (AliExpress suele ser más barato, Amazon intermedio, eBay variable). El ai_score debe reflejar la relación calidad-precio.`,
+Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben estar en ${selectedCountry.currency} y ser realistas para el mercado de ${selectedCountry.name} (incluye impuestos y costes de envío aproximados). AliExpress suele ser más barato pero con mayor tiempo de envío. El ai_score debe reflejar la relación calidad-precio para un usuario en ${selectedCountry.name}.`,
       response_json_schema: {
         type: "object",
         properties: {
@@ -110,7 +116,7 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben se
   const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}&country=${selectedCountry.code}`);
   };
 
   return (
@@ -146,6 +152,11 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben se
               Buscar
             </Button>
           </form>
+          <CountrySelector
+            selectedCountry={selectedCountry}
+            countries={countries}
+            onChange={changeCountry}
+          />
         </div>
       </header>
 

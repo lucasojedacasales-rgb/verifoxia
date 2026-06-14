@@ -4,15 +4,18 @@ import { Search, TrendingUp, Shield, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SearchHistory from "@/components/SearchHistory";
+import CountrySelector from "@/components/CountrySelector";
+import { useCountry } from "@/hooks/useCountry";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const { selectedCountry, changeCountry, countries } = useCountry();
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
-    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+    navigate(`/search?q=${encodeURIComponent(query.trim())}&country=${selectedCountry.code}`);
   };
 
   const features = [
@@ -34,6 +37,11 @@ export default function Home() {
           </div>
           <span className="text-white font-bold text-xl">PriceWise</span>
         </div>
+        <CountrySelector
+          selectedCountry={selectedCountry}
+          countries={countries}
+          onChange={changeCountry}
+        />
       </header>
 
       {/* Hero */}
@@ -76,7 +84,7 @@ export default function Home() {
           {popular.map((p) => (
             <button
               key={p}
-              onClick={() => navigate(`/search?q=${encodeURIComponent(p)}`)}
+              onClick={() => navigate(`/search?q=${encodeURIComponent(p)}&country=${selectedCountry.code}`)}
               className="text-sm text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-full px-3 py-1 transition-all"
             >
               {p}
