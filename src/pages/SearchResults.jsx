@@ -11,6 +11,7 @@ import ReviewSummary from "@/components/ReviewSummary";
 import AIRecommendation from "@/components/AIRecommendation";
 import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
+import { fetchProductContext } from "@/hooks/useProductData";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,6 +31,9 @@ export default function SearchResults() {
     setLoading(true);
     setProduct(null);
 
+    // Fetch real product context from free public APIs
+    const productContext = await fetchProductContext(q);
+
     const [result, imageResult] = await Promise.all([
       base44.integrations.Core.InvokeLLM({
         prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
@@ -38,7 +42,11 @@ El usuario busca: "${q}"
 País del usuario: ${selectedCountry.name} (${selectedCountry.code})
 Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
-Genera datos REALISTAS y detallados de comparación de este producto adaptados al mercado de ${selectedCountry.name}.
+=== CONTEXTO REAL DEL PRODUCTO (extraído de Wikipedia y DuckDuckGo) ===
+${productContext.contextText || "No se encontró contexto adicional."}
+=== FIN DEL CONTEXTO ===
+
+Usa este contexto real para dar datos PRECISOS y concretos. Adapta el análisis al mercado de ${selectedCountry.name}.
 
 Devuelve un JSON con esta estructura exacta:
 {
@@ -102,7 +110,8 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben es
       })
     ]);
 
-    setProduct({ ...result, image_url: imageResult?.url, search_query: q });
+    const imageUrl = imageResult?.url || productContext.wikiImageUrl || null;
+    setProduct({ ...result, image_url: imageUrl, search_query: q });
 
     await base44.entities.SearchHistory.create({
       query: q,
@@ -164,7 +173,7 @@ Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben es
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
             <p className="text-white text-lg font-medium">Analizando "{query}"...</p>
-            <p className="text-slate-400 text-sm">Comparando precios, reseñas y generando imagen del producto</p>
+            <p className="text-slate-400 text-sm">Consultando Wikipedia, DuckDuckGo y generando análisis con IA...</p>
           </div>
         )}
 
