@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Clock, CheckCircle2, Clock3, XCircle, ChevronRight, Download } from "lucide-react";
-import { exportToCSV } from "@/utils/exportToCSV";
+import { Clock, CheckCircle2, Clock3, XCircle, ChevronRight } from "lucide-react";
 
 const verdictConfig = {
   comprar: { icon: CheckCircle2, color: "text-green-400", label: "Comprar" },
@@ -18,31 +17,15 @@ export default function SearchHistory() {
     base44.entities.SearchHistory.list("-created_date", 8).then(setHistory);
   }, []);
 
-  const handleExport = () => {
-    const rows = history.map((item) => ({
-      Producto: item.query,
-      Veredicto: item.verdict ? verdictConfig[item.verdict]?.label : "—",
-      Fecha: item.created_date ? new Date(item.created_date).toLocaleDateString("es-ES") : "—",
-    }));
-    exportToCSV(rows, "historial-busquedas-pricewise");
-  };
-
   if (!history.length) return null;
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center mb-4">
         <h2 className="text-white font-semibold text-lg flex items-center gap-2">
           <Clock className="w-5 h-5 text-slate-400" />
           Búsquedas recientes
         </h2>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-1.5 text-slate-400 hover:text-white text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3 py-1.5 transition-all"
-        >
-          <Download className="w-3.5 h-3.5" />
-          Exportar CSV
-        </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {history.map((item) => {
