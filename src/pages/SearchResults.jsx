@@ -69,7 +69,7 @@ ${storesText}
 
 PASO 1 — Detecta la categoría exacta del producto: "${q}"
 PASO 2 — Selecciona SOLO las tiendas de esa categoría de la lista anterior. Excluye completamente las tiendas que no vendan ese tipo de producto (ej: si es un videojuego, no uses tiendas de ropa/zapatos/belleza; si es un mueble, no uses tiendas de electrónica o moda).
-PASO 3 — Devuelve precios realistas en ${selectedCountry.currency} únicamente para las tiendas seleccionadas.
+PASO 3 — Devuelve precios realistas EXCLUSIVAMENTE en la moneda local: ${selectedCountry.currency} (símbolo: ${selectedCountry.symbol}). NUNCA uses USD si el país es de la UE o cualquier otro país distinto de EE.UU. El campo "currency" de CADA tienda DEBE ser "${selectedCountry.currency}" sin excepción.
 
 Devuelve un JSON con esta estructura exacta:
 {
@@ -115,7 +115,8 @@ Devuelve un JSON con esta estructura exacta:
   }
 }
 
-REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.
+REGLA CRÍTICA DE MONEDA: El campo "currency" de CADA entrada del array "stores" DEBE ser exactamente "${selectedCountry.currency}". Los precios deben estar expresados en ${selectedCountry.currency} (${selectedCountry.symbol}) reflejando la realidad del mercado de ${selectedCountry.name} con IVA incluido. NUNCA pongas "USD" si la moneda local es "${selectedCountry.currency}".
+REGLA DE TIENDAS: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto.
 Para "fraud_risk": analiza si el producto suele tener reseñas sospechosas, cambios de ficha o historial de precios inflados artificialmente. Sé honesto y específico en "fraud_flags" y "safe_signals".
 Para "best_alternative": sugiere un producto alternativo real y concreto que el usuario debería considerar.`,
         response_json_schema: {
