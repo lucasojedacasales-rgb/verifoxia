@@ -44,7 +44,7 @@ Devuelve un JSON con esta estructura exacta:
   "image_url": "https://source.unsplash.com/400x400/?product,${encodeURIComponent(q)}",
   "stores": [
     {
-      "store_name": "nombre de tienda real (Amazon, eBay, Walmart, BestBuy, etc.)",
+      "store_name": "una de estas tiendas exactamente: Amazon, eBay o AliExpress",
       "price": precio_numero,
       "currency": "USD",
       "url": "#",
@@ -62,7 +62,7 @@ Devuelve un JSON con esta estructura exacta:
   "verdict": "comprar|esperar|no_comprar"
 }
 
-Usa entre 4-6 tiendas reales. Los precios deben ser realistas y variar entre tiendas. El ai_score debe reflejar la relación calidad-precio.`,
+Usa EXACTAMENTE estas 3 tiendas: Amazon, eBay y AliExpress. Los precios deben ser realistas y variar entre tiendas (AliExpress suele ser más barato, Amazon intermedio, eBay variable). El ai_score debe reflejar la relación calidad-precio.`,
       response_json_schema: {
         type: "object",
         properties: {
