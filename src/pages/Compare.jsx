@@ -8,6 +8,7 @@ import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
 import TechSpecsTable from "@/components/TechSpecsTable";
+import AdBanner from "@/components/AdBanner";
 
 export default function Compare() {
   const navigate = useNavigate();
@@ -302,10 +303,16 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
               })}
             </div>
 
+            {/* Anuncio AdSense — entre tarjetas de producto y especificaciones */}
+            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+
             {/* Tech Specs Table */}
             {comparison.is_tech && (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (
               <TechSpecsTable productA={comparison.product_a} productB={comparison.product_b} />
             )}
+
+            {/* Anuncio AdSense — antes de la comparativa detallada */}
+            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* Head to head table */}
             {comparison.head_to_head?.length > 0 && (

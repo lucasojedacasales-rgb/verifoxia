@@ -16,6 +16,7 @@ import { getStoresPromptText } from "@/lib/storesByRegion";
 import PriceAlertModal from "@/components/PriceAlertModal";
 import PricePrediction from "@/components/PricePrediction";
 import TotalCostCalculator from "@/components/TotalCostCalculator";
+import AdBanner from "@/components/AdBanner";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -216,6 +217,10 @@ IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la
               </div>
             </div>
             <StoreComparison stores={product.stores || []} />
+
+            {/* Anuncio AdSense — entre comparativa de tiendas y reseñas */}
+            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ReviewSummary product={product} />
               <AIRecommendation product={product} />
@@ -224,6 +229,9 @@ IMPORTANTE: Incluye TODAS las tiendas de la lista. Los precios deben reflejar la
               <PricePrediction product={product} country={selectedCountry} />
               <TotalCostCalculator product={product} country={selectedCountry} />
             </div>
+
+            {/* Anuncio AdSense — al final de los resultados */}
+            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
           </div>
         )}
 
