@@ -9,6 +9,9 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import SearchResults from './pages/SearchResults';
 import Compare from './pages/Compare';
+import Settings from './pages/Settings';
+import BottomTabBar from './components/BottomTabBar';
+import PageTransition from './components/PageTransition';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -36,12 +39,18 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/search" element={<SearchResults />} />
-      <Route path="/compare" element={<Compare />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <>
+      <PageTransition>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/compare" element={<Compare />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </PageTransition>
+      <BottomTabBar />
+    </>
   );
 };
 

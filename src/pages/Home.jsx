@@ -30,7 +30,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10" style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }}>
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
             <Search className="w-4 h-4 text-white" />
@@ -122,7 +122,7 @@ export default function Home() {
       </section>
 
       {/* Search History */}
-      <section className="px-6 pb-16 max-w-5xl mx-auto">
+      <section className="px-6 pb-24 max-w-5xl mx-auto md:pb-16">
         <SearchHistory />
       </section>
     </div>
