@@ -17,6 +17,10 @@ import PriceAlertModal from "@/components/PriceAlertModal";
 import PricePrediction from "@/components/PricePrediction";
 import TotalCostCalculator from "@/components/TotalCostCalculator";
 import AdBanner from "@/components/AdBanner";
+import AIVerdict from "@/components/AIVerdict";
+import FraudDetector from "@/components/FraudDetector";
+import BestAlternative from "@/components/BestAlternative";
+import SatisfactionIndex from "@/components/SatisfactionIndex";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -85,10 +89,31 @@ Devuelve un JSON con esta estructura exacta:
   "price_trend": "subiendo|bajando|estable",
   "ai_recommendation": "análisis detallado para comprar en ${selectedCountry.name}: qué tienda local conviene más, costes de envío, disponibilidad local vs importación, contexto del mercado local",
   "ai_score": numero_0_a_100,
-  "verdict": "comprar|esperar|no_comprar"
+  "verdict": "comprar|esperar|no_comprar",
+  "ai_verdict_reasons": ["razón 1 corta", "razón 2 corta", "razón 3 corta"],
+  "fraud_risk": "bajo|medio|alto",
+  "fraud_flags": ["señal negativa 1", "señal negativa 2"],
+  "safe_signals": ["señal positiva 1", "señal positiva 2"],
+  "satisfaction_index": {
+    "quality": numero_1_a_10,
+    "durability": numero_1_a_10,
+    "value": numero_1_a_10,
+    "support": numero_1_a_10,
+    "return_rate": "baja|media|alta"
+  },
+  "best_alternative": {
+    "name": "nombre del producto alternativo recomendado",
+    "reason": "por qué es mejor en una frase",
+    "why_better": "explicación de la ventaja principal",
+    "score": numero_0_a_100,
+    "price_diff_pct": numero_porcentaje_diferencia_de_precio,
+    "incident_reduction": numero_porcentaje_menos_incidencias
+  }
 }
 
-REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.`,
+REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto. Los precios deben reflejar la realidad del mercado de ${selectedCountry.name} incluyendo impuestos e importación si aplica.
+Para "fraud_risk": analiza si el producto suele tener reseñas sospechosas, cambios de ficha o historial de precios inflados artificialmente. Sé honesto y específico en "fraud_flags" y "safe_signals".
+Para "best_alternative": sugiere un producto alternativo real y concreto que el usuario debería considerar.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -116,7 +141,34 @@ REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se ven
             price_trend: { type: "string" },
             ai_recommendation: { type: "string" },
             ai_score: { type: "number" },
-            verdict: { type: "string" }
+            verdict: { type: "string" },
+            ai_verdict_reasons: { type: "array", items: { type: "string" } },
+            fraud_risk: { type: "string" },
+            fraud_flags: { type: "array", items: { type: "string" } },
+            safe_signals: { type: "array", items: { type: "string" } },
+            satisfaction_index: {
+              type: "object",
+              properties: {
+                quality:     { type: "number" },
+                durability:  { type: "number" },
+                value:       { type: "number" },
+                support:     { type: "number" },
+                return_rate: { type: "string" }
+              },
+              required: ["quality", "durability", "value", "support", "return_rate"]
+            },
+            best_alternative: {
+              type: "object",
+              properties: {
+                name:               { type: "string" },
+                reason:             { type: "string" },
+                why_better:         { type: "string" },
+                score:              { type: "number" },
+                price_diff_pct:     { type: "number" },
+                incident_reduction: { type: "number" }
+              },
+              required: ["name", "reason", "why_better", "score"]
+            }
           }
         }
       }),
@@ -221,6 +273,18 @@ REGLA CRÍTICA: En el array "stores" incluye SOLO tiendas donde realmente se ven
 
             {/* Anuncio AdSense — entre comparativa de tiendas y reseñas */}
             <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+
+            {/* ¿La compraría la IA? + Detector de fraude */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <AIVerdict product={product} />
+              <FraudDetector product={product} />
+            </div>
+
+            {/* Índice de satisfacción + Mejor alternativa */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SatisfactionIndex product={product} />
+              <BestAlternative product={product} />
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ReviewSummary product={product} />
