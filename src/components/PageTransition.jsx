@@ -10,14 +10,14 @@ const variants = {
 export default function PageTransition({ children }) {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={location.pathname}
         variants={variants}
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ duration: 0.18, ease: "easeInOut" }}
+        transition={{ duration: 0.15, ease: "easeInOut" }}
       >
         {children}
       </motion.div>
