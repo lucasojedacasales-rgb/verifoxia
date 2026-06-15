@@ -52,6 +52,23 @@ const AuthenticatedApp = () => {
       // Redirect to login automatically
       navigateToLogin();
       return null;
+    } else {
+      // Unknown error (network issues, etc.) — show retry screen instead of blank
+      return (
+        <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 gap-4 px-6 text-center">
+          <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-2">
+            <span className="text-red-400 text-2xl">!</span>
+          </div>
+          <p className="text-white font-semibold text-lg">No se pudo cargar la app</p>
+          <p className="text-slate-400 text-sm">{authError.message || 'Comprueba tu conexión a internet'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-xl min-h-[44px] transition-colors"
+          >
+            Reintentar
+          </button>
+        </div>
+      );
     }
   }
 
