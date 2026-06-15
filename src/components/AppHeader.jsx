@@ -58,36 +58,11 @@ export default function AppHeader() {
           </Button>
         ) : (
           <div className="flex items-center gap-2 shrink-0" aria-label="Verifox">
-            <div className="w-8 h-8 shrink-0">
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                {/* Orejas */}
-                <polygon points="20,55 10,10 40,40" fill="#e85d04"/>
-                <polygon points="80,55 90,10 60,40" fill="#e85d04"/>
-                <polygon points="23,52 15,18 38,42" fill="#ff6b00"/>
-                <polygon points="77,52 85,18 62,42" fill="#ff6b00"/>
-                {/* Cara */}
-                <ellipse cx="50" cy="60" rx="30" ry="26" fill="#ff6b00"/>
-                {/* Mejillas blancas */}
-                <ellipse cx="30" cy="68" rx="14" ry="10" fill="#f0f0f0"/>
-                <ellipse cx="70" cy="68" rx="14" ry="10" fill="#f0f0f0"/>
-                {/* Nariz */}
-                <ellipse cx="50" cy="76" rx="5" ry="3.5" fill="#1a1a2e"/>
-                {/* Ojos cyan con scanner */}
-                <ellipse cx="37" cy="58" rx="7" ry="6" fill="#0ea5e9"/>
-                <ellipse cx="63" cy="58" rx="7" ry="6" fill="#0ea5e9"/>
-                <ellipse cx="37" cy="58" rx="3.5" ry="3" fill="#0284c7"/>
-                <ellipse cx="63" cy="58" rx="3.5" ry="3" fill="#0284c7"/>
-                {/* Scanner brackets */}
-                <path d="M30,51 L30,54 L33,54" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M44,51 L44,54 L41,54" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M30,65 L30,62 L33,62" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M44,65 L44,62 L41,62" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M56,51 L56,54 L59,54" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M70,51 L70,54 L67,54" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M56,65 L56,62 L59,62" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                <path d="M70,65 L70,62 L67,62" stroke="#22d3ee" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
+            <img
+              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/66d7c075b_UseAIImageJun16202600_47_52.png"
+              alt="Verifox logo"
+              className="w-8 h-8 rounded-lg object-cover"
+            />
             <span className="font-black text-base tracking-tight uppercase">
               <span className="text-white">VERI</span><span className="text-orange-500">FOX</span>
             </span>
