@@ -1,11 +1,23 @@
 import { ExternalLink, CheckCircle, XCircle, Star, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
-export default function StoreComparison({ stores }) {
+export default function StoreComparison({ stores, productName = "" }) {
+  const navigate = useNavigate();
+
   if (!stores.length) return null;
-
   const sorted = [...stores].sort((a, b) => (a.price || 0) - (b.price || 0));
   const minPrice = sorted[0]?.price;
+
+  const goToStore = (store) => {
+    if (!store.url || store.url === "#") return;
+    const params = new URLSearchParams({
+      url: store.url,
+      store: store.store_name,
+      product: store.product_title || productName,
+    });
+    navigate(`/store?${params.toString()}`);
+  };
 
   return (
     <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-4 md:p-6">
@@ -46,15 +58,13 @@ export default function StoreComparison({ stores }) {
                               Mejor
                             </Badge>
                           )}
-                          <a
-                            href={store.url && store.url !== "#" ? store.url : undefined}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            onClick={() => goToStore(store)}
                             className="text-white font-medium hover:text-blue-400 flex items-center gap-1 transition-colors"
                           >
                             {store.store_name}
                             <ExternalLink className="w-3 h-3 text-slate-500" />
-                          </a>
+                          </button>
                         </div>
                         {store.product_title && (
                           <span className="text-slate-500 text-xs truncate max-w-[220px]" title={store.product_title}>
@@ -95,19 +105,18 @@ export default function StoreComparison({ stores }) {
                       )}
                     </td>
                     <td className="py-3 pl-4 text-right">
-                      <a
-                        href={store.url && store.url !== "#" ? store.url : "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => goToStore(store)}
+                        disabled={!store.in_stock}
                         className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all min-h-[44px] ${
                           store.in_stock
                             ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/40 border border-blue-500/30"
-                            : "bg-slate-700/50 text-slate-500 border border-white/5 cursor-not-allowed pointer-events-none"
+                            : "bg-slate-700/50 text-slate-500 border border-white/5 cursor-not-allowed opacity-60"
                         }`}
                       >
                         Comprar
                         <ExternalLink className="w-3 h-3" />
-                      </a>
+                      </button>
                     </td>
                     </tr>
               );
@@ -132,14 +141,12 @@ export default function StoreComparison({ stores }) {
                         Mejor
                       </Badge>
                     )}
-                    <a
-                      href={store.url && store.url !== "#" ? store.url : undefined}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-white font-semibold hover:text-blue-400 transition-colors"
+                    <button
+                      onClick={() => goToStore(store)}
+                      className="text-white font-semibold hover:text-blue-400 transition-colors text-left"
                     >
                       {store.store_name}
-                    </a>
+                    </button>
                   </div>
                   {store.product_title && (
                     <span className="text-slate-500 text-xs line-clamp-1">{store.product_title}</span>
@@ -183,19 +190,18 @@ export default function StoreComparison({ stores }) {
                 )}
               </div>
 
-              <a
-                href={store.url && store.url !== "#" ? store.url : "#"}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => goToStore(store)}
+                disabled={!store.in_stock}
                 className={`w-full mt-4 inline-flex items-center justify-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg transition-all min-h-[44px] ${
                   store.in_stock
                     ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/40 border border-blue-500/30"
-                    : "bg-slate-700/50 text-slate-500 border border-white/5 cursor-not-allowed pointer-events-none"
+                    : "bg-slate-700/50 text-slate-500 border border-white/5 cursor-not-allowed opacity-60"
                 }`}
               >
                 Comprar
                 <ExternalLink className="w-4 h-4" />
-              </a>
+              </button>
             </div>
           );
         })}
