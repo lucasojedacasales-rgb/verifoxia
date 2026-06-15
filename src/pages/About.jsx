@@ -19,7 +19,7 @@ export default function About() {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-white font-bold text-lg">Acerca de Trustify</h1>
+          <h1 className="text-white font-bold text-lg">Acerca de VERIFOX</h1>
         </div>
       </div>
 
@@ -28,20 +28,20 @@ export default function About() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 md:p-12 space-y-8">
           <section>
             <h1 className="text-4xl font-bold text-white mb-6">
-              Sobre Trustify
+              Sobre <span className="text-white">VERI</span><span className="text-orange-500">FOX</span>
             </h1>
             <div className="space-y-4 text-slate-300 text-lg leading-relaxed">
               <p>
-                Trustify es una plataforma web innovadora diseñada para transformar la manera en que los consumidores compran productos en línea. En un mercado saturado de opciones y precios variables, Trustify utiliza inteligencia artificial avanzada para proporcionar recomendaciones precisas y confiables sobre dónde comprar, cuándo comprar y si vale la pena invertir en un producto específico.
+                VERIFOX es una plataforma web innovadora diseñada para transformar la manera en que los consumidores compran productos en línea. En un mercado saturado de opciones y precios variables, VERIFOX utiliza inteligencia artificial avanzada para proporcionar recomendaciones precisas y confiables sobre dónde comprar, cuándo comprar y si vale la pena invertir en un producto específico.
               </p>
               <p>
                 Nuestra misión es empoderar a los compradores con información transparente y análisis detallados. Comparamos automáticamente precios de múltiples tiendas en tu país, evaluamos la fiabilidad de los productos basándonos en reseñas y datos históricos, y ofrecemos predicciones de tendencias de precios para que nunca pierdas una oportunidad de ahorro.
               </p>
               <p>
-                Trustify está dirigido a consumidores inteligentes que desean tomar decisiones informadas antes de realizar una compra. Ya sea que busques un producto específico, desees comparar alternativas, o simplemente quieras estar atento a cambios de precio, Trustify es tu aliado de confianza en el mundo del e-commerce.
+                VERIFOX está dirigido a consumidores inteligentes que desean tomar decisiones informadas antes de realizar una compra. Ya sea que busques un producto específico, desees comparar alternativas, o simplemente quieras estar atento a cambios de precio, VERIFOX es tu aliado de confianza en el mundo del e-commerce.
               </p>
               <p>
-                Trustify fue construido por un equipo apasionado de desarrolladores y diseñadores que creen que la transparencia y la accesibilidad a la información son derechos de todo consumidor. Utilizamos tecnologías modernas y APIs de fuentes confiables para garantizar que siempre recibas datos precisos y actualizados sobre los productos que te interesan.
+                VERIFOX fue construido por un equipo apasionado de desarrolladores y diseñadores que creen que la transparencia y la accesibilidad a la información son derechos de todo consumidor. Utilizamos tecnologías modernas y APIs de fuentes confiables para garantizar que siempre recibas datos precisos y actualizados sobre los productos que te interesan.
               </p>
             </div>
           </section>

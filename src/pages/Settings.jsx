@@ -378,7 +378,7 @@ export default function Settings() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-slate-400">App</span>
-            <span className="text-slate-300">Trustify</span>
+            <span className="text-slate-300">VERIFOX</span>
           </div>
         </section>
 

@@ -164,7 +164,7 @@ export default function Home() {
           </a>
         </div>
         <p className="text-slate-500 text-xs">
-          © 2026 Trustify. Todos los derechos reservados.
+          © 2026 VERIFOX. Todos los derechos reservados.
         </p>
       </footer>
     </div>);

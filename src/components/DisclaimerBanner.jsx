@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const STORAGE_KEY = "trustify_disclaimer_accepted";
+const STORAGE_KEY = "verifox_disclaimer_accepted";
 
 export default function DisclaimerBanner() {
   const [visible, setVisible] = useState(false);

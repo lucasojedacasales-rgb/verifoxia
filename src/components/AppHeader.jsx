@@ -105,7 +105,7 @@ export default function AppHeader() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-slate-400 text-sm">Bienvenido a Trustify</p>
+                  <p className="text-slate-400 text-sm">Bienvenido a VERIFOX</p>
                 )}
               </div>
 
