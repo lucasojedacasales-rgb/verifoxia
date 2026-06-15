@@ -17,6 +17,11 @@
         "esperar",
         "no_comprar"
       ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Descripci\u00f3n adicional de la b\u00fasqueda"
     }
   },
   "required": [
