@@ -8,6 +8,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
 import PageTransition from './components/PageTransition';
 import AppHeader from './components/AppHeader';
+import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
 
 // Auth pages
@@ -110,6 +111,7 @@ const AuthenticatedApp = () => {
               </Routes>
             </PageTransition>
             <BottomTabBar />
+            <DisclaimerBanner />
           </>
         } />
       </Routes>

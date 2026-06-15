@@ -1,0 +1,100 @@
+{
+  "name": "Favorite",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string",
+      "description": "Nombre del producto guardado"
+    },
+    "search_query": {
+      "type": "string",
+      "description": "Query de b\u00fasqueda original"
+    },
+    "best_price": {
+      "type": "number",
+      "description": "Mejor precio encontrado"
+    },
+    "best_price_str": {
+      "type": "string",
+      "description": "Precio formateado como string"
+    },
+    "best_store": {
+      "type": "string",
+      "description": "Tienda con el mejor precio"
+    },
+    "best_store_url": {
+      "type": "string",
+      "description": "URL directa al producto en la mejor tienda"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "URL de la imagen del producto"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "comprar",
+        "esperar",
+        "no_comprar"
+      ],
+      "description": "Veredicto IA"
+    },
+    "ai_score": {
+      "type": "number",
+      "description": "Puntuaci\u00f3n IA 0-100"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Moneda del precio"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "Pa\u00eds donde se guard\u00f3 la oferta"
+    }
+  },
+  "required": [
+    "product_name",
+    "search_query"
+  ],
+  "rls": {
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

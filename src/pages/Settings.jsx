@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, AlertTriangle, User, Bell, Globe, Languages, ChevronRight, Check, TrendingUp, Sparkles, History } from "lucide-react";
+import { Trash2, AlertTriangle, User, Bell, Globe, Languages, ChevronRight, Check, TrendingUp, Sparkles, History, LogOut, Heart, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useCountry } from "@/hooks/useCountry";
@@ -41,6 +41,10 @@ export default function Settings() {
   const [alerts, setAlerts] = useState([]);
   const [loadingAlerts, setLoadingAlerts] = useState(true);
 
+  // Favorites
+  const [favorites, setFavorites] = useState([]);
+  const [loadingFavs, setLoadingFavs] = useState(true);
+
   useEffect(() => {
     base44.auth.me().then((u) => {
       setUser(u);
@@ -49,7 +53,19 @@ export default function Settings() {
     base44.entities.PriceAlert.filter({ status: "active" }).then((a) => {
       setAlerts(a);
     }).catch(() => {}).finally(() => setLoadingAlerts(false));
+    base44.entities.Favorite.list("-created_date").then((f) => {
+      setFavorites(f);
+    }).catch(() => {}).finally(() => setLoadingFavs(false));
   }, []);
+
+  const handleLogout = async () => {
+    await base44.auth.logout();
+  };
+
+  const handleRemoveFavorite = async (favId) => {
+    await base44.entities.Favorite.delete(favId);
+    setFavorites((prev) => prev.filter((f) => f.id !== favId));
+  };
 
   const handleSaveName = async () => {
     if (!displayName.trim()) return;
@@ -203,6 +219,54 @@ export default function Settings() {
           </div>
         </section>
 
+        {/* Favorites */}
+        <section className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 space-y-4" aria-labelledby="favs-heading">
+          <div className="flex items-center gap-2">
+            <Heart className="w-4 h-4 text-pink-400" />
+            <h2 id="favs-heading" className="text-white font-semibold text-base">Ofertas guardadas</h2>
+          </div>
+          {loadingFavs ? (
+            <p className="text-slate-400 text-sm">Cargando favoritos...</p>
+          ) : favorites.length === 0 ? (
+            <p className="text-slate-400 text-sm">No tienes ofertas guardadas aún.</p>
+          ) : (
+            <ul className="space-y-2">
+              {favorites.map((fav) => (
+                <li key={fav.id} className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-3">
+                  {fav.image_url && (
+                    <img src={fav.image_url} alt={fav.product_name} className="w-10 h-10 rounded-lg object-cover shrink-0 bg-white/10" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-medium truncate">{fav.product_name}</p>
+                    <p className="text-slate-400 text-xs mt-0.5 truncate">
+                      {fav.best_store} · {fav.best_price_str || "—"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {fav.best_store_url && (
+                      <a
+                        href={fav.best_store_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300 transition-colors p-1.5 min-h-[36px] flex items-center"
+                        aria-label="Ver oferta"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                    <button
+                      onClick={() => handleRemoveFavorite(fav.id)}
+                      className="text-red-400 hover:text-red-300 text-xs border border-red-500/30 rounded-lg px-2.5 py-1.5 transition-colors min-h-[36px]"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
         {/* Account Deletion */}
         <section className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 space-y-4" aria-labelledby="account-heading">
           <div className="flex items-center gap-2">
@@ -291,6 +355,18 @@ export default function Settings() {
             </div>
             <ChevronRight className="w-4 h-4 text-slate-500" />
           </button>
+        </section>
+
+        {/* Logout */}
+        <section className="bg-slate-800/60 border border-white/10 rounded-2xl p-5">
+          <Button
+            variant="outline"
+            className="w-full gap-2 min-h-[44px] border-white/20 text-white hover:bg-white/10 hover:text-white bg-transparent"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4" />
+            Cerrar sesión
+          </Button>
         </section>
 
         {/* App info */}

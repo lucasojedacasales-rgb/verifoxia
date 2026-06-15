@@ -27,6 +27,7 @@ import BestAlternative from "@/components/BestAlternative";
 import SatisfactionIndex from "@/components/SatisfactionIndex";
 import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -319,6 +320,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                   <Bell className="w-4 h-4" />
                   {t.create_alert}
                 </button>
+                <FavoriteButton product={product} country={selectedCountry} />
               </div>
             </div>
             <StoreComparison stores={product.stores || []} />
