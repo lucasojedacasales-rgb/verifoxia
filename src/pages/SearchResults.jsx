@@ -40,6 +40,10 @@ export default function SearchResults() {
   const [pendingHistoryEntry, setPendingHistoryEntry] = useState(null);
 
   const onRefresh = useCallback(() => {
+    // End WebView native pull-to-refresh if available
+    if (window.__TRUSTIFY_NATIVE__ && window.__TRUSTIFY_NATIVE__.endRefresh) {
+      window.__TRUSTIFY_NATIVE__.endRefresh();
+    }
     if (query) return analyzeProduct(query);
     return Promise.resolve();
   }, [query, selectedCountry.code]);

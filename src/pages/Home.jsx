@@ -22,6 +22,10 @@ export default function Home() {
 
   const onRefresh = useCallback(() => new Promise((res) => {
     setRefreshKey((k) => k + 1);
+    // End WebView native pull-to-refresh if available
+    if (window.__TRUSTIFY_NATIVE__ && window.__TRUSTIFY_NATIVE__.endRefresh) {
+      window.__TRUSTIFY_NATIVE__.endRefresh();
+    }
     setTimeout(res, 600);
   }), []);
   const { scrollProps, indicatorRef } = usePullToRefresh(onRefresh);
@@ -69,20 +73,21 @@ export default function Home() {
         </p>
 
         {/* Search bar */}
-        <form onSubmit={handleSearch} className="w-full max-w-2xl flex gap-3">
+        <form onSubmit={handleSearch} className="w-full max-w-2xl flex gap-3" role="search">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" aria-hidden="true" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t.search_placeholder}
-              className="pl-12 h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl"
+              className="pl-12 h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl focus:ring-2 focus:ring-blue-500"
+              aria-label="Buscar producto"
             />
           </div>
           <ImageSearchButton />
           <Button
             type="submit"
-            className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base"
+            className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base min-h-[44px] focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             {t.search_btn}
           </Button>
@@ -91,20 +96,22 @@ export default function Home() {
         {/* Compare CTA */}
         <button
           onClick={() => navigate("/compare")}
-          className="mt-4 flex items-center gap-2 text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-full px-5 py-2 transition-all text-sm font-medium"
+          className="mt-4 flex items-center gap-2 text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 rounded-full px-5 py-2 transition-all text-sm font-medium min-h-[44px] focus:outline-none focus:ring-2 focus:ring-purple-500"
+          aria-label={t.compare_btn}
         >
-          <SplitSquareHorizontal className="w-4 h-4" />
+          <SplitSquareHorizontal className="w-4 h-4" aria-hidden="true" />
           {t.compare_btn}
         </button>
 
         {/* Popular searches */}
         <div className="flex flex-wrap gap-2 mt-6 justify-center">
-          <span className="text-slate-500 text-sm">{t.popular}</span>
+          <span className="text-slate-500 text-sm" aria-label="Búsquedas populares">{t.popular}</span>
           {popular.map((p) => (
             <button
               key={p}
               onClick={() => navigate(`/search?q=${encodeURIComponent(p)}&country=${selectedCountry.code}`)}
-              className="text-sm text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-full px-3 py-1 transition-all"
+              className="text-sm text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-full px-3 py-1.5 transition-all min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label={`Buscar ${p}`}
             >
               {p}
             </button>

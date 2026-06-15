@@ -30,6 +30,7 @@ export default function BottomTabBar() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur border-t border-white/10 flex"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      aria-label="Navigation"
     >
       {tabs.map((tab) => {
         const active = isActive(tab);
@@ -38,11 +39,13 @@ export default function BottomTabBar() {
           <button
             key={tab.to}
             onClick={() => handleTabPress(tab)}
-            className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 min-h-[44px] text-xs transition-colors select-none ${
-              active ? "text-blue-400" : "text-slate-500"
+            className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 min-h-[44px] text-xs transition-colors select-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 ${
+              active ? "text-blue-400 focus:ring-blue-400" : "text-slate-500 focus:ring-blue-500"
             }`}
+            aria-label={tab.label}
+            aria-current={active ? "page" : undefined}
           >
-            <Icon className="w-5 h-5" />
+            <Icon className="w-5 h-5" aria-hidden="true" />
             <span>{tab.label}</span>
           </button>
         );

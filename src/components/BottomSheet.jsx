@@ -34,7 +34,10 @@ export default function BottomSheet({ open, onClose, title, children }) {
             onClick={onClose}
           />
           {/* Sheet */}
-          <motion.div
+           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sheet-title"
             className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-white/10 rounded-t-2xl flex flex-col"
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             initial={{ y: "100%" }}
@@ -48,12 +51,13 @@ export default function BottomSheet({ open, onClose, title, children }) {
             </div>
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-3">
-              <span className="text-white font-semibold text-base">{title}</span>
+              <span className="text-white font-semibold text-base" id="sheet-title">{title}</span>
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-slate-400 hover:text-white"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors min-h-[44px] min-w-[44px]"
+                aria-label="Cerrar"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
             {/* Content */}
