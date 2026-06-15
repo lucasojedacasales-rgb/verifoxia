@@ -48,7 +48,7 @@ export default function Home() {
     >
       <PullToRefreshIndicator ref={indicatorRef} />
       {/* Language & Country selector below global header */}
-      <div className="sticky top-[60px] z-10 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border-b border-white/10 px-6 py-3 flex items-center justify-end gap-2">
+      <div className="sticky top-[60px] z-5 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border-b border-white/10 px-6 py-3 flex items-center justify-end gap-2">
         <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
         <CountrySelector
           selectedCountry={selectedCountry}

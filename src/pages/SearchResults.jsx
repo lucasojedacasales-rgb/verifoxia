@@ -216,7 +216,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 relative">
       {/* Search bar below global header */}
-      <div className="sticky top-[60px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0">
+      <div className="sticky top-[60px] z-5 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0">
         <div className="max-w-6xl mx-auto flex items-center gap-2">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">

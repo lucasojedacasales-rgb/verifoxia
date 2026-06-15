@@ -179,7 +179,7 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Country selector below global header */}
-      <div className="sticky top-[60px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
+      <div className="sticky top-[60px] z-5 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
         <div className="max-w-5xl mx-auto flex items-center justify-end">
           <CountrySelector selectedCountry={selectedCountry} countries={countries} onChange={changeCountry} />
         </div>
