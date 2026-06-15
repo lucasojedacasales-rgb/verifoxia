@@ -61,7 +61,7 @@ export default function AppHeader() {
             <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
               <Search className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-white font-bold">Trustify</span>
+            <span className="text-white font-bold">Veriqo</span>
           </div>
         )}
 
