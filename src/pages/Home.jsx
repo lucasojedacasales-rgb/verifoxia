@@ -68,7 +68,7 @@ export default function Home() {
         </div>
 
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-          Veriqo <br />
+          Verifox IA <br />
           <span className="text-blue-400">{t.hero_title_2}</span>
         </h1>
         <p className="text-slate-400 text-lg md:text-xl max-w-xl mb-10">
