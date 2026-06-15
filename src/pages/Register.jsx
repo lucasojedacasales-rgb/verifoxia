@@ -8,7 +8,6 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
-import { toast } from "@/components/ui/use-toast";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -23,7 +22,7 @@ export default function Register() {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Las contraseñas no coinciden");
       return;
     }
     setLoading(true);
@@ -31,7 +30,7 @@ export default function Register() {
       await base44.auth.register({ email, password });
       setShowOtp(true);
     } catch (err) {
-      setError(err.message || "Registration failed");
+      setError(err.message || "Error al crear la cuenta");
     } finally {
       setLoading(false);
     }
@@ -47,7 +46,7 @@ export default function Register() {
       }
       window.location.href = "/";
     } catch (err) {
-      setError(err.message || "Invalid verification code");
+      setError(err.message || "Código de verificación incorrecto");
     } finally {
       setLoading(false);
     }
@@ -57,12 +56,8 @@ export default function Register() {
     setError("");
     try {
       await base44.auth.resendOtp(email);
-      toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
-      });
     } catch (err) {
-      setError(err.message || "Failed to resend code");
+      setError(err.message || "Error al reenviar el código");
     }
   };
 
@@ -78,7 +73,7 @@ export default function Register() {
         subtitle={`Enviamos un código a ${email}`}
       >
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -101,7 +96,7 @@ export default function Register() {
           </InputOTP>
         </div>
         <Button
-          className="w-full h-12 font-medium"
+          className="w-full h-12 font-medium bg-blue-500 hover:bg-blue-600 text-white"
           onClick={handleVerify}
           disabled={loading || otpCode.length < 6}
         >
@@ -114,9 +109,9 @@ export default function Register() {
             "Verificar"
           )}
         </Button>
-        <p className="text-center text-sm text-muted-foreground mt-4">
+        <p className="text-center text-sm text-slate-400 mt-4">
           ¿No recibiste el código?{" "}
-          <button onClick={handleResend} className="text-primary font-medium hover:underline">
+          <button onClick={handleResend} className="text-blue-400 font-medium hover:underline">
             Reenviar
           </button>
         </p>
@@ -128,11 +123,11 @@ export default function Register() {
     <AuthLayout
       icon={UserPlus}
       title="Crea tu cuenta"
-      subtitle="Regístrate para empezar"
+      subtitle="Regístrate gratis para empezar"
       footer={
         <>
           ¿Ya tienes cuenta?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link to="/login" className="text-blue-400 font-medium hover:underline">
             Iniciar sesión
           </Link>
         </>
@@ -140,7 +135,7 @@ export default function Register() {
     >
       <Button
         variant="outline"
-        className="w-full h-12 text-sm font-medium mb-6"
+        className="w-full h-12 text-sm font-medium mb-6 bg-white/5 border-white/20 text-white hover:bg-white/10"
         onClick={handleGoogle}
       >
         <GoogleIcon className="w-5 h-5 mr-2" />
@@ -149,24 +144,24 @@ export default function Register() {
 
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
+          <div className="w-full border-t border-white/10" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-3 text-muted-foreground">o</span>
+          <span className="bg-slate-900 px-3 text-slate-500">o</span>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+        <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="text-slate-300">Email</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
             <Input
               id="email"
               type="email"
@@ -175,15 +170,15 @@ export default function Register() {
               placeholder="tu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="pl-10 h-12"
+              className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-slate-500"
               required
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label htmlFor="password" className="text-slate-300">Contraseña</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
             <Input
               id="password"
               type="password"
@@ -191,15 +186,15 @@ export default function Register() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="pl-10 h-12"
+              className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-slate-500"
               required
             />
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="confirm">Repetir contraseña</Label>
+          <Label htmlFor="confirm" className="text-slate-300">Repetir contraseña</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
             <Input
               id="confirm"
               type="password"
@@ -207,12 +202,12 @@ export default function Register() {
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="pl-10 h-12"
+              className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-slate-500"
               required
             />
           </div>
         </div>
-        <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
+        <Button type="submit" className="w-full h-12 font-medium bg-blue-500 hover:bg-blue-600 text-white" disabled={loading}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
