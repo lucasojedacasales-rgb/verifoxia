@@ -291,7 +291,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
             <StoreComparison stores={product.stores || []} />
 
             {/* Anuncio AdSense — entre comparativa de tiendas y reseñas */}
-            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="9217364670" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* ¿La compraría la IA? + Detector de fraude */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -315,7 +315,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
             </div>
 
             {/* Anuncio AdSense — al final de los resultados */}
-            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="8142785294" format="auto" className="rounded-xl overflow-hidden" />
           </div>
         )}
 
