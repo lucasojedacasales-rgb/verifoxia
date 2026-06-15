@@ -60,8 +60,27 @@ export default function SearchResults() {
     // Optimistic history entry — shown immediately while LLM runs
     setPendingHistoryEntry({ query: q, verdict: null, _pending: true, id: null });
 
-    // Fetch real product context from free public APIs
-    const productContext = await fetchProductContext(q);
+    // Fetch real product context + SerpAPI shopping results in parallel
+    const [productContext, serpApiResponse] = await Promise.all([
+      fetchProductContext(q),
+      base44.functions.invoke("searchProducts", { query: q, country_code: selectedCountry.code }).catch(() => null),
+    ]);
+
+    const serpData = serpApiResponse?.data;
+    const serpShoppingResults = serpData?.shopping_results || [];
+
+    // Build SerpAPI context text for the LLM
+    let serpContextText = "";
+    if (serpShoppingResults.length > 0) {
+      serpContextText = `\n=== PRECIOS REALES DE GOOGLE SHOPPING (SerpAPI) ===\n`;
+      serpShoppingResults.forEach((item) => {
+        serpContextText += `- ${item.store_name}: ${item.price_str || item.price} ${item.currency} | ${item.product_title} | ${item.url}`;
+        if (item.rating) serpContextText += ` | ⭐ ${item.rating} (${item.reviews_count?.toLocaleString() || "?"} reseñas)`;
+        if (item.delivery) serpContextText += ` | Envío: ${item.delivery}`;
+        serpContextText += "\n";
+      });
+      serpContextText += `=== FIN DE PRECIOS REALES ===\n`;
+    }
 
     // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
     const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
@@ -77,7 +96,7 @@ Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
 === CONTEXTO REAL DEL PRODUCTO (extraído de Wikipedia y DuckDuckGo) ===
 ${productContext.contextText || "No se encontró contexto adicional."}
-=== FIN DEL CONTEXTO ===
+=== FIN DEL CONTEXTO ===${serpContextText}
 
 === TIENDAS DISPONIBLES EN ${selectedCountry.name.toUpperCase()} ===
 ${storesText}
@@ -97,7 +116,7 @@ Devuelve un JSON con esta estructura exacta:
       "store_name": "nombre EXACTO de la tienda seleccionada",
       "price": precio_numero_en_${selectedCountry.currency},
       "currency": "${selectedCountry.currency}",
-      "url": "URL de búsqueda de la tienda (usa las URLs proporcionadas arriba)",
+      "url": "URL real de la tienda (usa las URLs de SerpAPI si están disponibles, si no usa las URLs de la lista de tiendas)",
       "in_stock": true_o_false,
       "rating": numero_1_a_5,
       "reviews_count": numero_de_reseñas_estimado
@@ -198,8 +217,22 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       })
     ]);
 
-    const imageUrl = imageResult?.url || productContext.wikiImageUrl || null;
-    setProduct({ ...result, image_url: imageUrl, search_query: q });
+    const imageUrl = imageResult?.url || productContext.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
+
+    // Merge SerpAPI real stores on top of LLM stores if available
+    const mergedStores = serpShoppingResults.length > 0
+      ? serpShoppingResults.map((s) => ({
+          store_name: s.store_name,
+          price: s.price,
+          currency: s.currency || selectedCountry.currency,
+          url: s.url,
+          in_stock: s.in_stock,
+          rating: s.rating,
+          reviews_count: s.reviews_count,
+        }))
+      : (result.stores || []);
+
+    setProduct({ ...result, stores: mergedStores, image_url: imageUrl, search_query: q });
 
     // Persist and clear optimistic entry
     base44.entities.SearchHistory.create({ query: q, verdict: result.verdict });
