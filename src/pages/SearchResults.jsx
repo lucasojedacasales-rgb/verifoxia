@@ -72,14 +72,14 @@ export default function SearchResults() {
     // Build SerpAPI context text for the LLM
     let serpContextText = "";
     if (serpShoppingResults.length > 0) {
-      serpContextText = `\n=== PRECIOS REALES DE GOOGLE SHOPPING (SerpAPI) ===\n`;
-      serpShoppingResults.forEach((item) => {
-        serpContextText += `- ${item.store_name}: ${item.price_str || item.price} ${item.currency} | ${item.product_title} | ${item.url}`;
-        if (item.rating) serpContextText += ` | ⭐ ${item.rating} (${item.reviews_count?.toLocaleString() || "?"} reseñas)`;
+      serpContextText = `\n=== PRECIOS REALES DE GOOGLE SHOPPING (SerpAPI) — USA ESTOS DATOS DIRECTAMENTE ===\n`;
+      serpShoppingResults.forEach((item, i) => {
+        serpContextText += `${i + 1}. Tienda: ${item.store_name} | Producto: "${item.product_title}" | Precio: ${item.price_str || item.price + " " + item.currency} | URL: ${item.url}`;
+        if (item.rating) serpContextText += ` | Rating: ${item.rating}/5 (${item.reviews_count?.toLocaleString() || "?"} reseñas)`;
         if (item.delivery) serpContextText += ` | Envío: ${item.delivery}`;
         serpContextText += "\n";
       });
-      serpContextText += `=== FIN DE PRECIOS REALES ===\n`;
+      serpContextText += `IMPORTANTE: Los precios y tiendas de arriba son REALES y verificados. Úsalos directamente en el campo "stores" sin modificarlos.\n=== FIN DE PRECIOS REALES ===\n`;
     }
 
     // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
@@ -103,8 +103,9 @@ ${storesText}
 === FIN DE TIENDAS ===
 
 PASO 1 — Detecta la categoría exacta del producto: "${q}"
-PASO 2 — Selecciona SOLO las tiendas de esa categoría de la lista anterior. Excluye completamente las tiendas que no vendan ese tipo de producto (ej: si es un videojuego, no uses tiendas de ropa/zapatos/belleza; si es un mueble, no uses tiendas de electrónica o moda).
-PASO 3 — Devuelve precios realistas EXCLUSIVAMENTE en la moneda local: ${selectedCountry.currency} (símbolo: ${selectedCountry.symbol}). NUNCA uses USD si el país es de la UE o cualquier otro país distinto de EE.UU. El campo "currency" de CADA tienda DEBE ser "${selectedCountry.currency}" sin excepción.
+PASO 2 — Si hay datos de PRECIOS REALES (sección SerpAPI), úsalos DIRECTAMENTE para rellenar "stores". Son datos reales de Google Shopping, no los modifiques ni inventes otros. Si no hay datos de SerpAPI, usa la lista de tiendas del país.
+PASO 3 — Devuelve precios EXCLUSIVAMENTE en la moneda local: ${selectedCountry.currency} (símbolo: ${selectedCountry.symbol}). NUNCA uses USD si el país es de la UE. El campo "currency" de CADA tienda DEBE ser "${selectedCountry.currency}" sin excepción.
+PASO 4 — Para "name" del producto, usa el título exacto del producto de SerpAPI si está disponible, no uno genérico.
 
 Devuelve un JSON con esta estructura exacta:
 {
@@ -150,8 +151,9 @@ Devuelve un JSON con esta estructura exacta:
   }
 }
 
-REGLA CRÍTICA DE MONEDA: El campo "currency" de CADA entrada del array "stores" DEBE ser exactamente "${selectedCountry.currency}". Los precios deben estar expresados en ${selectedCountry.currency} (${selectedCountry.symbol}) reflejando la realidad del mercado de ${selectedCountry.name} con IVA incluido. NUNCA pongas "USD" si la moneda local es "${selectedCountry.currency}".
-REGLA DE TIENDAS: En el array "stores" incluye SOLO tiendas donde realmente se vende ese tipo de producto.
+REGLA CRÍTICA DE MONEDA: El campo "currency" de CADA entrada del array "stores" DEBE ser exactamente "${selectedCountry.currency}". Los precios deben estar expresados en ${selectedCountry.currency} (${selectedCountry.symbol}) con IVA incluido. NUNCA pongas "USD" si la moneda local es "${selectedCountry.currency}".
+REGLA DE TIENDAS: Si hay datos de SerpAPI, usa EXACTAMENTE esas tiendas con sus precios y URLs reales. No inventes ni combines con otras tiendas. Si no hay datos de SerpAPI, selecciona tiendas reales del país que vendan ese producto.
+REGLA DE NOMBRE: El campo "name" debe ser el nombre EXACTO y COMPLETO del producto (modelo, versión, color, capacidad) tal como aparece en los resultados de SerpAPI.
 Para "fraud_risk": analiza si el producto suele tener reseñas sospechosas, cambios de ficha o historial de precios inflados artificialmente. Sé honesto y específico en "fraud_flags" y "safe_signals".
 Para "best_alternative": sugiere un producto alternativo real y concreto que el usuario debería considerar.`,
         response_json_schema: {
