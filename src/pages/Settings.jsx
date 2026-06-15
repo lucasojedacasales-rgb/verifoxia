@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, AlertTriangle, User, Bell, Globe, Languages, ChevronRight, Check, TrendingUp } from "lucide-react";
+import { Trash2, AlertTriangle, User, Bell, Globe, Languages, ChevronRight, Check, TrendingUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useCountry } from "@/hooks/useCountry";
@@ -257,6 +257,21 @@ export default function Settings() {
               <div className="text-left">
                 <p className="text-white text-sm font-medium">Search Console</p>
                 <p className="text-slate-400 text-xs">Analizar consultas de búsqueda</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-500" />
+          </button>
+          <button
+            onClick={() => navigate("/workflow-agent")}
+            className="flex items-center justify-between w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-4 py-3 transition-colors min-h-[44px]"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-white text-sm font-medium">Optimizador de Flujo</p>
+                <p className="text-slate-400 text-xs">Recomendaciones personalizadas con IA</p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-500" />
