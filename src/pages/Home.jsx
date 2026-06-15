@@ -67,9 +67,9 @@ export default function Home() {
           <span className="text-blue-300 text-sm font-medium">{t.intro_badge}</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-          VerifoxIA <br />
-          <span className="text-blue-400">{t.hero_title_2}</span>
+        <h1 className="text-4xl md:text-6xl font-black text-white mb-4 leading-tight uppercase tracking-tight">
+          <span className="text-white">VERI</span><span className="text-orange-500">FOX</span><br />
+          <span className="text-blue-400 normal-case font-bold text-3xl md:text-5xl">{t.hero_title_2}</span>
         </h1>
         <p className="text-slate-400 text-lg md:text-xl max-w-xl mb-10">
           {t.hero_sub}

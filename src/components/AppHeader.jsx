@@ -57,11 +57,13 @@ export default function AppHeader() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
         ) : (
-          <div className="flex items-center gap-2 shrink-0" aria-label="Trustify">
-            <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
+          <div className="flex items-center gap-2 shrink-0" aria-label="Verifox">
+            <div className="w-7 h-7 bg-orange-500 rounded-lg flex items-center justify-center">
               <Search className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-white font-bold">VerifoxIA</span>
+            <span className="font-black text-base tracking-tight uppercase">
+              <span className="text-white">VERI</span><span className="text-orange-500">FOX</span>
+            </span>
           </div>
         )}
 
