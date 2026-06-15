@@ -17,19 +17,10 @@ export default function ImageSearchButton() {
     // Upload image
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-    // Ask LLM to identify the product from the image
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Analiza esta imagen de producto y devuelve el nombre exacto y específico del producto que se ve.
-Si no hay un producto claro, devuelve el objeto más reconocible.
-Responde SOLO con JSON: { "product_name": "nombre completo y específico del producto" }`,
-      file_urls: [file_url],
-      response_json_schema: {
-        type: "object",
-        properties: { product_name: { type: "string" } }
-      }
-    });
+    // Use Google Vision API via backend function
+    const response = await base44.functions.invoke("analyzeImage", { image_url: file_url });
+    const productName = response?.data?.product_name;
 
-    const productName = result?.product_name;
     setLoading(false);
 
     if (productName) {
