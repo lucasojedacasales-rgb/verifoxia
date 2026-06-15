@@ -254,7 +254,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       </header>
 
       <PullToRefreshIndicator ref={indicatorRef} />
-      <main className="flex-1 overflow-y-auto w-full px-4 py-8 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" {...scrollProps}>
+      <main className="flex-1 overflow-y-auto w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" {...scrollProps}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
@@ -272,16 +272,16 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         )}
 
         {!loading && product && (
-          <div className="w-full space-y-6">
-            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          <div className="w-full space-y-4 sm:space-y-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
               <div className="lg:col-span-2">
                 <ProductCard product={product} />
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 sm:gap-4">
                 <VerdictBanner product={product} />
                 <button
                   onClick={() => setShowAlertModal(true)}
-                  className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg sm:rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all text-sm sm:text-base min-h-[44px]"
                   >
                   <Bell className="w-4 h-4" />
                   {t.create_alert}
@@ -291,31 +291,31 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
             <StoreComparison stores={product.stores || []} />
 
             {/* Anuncio AdSense — entre comparativa de tiendas y reseñas */}
-            <AdBanner slot="9217364670" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="9217364670" format="auto" className="rounded-lg sm:rounded-xl overflow-hidden" />
 
             {/* ¿La compraría la IA? + Detector de fraude */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               <AIVerdict product={product} />
               <FraudDetector product={product} />
             </div>
 
             {/* Índice de satisfacción + Mejor alternativa */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               <SatisfactionIndex product={product} />
               <BestAlternative product={product} />
             </div>
 
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               <ReviewSummary product={product} />
               <AIRecommendation product={product} />
             </div>
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               <PricePrediction product={product} country={selectedCountry} />
               <TotalCostCalculator product={product} country={selectedCountry} />
             </div>
 
             {/* Anuncio AdSense — al final de los resultados */}
-            <AdBanner slot="8142785294" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="8142785294" format="auto" className="rounded-lg sm:rounded-xl overflow-hidden" />
           </div>
         )}
 
