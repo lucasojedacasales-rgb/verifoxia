@@ -77,12 +77,10 @@ export default function AppHeader() {
             onClick={() => setOpen((v) => !v)}
             className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 rounded-xl px-3 py-2 transition-all min-h-[40px]"
             aria-expanded={open}
-            aria-label="Menú región e idioma"
+            aria-label="Mi perfil"
           >
-            <span className="text-base leading-none">{selectedCountry.flag}</span>
-            <span className="text-slate-300 text-xs font-medium hidden sm:block">{selectedCountry.code}</span>
-            <span className="text-slate-500 text-xs hidden sm:block">·</span>
-            <span className="text-base leading-none hidden sm:block">{lang.flag}</span>
+            <User className="w-3.5 h-3.5 text-slate-300" />
+            <span className="text-slate-300 text-xs font-medium hidden sm:block">Mi perfil</span>
             <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
           </button>
 

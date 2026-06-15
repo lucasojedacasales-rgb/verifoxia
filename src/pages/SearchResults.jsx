@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
-import { Search, ArrowLeft, Bell } from "lucide-react";
-import LanguageSelector from "@/components/LanguageSelector";
+import { Search, Bell } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +12,6 @@ import VerdictBanner from "@/components/VerdictBanner";
 import StoreComparison from "@/components/StoreComparison";
 import ReviewSummary from "@/components/ReviewSummary";
 import AIRecommendation from "@/components/AIRecommendation";
-import CountrySelector from "@/components/CountrySelector";
 import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
 import { getStoresPromptText } from "@/lib/storesByRegion";
@@ -33,8 +31,8 @@ export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
   const query = urlParams.get("q") || "";
   const navigate = useNavigate();
-  const { selectedCountry, changeCountry, countries } = useCountry();
-  const { lang, changeLanguage, languages, t } = useLanguage();
+  const { selectedCountry } = useCountry();
+  const { lang, t } = useLanguage();
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
@@ -277,14 +275,6 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
               Buscar
             </Button>
           </form>
-          <div className="flex items-center gap-2">
-            <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
-            <CountrySelector
-              selectedCountry={selectedCountry}
-              countries={countries}
-              onChange={changeCountry}
-            />
-          </div>
         </div>
       </div>
 
