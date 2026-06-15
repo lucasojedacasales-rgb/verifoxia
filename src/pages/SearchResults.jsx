@@ -254,7 +254,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       </header>
 
       <PullToRefreshIndicator ref={indicatorRef} />
-      <main className="flex-1 overflow-y-auto max-w-6xl mx-auto w-full px-4 py-8 pb-24 md:pb-8" {...scrollProps}>
+      <main className="flex-1 overflow-y-auto w-full px-4 py-8 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" {...scrollProps}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
@@ -272,8 +272,8 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         )}
 
         {!loading && product && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="w-full space-y-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
               <div className="lg:col-span-2">
                 <ProductCard product={product} />
               </div>
@@ -294,22 +294,22 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
             <AdBanner slot="9217364670" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* ¿La compraría la IA? + Detector de fraude */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               <AIVerdict product={product} />
               <FraudDetector product={product} />
             </div>
 
             {/* Índice de satisfacción + Mejor alternativa */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               <SatisfactionIndex product={product} />
               <BestAlternative product={product} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               <ReviewSummary product={product} />
               <AIRecommendation product={product} />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               <PricePrediction product={product} country={selectedCountry} />
               <TotalCostCalculator product={product} country={selectedCountry} />
             </div>
