@@ -2,17 +2,27 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PageNotFound from './lib/PageNotFound';
+import { Suspense, lazy } from 'react';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-import Home from './pages/Home';
-import SearchResults from './pages/SearchResults';
-import Compare from './pages/Compare';
-import Settings from './pages/Settings';
 import BottomTabBar from './components/BottomTabBar';
 import PageTransition from './components/PageTransition';
-// Add page imports here
+import AppHeader from './components/AppHeader';
+
+// Lazy load all page components for code splitting
+const Home = lazy(() => import('./pages/Home'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const Compare = lazy(() => import('./pages/Compare'));
+const Settings = lazy(() => import('./pages/Settings'));
+const PageNotFound = lazy(() => import('./lib/PageNotFound'));
+const UserNotRegisteredError = lazy(() => import('./components/UserNotRegisteredError'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-slate-950">
+    <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+  </div>
+);
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -29,7 +39,11 @@ const AuthenticatedApp = () => {
   // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <UserNotRegisteredError />
+        </Suspense>
+      );
     } else if (authError.type === 'auth_required') {
       // Redirect to login automatically
       navigateToLogin();
@@ -40,14 +54,17 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <>
+      <AppHeader />
       <PageTransition>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/compare" element={<Compare />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Suspense>
       </PageTransition>
       <BottomTabBar />
     </>

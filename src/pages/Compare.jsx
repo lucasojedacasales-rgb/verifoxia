@@ -178,19 +178,12 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
-        <div className="max-w-5xl mx-auto flex items-center gap-3">
-          <div className="flex items-center gap-2 flex-1">
-            <div className="w-7 h-7 bg-purple-500 rounded-lg flex items-center justify-center">
-              <span className="text-white text-xs font-bold">VS</span>
-            </div>
-            <span className="text-white font-bold">Comparador</span>
-          </div>
-          <div className="ml-auto">
-            <CountrySelector selectedCountry={selectedCountry} countries={countries} onChange={changeCountry} />
-          </div>
+      {/* Country selector below global header */}
+      <div className="sticky top-[60px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
+        <div className="max-w-5xl mx-auto flex items-center justify-end">
+          <CountrySelector selectedCountry={selectedCountry} countries={countries} onChange={changeCountry} />
         </div>
-      </header>
+      </div>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
         <form onSubmit={analyzeComparison} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">

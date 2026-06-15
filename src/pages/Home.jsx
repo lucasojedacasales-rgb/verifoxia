@@ -43,23 +43,15 @@ export default function Home() {
       {...scrollProps}
     >
       <PullToRefreshIndicator ref={indicatorRef} />
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/10" style={{ paddingTop: "calc(env(safe-area-inset-top) + 1rem)" }}>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-            <Search className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-white font-bold text-xl">Trustify</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
-          <CountrySelector
-            selectedCountry={selectedCountry}
-            countries={countries}
-            onChange={changeCountry}
-          />
-        </div>
-      </header>
+      {/* Language & Country selector below global header */}
+      <div className="sticky top-[60px] z-10 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border-b border-white/10 px-6 py-3 flex items-center justify-end gap-2">
+        <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
+        <CountrySelector
+          selectedCountry={selectedCountry}
+          countries={countries}
+          onChange={changeCountry}
+        />
+      </div>
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">

@@ -211,23 +211,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 relative">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
-        <div className="max-w-6xl mx-auto flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/")}
-            className="text-slate-400 hover:text-white shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
-              <Search className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-white font-bold hidden sm:block">Trustify</span>
-          </div>
+      {/* Search bar below global header */}
+      <div className="sticky top-[60px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0">
+        <div className="max-w-6xl mx-auto flex items-center gap-2">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -251,7 +237,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
             />
           </div>
         </div>
-      </header>
+      </div>
 
       <PullToRefreshIndicator ref={indicatorRef} />
       <main className="flex-1 overflow-y-auto w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" {...scrollProps}>
