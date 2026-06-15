@@ -59,7 +59,7 @@ export default function AppHeader() {
         ) : (
           <div className="flex items-center gap-2 shrink-0" aria-label="Verifox">
             <img
-              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/66d7c075b_UseAIImageJun16202600_47_52.png"
+              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/d049c4265_UseAIImageJun16202600_47_52.png"
               alt="Verifox logo"
               className="w-8 h-8 rounded-lg object-cover"
             />

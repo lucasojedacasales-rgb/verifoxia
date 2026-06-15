@@ -8,7 +8,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <div className="text-center mb-8">
           <div className="flex flex-col items-center gap-4 mb-8">
             <img
-              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/66d7c075b_UseAIImageJun16202600_47_52.png?t=1"
+              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/d049c4265_UseAIImageJun16202600_47_52.png"
               alt="Verifox logo"
               className="w-24 h-24 rounded-2xl object-cover shadow-lg"
             />
