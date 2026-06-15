@@ -7,6 +7,7 @@ import SearchHistory from "@/components/SearchHistory";
 import CountrySelector from "@/components/CountrySelector";
 import LanguageSelector from "@/components/LanguageSelector";
 import ImageSearchButton from "@/components/ImageSearchButton";
+import AdBanner from "@/components/AdBanner";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
@@ -132,6 +133,11 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Anuncio AdSense */}
+      <section className="px-6 py-8 max-w-5xl mx-auto">
+        <AdBanner slot="3742564892" format="auto" className="rounded-lg sm:rounded-xl overflow-hidden" />
       </section>
 
       {/* Search History */}
