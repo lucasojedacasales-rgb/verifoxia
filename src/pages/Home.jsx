@@ -58,7 +58,7 @@ export default function Home() {
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
         {user?.full_name &&
         <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-4 animate-fade-in hidden">
-            <span className="text-slate-300 text-sm hidden">👋 Hola, <span className="text-white font-semibold">{user.full_name.split(" ")[0]}</span></span>
+            
           </div>
         }
 
