@@ -10,6 +10,12 @@ import PageTransition from './components/PageTransition';
 import AppHeader from './components/AppHeader';
 import { useTabStacks } from './hooks/useTabStacks';
 
+// Auth pages
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
@@ -75,24 +81,35 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <>
-      <AppHeader />
-      <PageTransition>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/compare" element={<Compare />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/search-console" element={<SearchConsole />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </Suspense>
-      </PageTransition>
-      <BottomTabBar />
-    </>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* Public auth routes — no header/tabbar */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        {/* App routes */}
+        <Route path="*" element={
+          <>
+            <AppHeader />
+            <PageTransition>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/compare" element={<Compare />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/search-console" element={<SearchConsole />} />
+                <Route path="*" element={<PageNotFound />} />
+              </Routes>
+            </PageTransition>
+            <BottomTabBar />
+          </>
+        } />
+      </Routes>
+    </Suspense>
   );
 };
 

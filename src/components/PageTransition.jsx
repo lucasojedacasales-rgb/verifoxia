@@ -18,6 +18,7 @@ export default function PageTransition({ children }) {
         animate="animate"
         exit="exit"
         transition={{ duration: 0.15, ease: "easeInOut" }}
+        style={{ backgroundColor: "#020617" }}
       >
         {children}
       </motion.div>
