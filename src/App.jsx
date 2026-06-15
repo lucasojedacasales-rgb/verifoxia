@@ -28,7 +28,7 @@ const PageLoader = () => (
 );
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
   useTabStacks(); // Track last URL per tab stack
 
   // Show loading spinner while checking app public settings or auth
@@ -62,7 +62,7 @@ const AuthenticatedApp = () => {
           <p className="text-white font-semibold text-lg">No se pudo cargar la app</p>
           <p className="text-slate-400 text-sm">{authError.message || 'Comprueba tu conexión a internet'}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={checkAppState}
             className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-xl min-h-[44px] transition-colors"
           >
             Reintentar
