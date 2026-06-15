@@ -143,6 +143,27 @@ export default function Home() {
       <section className="px-6 pb-24 max-w-5xl mx-auto md:pb-16">
         <SearchHistory key={refreshKey} />
       </section>
+
+      {/* Footer with links to About and Contact */}
+      <footer className="bg-slate-900/50 border-t border-white/10 px-6 py-6 text-center">
+        <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-6 mb-4">
+          <a
+            href="/about"
+            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center"
+          >
+            Acerca de
+          </a>
+          <a
+            href="/contact"
+            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center"
+          >
+            Contacto
+          </a>
+        </div>
+        <p className="text-slate-500 text-xs">
+          © 2026 Trustify. Todos los derechos reservados.
+        </p>
+      </footer>
     </div>
   );
 }

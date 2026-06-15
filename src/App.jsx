@@ -14,6 +14,8 @@ const Home = lazy(() => import('./pages/Home'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Settings = lazy(() => import('./pages/Settings'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
 const PageNotFound = lazy(() => import('./lib/PageNotFound'));
 const UserNotRegisteredError = lazy(() => import('./components/UserNotRegisteredError'));
 
@@ -62,6 +64,8 @@ const AuthenticatedApp = () => {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Suspense>

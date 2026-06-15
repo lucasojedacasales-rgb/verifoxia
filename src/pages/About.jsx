@@ -1,0 +1,82 @@
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+
+export default function About() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-4">
+        <div className="max-w-4xl mx-auto flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="text-slate-300 hover:text-white"
+            aria-label="Volver"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="text-white font-bold text-lg">Acerca de Trustify</h1>
+        </div>
+      </div>
+
+      {/* Content */}
+      <main className="max-w-4xl mx-auto px-4 py-12 pb-24">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 md:p-12 space-y-8">
+          <section>
+            <h1 className="text-4xl font-bold text-white mb-6">
+              Sobre Trustify
+            </h1>
+            <div className="space-y-4 text-slate-300 text-lg leading-relaxed">
+              <p>
+                Trustify es una plataforma web innovadora diseñada para transformar la manera en que los consumidores compran productos en línea. En un mercado saturado de opciones y precios variables, Trustify utiliza inteligencia artificial avanzada para proporcionar recomendaciones precisas y confiables sobre dónde comprar, cuándo comprar y si vale la pena invertir en un producto específico.
+              </p>
+              <p>
+                Nuestra misión es empoderar a los compradores con información transparente y análisis detallados. Comparamos automáticamente precios de múltiples tiendas en tu país, evaluamos la fiabilidad de los productos basándonos en reseñas y datos históricos, y ofrecemos predicciones de tendencias de precios para que nunca pierdas una oportunidad de ahorro.
+              </p>
+              <p>
+                Trustify está dirigido a consumidores inteligentes que desean tomar decisiones informadas antes de realizar una compra. Ya sea que busques un producto específico, desees comparar alternativas, o simplemente quieras estar atento a cambios de precio, Trustify es tu aliado de confianza en el mundo del e-commerce.
+              </p>
+              <p>
+                Trustify fue construido por un equipo apasionado de desarrolladores y diseñadores que creen que la transparencia y la accesibilidad a la información son derechos de todo consumidor. Utilizamos tecnologías modernas y APIs de fuentes confiables para garantizar que siempre recibas datos precisos y actualizados sobre los productos que te interesan.
+              </p>
+            </div>
+          </section>
+
+          <section className="pt-8 border-t border-white/10">
+            <h2 className="text-2xl font-bold text-white mb-4">Características Principales</h2>
+            <ul className="space-y-3 text-slate-300">
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Comparación de precios en tiempo real de múltiples tiendas</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Análisis de fiabilidad y detección de fraude con IA</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Alertas de precio personalizadas cuando el producto baja de tu presupuesto</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Predicción de tendencias de precios para comprar en el mejor momento</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Soporte multi-idioma y multi-moneda para usuarios globales</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-blue-400 font-bold">✓</span>
+                <span>Búsqueda visual de productos por imagen</span>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
