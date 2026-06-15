@@ -35,8 +35,8 @@ export default function DisclaimerBanner() {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm mb-1">Aviso legal</p>
                 <p className="text-slate-400 text-xs leading-relaxed">
-                  Los precios, disponibilidad y recomendaciones mostrados en Trustify son orientativos y se obtienen de fuentes externas (Google Shopping, IA). 
-                  Trustify no vende productos ni garantiza la exactitud de los datos. 
+                  Los precios, disponibilidad y recomendaciones mostrados en VerifoxIA son orientativos y se obtienen de fuentes externas (Google Shopping, IA). 
+                  VerifoxIA no vende productos ni garantiza la exactitud de los datos. 
                   Verifica siempre el precio final en la tienda antes de comprar.
                 </p>
                 <div className="flex items-center gap-3 mt-3">
