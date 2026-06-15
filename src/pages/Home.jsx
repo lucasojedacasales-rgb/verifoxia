@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,19 @@ import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
+import { base44 } from "@/api/base44Client";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const { selectedCountry, changeCountry, countries } = useCountry();
   const { lang, changeLanguage, languages, t } = useLanguage();
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
 
   const onRefresh = useCallback(() => new Promise((res) => {
     setRefreshKey((k) => k + 1);
@@ -60,6 +66,12 @@ export default function Home() {
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
+        {user?.full_name && (
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-4 animate-fade-in">
+            <span className="text-slate-300 text-sm">👋 Hola, <span className="text-white font-semibold">{user.full_name.split(" ")[0]}</span></span>
+          </div>
+        )}
+
         <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-1.5 mb-6">
           <Zap className="w-3.5 h-3.5 text-blue-400" />
           <span className="text-blue-300 text-sm font-medium">{t.intro_badge}</span>

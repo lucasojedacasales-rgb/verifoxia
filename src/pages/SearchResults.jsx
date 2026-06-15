@@ -26,6 +26,7 @@ import FraudDetector from "@/components/FraudDetector";
 import BestAlternative from "@/components/BestAlternative";
 import SatisfactionIndex from "@/components/SatisfactionIndex";
 import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
+import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -290,11 +291,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       <main className="flex-1 overflow-y-auto w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" style={{ overscrollBehaviorY: "none" }} {...scrollProps}>
         {loading && (
           <div className="w-full space-y-3">
-            <div className="flex flex-col items-center gap-2 py-6">
-              <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-              <p className="text-white text-base font-medium">{t.analyzing} "{query}"...</p>
-              <p className="text-slate-400 text-sm">{t.analyzing_sub}</p>
-            </div>
+            <SearchLoadingAnimation query={query} />
             <SearchResultsSkeleton />
           </div>
         )}
