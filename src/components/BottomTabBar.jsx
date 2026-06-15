@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Clock, SplitSquareHorizontal, Settings } from "lucide-react";
+import { useTabStacks } from "@/hooks/useTabStacks";
 
 const tabs = [
   { to: "/", icon: Home, label: "Home" },
@@ -11,6 +12,7 @@ const tabs = [
 export default function BottomTabBar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { getLastUrl } = useTabStacks();
 
   const isActive = (tab) => {
     if (tab.to === "/") return location.pathname === "/";
@@ -22,7 +24,8 @@ export default function BottomTabBar() {
       // Already on this tab — reset to root
       navigate(tab.to, { replace: true });
     } else {
-      navigate(tab.to);
+      // Navigate to last visited URL in that tab's stack
+      navigate(getLastUrl(tab.to));
     }
   };
 

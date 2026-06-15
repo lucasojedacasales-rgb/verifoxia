@@ -8,6 +8,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
 import PageTransition from './components/PageTransition';
 import AppHeader from './components/AppHeader';
+import { useTabStacks } from './hooks/useTabStacks';
 
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -28,6 +29,7 @@ const PageLoader = () => (
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  useTabStacks(); // Track last URL per tab stack
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
