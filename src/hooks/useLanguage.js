@@ -25,7 +25,7 @@ export const TRANSLATIONS = {
     search_other: "Busca otro producto...",
     create_alert: "Crear alerta de precio",
     intro_badge: "Comparación inteligente con IA",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Compara precios, reseñas y fiabilidad de cualquier producto. Nuestra IA te dice si conviene comprarlo ahora.",
     features: [
@@ -45,7 +45,7 @@ export const TRANSLATIONS = {
     search_other: "Search another product...",
     create_alert: "Create price alert",
     intro_badge: "Smart AI-powered comparison",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Compare prices, reviews and reliability of any product. Our AI tells you if it's worth buying now.",
     features: [
@@ -65,7 +65,7 @@ export const TRANSLATIONS = {
     search_other: "Rechercher un autre produit...",
     create_alert: "Créer une alerte de prix",
     intro_badge: "Comparaison intelligente par IA",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Comparez prix, avis et fiabilité de n'importe quel produit. Notre IA vous dit s'il vaut la peine d'acheter maintenant.",
     features: [
@@ -85,7 +85,7 @@ export const TRANSLATIONS = {
     search_other: "Pesquise outro produto...",
     create_alert: "Criar alerta de preço",
     intro_badge: "Comparação inteligente com IA",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Compare preços, avaliações e confiabilidade de qualquer produto. Nossa IA diz se vale a pena comprar agora.",
     features: [
@@ -105,7 +105,7 @@ export const TRANSLATIONS = {
     search_other: "Anderes Produkt suchen...",
     create_alert: "Preisalarm erstellen",
     intro_badge: "Intelligenter KI-Vergleich",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Vergleiche Preise, Bewertungen und Zuverlässigkeit jedes Produkts. Unsere KI sagt dir, ob es sich jetzt lohnt zu kaufen.",
     features: [
@@ -125,7 +125,7 @@ export const TRANSLATIONS = {
     search_other: "Cerca un altro prodotto...",
     create_alert: "Crea avviso di prezzo",
     intro_badge: "Confronto intelligente con IA",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Confronta prezzi, recensioni e affidabilità di qualsiasi prodotto. La nostra IA ti dice se conviene comprarlo ora.",
     features: [
@@ -145,7 +145,7 @@ export const TRANSLATIONS = {
     search_other: "ابحث عن منتج آخر...",
     create_alert: "إنشاء تنبيه سعر",
     intro_badge: "مقارنة ذكية بالذكاء الاصطناعي",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "قارن الأسعار والمراجعات وموثوقية أي منتج. يخبرك الذكاء الاصطناعي إذا كان يستحق الشراء الآن.",
     features: [
@@ -165,7 +165,7 @@ export const TRANSLATIONS = {
     search_other: "搜索其他产品...",
     create_alert: "创建价格提醒",
     intro_badge: "AI 智能比较",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "比较任何产品的价格、评论和可靠性。我们的 AI 告诉您现在是否值得购买。",
     features: [
@@ -185,7 +185,7 @@ export const TRANSLATIONS = {
     search_other: "別の製品を検索...",
     create_alert: "価格アラートを作成",
     intro_badge: "AIによるスマート比較",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "あらゆる製品の価格、レビュー、信頼性を比較。AIが今すぐ購入すべきかをお伝えします。",
     features: [
@@ -205,7 +205,7 @@ export const TRANSLATIONS = {
     search_other: "Найти другой товар...",
     create_alert: "Создать оповещение о цене",
     intro_badge: "Умное сравнение с ИИ",
-    hero_title_1: "Trustify",
+    hero_title_1: "KlaroAi",
     hero_title_2: "",
     hero_sub: "Сравнивайте цены, отзывы и надёжность любого товара. Наш ИИ скажет, стоит ли покупать сейчас.",
     features: [
