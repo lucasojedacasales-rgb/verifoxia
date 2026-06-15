@@ -6,15 +6,16 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex flex-col items-center gap-3 mb-6">
+          <div className="flex flex-col items-center gap-4 mb-8">
             <img
-              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/66d7c075b_UseAIImageJun16202600_47_52.png"
+              src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/66d7c075b_UseAIImageJun16202600_47_52.png?t=1"
               alt="Verifox logo"
-              className="w-20 h-20 rounded-2xl object-cover"
+              className="w-24 h-24 rounded-2xl object-cover shadow-lg"
             />
-            <span className="font-black text-2xl tracking-tight uppercase">
-              <span className="text-white">VERI</span><span className="text-orange-500">FOX</span>
-            </span>
+            <div className="font-black text-3xl tracking-tight uppercase leading-none">
+              <div className="text-white">VERI</div>
+              <div className="text-orange-500">FOX</div>
+            </div>
           </div>
           <h1 className="text-2xl font-bold text-white">{title}</h1>
           {subtitle && <p className="text-slate-400 mt-1.5 text-sm">{subtitle}</p>}
