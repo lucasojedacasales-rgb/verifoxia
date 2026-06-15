@@ -178,16 +178,13 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
+      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
         <div className="max-w-5xl mx-auto flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="text-slate-400 hover:text-white">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <div className="w-7 h-7 bg-purple-500 rounded-lg flex items-center justify-center">
               <span className="text-white text-xs font-bold">VS</span>
             </div>
-            <span className="text-white font-bold">Comparador cara a cara</span>
+            <span className="text-white font-bold">Comparador</span>
           </div>
           <div className="ml-auto">
             <CountrySelector selectedCountry={selectedCountry} countries={countries} onChange={changeCountry} />
@@ -304,7 +301,7 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
             </div>
 
             {/* Anuncio AdSense — entre tarjetas de producto y especificaciones */}
-            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="9217364670" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* Tech Specs Table */}
             {comparison.is_tech && (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (
@@ -312,7 +309,7 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
             )}
 
             {/* Anuncio AdSense — antes de la comparativa detallada */}
-            <AdBanner slot="XXXXXXXXXX" format="auto" className="rounded-xl overflow-hidden" />
+            <AdBanner slot="8142785294" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* Head to head table */}
             {comparison.head_to_head?.length > 0 && (

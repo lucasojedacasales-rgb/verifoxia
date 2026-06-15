@@ -34,10 +34,10 @@ export default function StoreComparison({ stores }) {
 
               return (
                 <tr
-                  key={i}
-                  className={`border-b border-white/5 last:border-0 ${isBest ? "bg-green-500/5" : ""}`}
-                >
-                  <td className="py-3 pr-4">
+                   key={i}
+                   className={`border-b border-white/5 last:border-0 min-h-[44px] ${isBest ? "bg-green-500/5" : ""}`}
+                 >
+                   <td className="py-3 pr-4 h-[44px] flex items-center">
                     <div className="flex items-center gap-2">
                       {isBest && (
                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0">
@@ -55,35 +55,35 @@ export default function StoreComparison({ stores }) {
                       </a>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3 px-4 text-right h-[44px] flex items-center justify-end">
                     <span className={`font-bold text-lg ${isBest ? "text-green-400" : "text-white"}`}>
                       {store.price?.toLocaleString()} <span className="text-sm font-normal">{store.currency}</span>
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3 px-4 text-right h-[44px] flex items-center justify-end">
                     <div className="flex items-center justify-end gap-1">
                       <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
                       <span className="text-slate-300 text-sm">{store.rating?.toFixed(1)}</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3 px-4 text-right h-[44px] flex items-center justify-end">
                     <span className="text-slate-400 text-sm">{store.reviews_count?.toLocaleString()}</span>
                   </td>
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-3 px-4 text-center h-[44px] flex items-center justify-center">
                     {store.in_stock ? (
                       <CheckCircle className="w-4 h-4 text-green-400 mx-auto" />
                     ) : (
                       <XCircle className="w-4 h-4 text-red-400 mx-auto" />
                     )}
                   </td>
-                  <td className="py-3 pl-4 text-right">
+                  <td className="py-3 pl-4 text-right h-[44px] flex items-center justify-end">
                     {savings && parseInt(savings) > 0 ? (
                       <span className="text-red-400 text-sm font-medium">+{savings}% más caro</span>
                     ) : (
                       <span className="text-green-400 text-sm font-medium">Más barato</span>
                     )}
                   </td>
-                  <td className="py-3 pl-4 text-right">
+                  <td className="py-3 pl-4 text-right h-[44px] flex items-center justify-end">
                     <a
                       href={store.url && store.url !== "#" ? store.url : "#"}
                       target="_blank"

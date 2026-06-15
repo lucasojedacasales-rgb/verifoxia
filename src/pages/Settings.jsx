@@ -13,9 +13,19 @@ export default function Settings() {
     if (!confirm) { setConfirm(true); return; }
     setDeleting(true);
     try {
+      // Delete user data from entities
+      const searchHistory = await base44.entities.SearchHistory.filter({ created_by_id: (await base44.auth.me()).id });
+      const priceAlerts = await base44.entities.PriceAlert.filter({ created_by_id: (await base44.auth.me()).id });
+      
+      // Delete all user records
+      await Promise.all([
+        ...searchHistory.map(sh => base44.entities.SearchHistory.delete(sh.id)),
+        ...priceAlerts.map(pa => base44.entities.PriceAlert.delete(pa.id))
+      ]);
+      
       await base44.auth.logout();
-    } catch {
-      // proceed to logout anyway
+    } catch (error) {
+      console.error("Error deleting account data:", error);
     }
     setDeleting(false);
     navigate("/");
@@ -27,15 +37,12 @@ export default function Settings() {
         className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 flex items-center gap-3"
         style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          className="text-slate-400 hover:text-white"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <h1 className="text-white font-bold text-lg">Ajustes</h1>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
+            <span className="text-white text-xs font-bold">⚙️</span>
+          </div>
+          <h1 className="text-white font-bold text-lg">Ajustes</h1>
+        </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-10 pb-28 space-y-6">

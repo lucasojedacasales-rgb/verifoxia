@@ -97,22 +97,22 @@ export default function TechSpecsTable({ productA, productB }) {
             const Icon = getSpecIcon(spec.label);
             return (
               <div
-                key={spec.label}
-                className={`grid grid-cols-[1fr_1fr_1fr] border-b border-white/5 hover:bg-white/[0.04] transition-colors ${i % 2 === 0 ? "" : "bg-white/[0.015]"}`}
-              >
-                {/* Label */}
-                <div className="px-4 py-3 flex items-center gap-2">
+                 key={spec.label}
+                 className={`grid grid-cols-[1fr_1fr_1fr] border-b border-white/5 hover:bg-white/[0.04] transition-colors min-h-[44px] ${i % 2 === 0 ? "" : "bg-white/[0.015]"}`}
+               >
+                 {/* Label */}
+                 <div className="px-4 py-3 flex items-center gap-2 h-[44px]">
                   <Icon className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                   <span className="text-slate-400 text-sm">{spec.label}</span>
                 </div>
                 {/* Value A */}
-                <div className="px-4 py-3 border-l border-white/5 flex items-center">
+                <div className="px-4 py-3 border-l border-white/5 flex items-center h-[44px]">
                   <span className={`text-sm leading-snug ${vA ? "text-slate-200" : "text-slate-600"}`}>
                     {vA || "—"}
                   </span>
                 </div>
                 {/* Value B */}
-                <div className="px-4 py-3 border-l border-white/5 flex items-center">
+                <div className="px-4 py-3 border-l border-white/5 flex items-center h-[44px]">
                   <span className={`text-sm leading-snug ${vB ? "text-slate-200" : "text-slate-600"}`}>
                     {vB || "—"}
                   </span>
