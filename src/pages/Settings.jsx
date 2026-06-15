@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage, LANGUAGES } from "@/hooks/useLanguage";
-import { base44 as b44 } from "@/api/base44Client";
 
 const COUNTRIES = [
   { code: "ES", name: "España", flag: "🇪🇸", currency: "EUR", symbol: "€" },
