@@ -210,9 +210,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 relative">
+    <div className="flex flex-col min-h-screen bg-slate-950 relative">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
+      <header className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0" style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}>
         <div className="max-w-6xl mx-auto flex items-center gap-3">
           <Button
             variant="ghost"
@@ -254,7 +254,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       </header>
 
       <PullToRefreshIndicator ref={indicatorRef} />
-      <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8" {...scrollProps}>
+      <main className="flex-1 overflow-y-auto max-w-6xl mx-auto w-full px-4 py-8 pb-24 md:pb-8" {...scrollProps}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
