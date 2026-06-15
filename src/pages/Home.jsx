@@ -4,12 +4,11 @@ import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lu
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SearchHistory from "@/components/SearchHistory";
-import CountrySelector from "@/components/CountrySelector";
-import LanguageSelector from "@/components/LanguageSelector";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import AdBanner from "@/components/AdBanner";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
+// hooks used for selectedCountry (search URL) and translations
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { base44 } from "@/api/base44Client";
@@ -19,8 +18,8 @@ export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const { selectedCountry, changeCountry, countries } = useCountry();
-  const { lang, changeLanguage, languages, t } = useLanguage();
+  const { selectedCountry } = useCountry();
+  const { t } = useLanguage();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -54,15 +53,6 @@ export default function Home() {
       {...scrollProps}
     >
       <PullToRefreshIndicator ref={indicatorRef} />
-      {/* Language & Country selector below global header */}
-      <div className="sticky top-[60px] z-5 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border-b border-white/10 px-6 py-3 flex items-center justify-end gap-2">
-        <LanguageSelector lang={lang} languages={languages} onChange={changeLanguage} />
-        <CountrySelector
-          selectedCountry={selectedCountry}
-          countries={countries}
-          onChange={changeCountry}
-        />
-      </div>
 
       {/* Hero */}
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
