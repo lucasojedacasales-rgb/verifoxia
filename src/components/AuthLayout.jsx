@@ -13,7 +13,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
             <span className="text-white font-bold text-xl">Trustify</span>
           </div>
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/30 mb-4">
-            <Icon className="w-6 h-6 text-blue-400 hidden" aria-hidden="true" />
+            
           </div>
           <h1 className="text-2xl font-bold text-white">{title}</h1>
           {subtitle && <p className="text-slate-400 mt-1.5 text-sm">{subtitle}</p>}
