@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     shoppingUrl.searchParams.set("gl", locale.gl);
     shoppingUrl.searchParams.set("hl", locale.hl);
     shoppingUrl.searchParams.set("num", "15");
-    shoppingUrl.searchParams.set("tbs", "mr:1"); // only top-rated/relevant results
+    shoppingUrl.searchParams.set("tbs", "mr:1,avg_rating:400"); // top-rated/highly relevant
     shoppingUrl.searchParams.set("api_key", apiKey);
 
     // Also search Google for specs/reviews in parallel
@@ -91,7 +91,8 @@ Deno.serve(async (req) => {
       price: item.extracted_price || null,
       price_str: item.price || null,
       currency: locale.currency,
-      url: item.link || item.product_link || "#",
+      // product_link is the direct store product page; link is the Google Shopping page — prefer product_link
+      url: item.product_link || item.link || null,
       image_url: item.thumbnail || null,
       rating: item.rating || null,
       reviews_count: item.reviews || null,

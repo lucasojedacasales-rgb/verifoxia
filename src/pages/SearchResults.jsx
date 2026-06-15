@@ -221,20 +221,27 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
 
     const imageUrl = imageResult?.url || productContext.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
 
-    // Merge SerpAPI real stores on top of LLM stores if available
+    // Always use SerpAPI data directly when available — real URLs, real prices, real product titles
     const mergedStores = serpShoppingResults.length > 0
-      ? serpShoppingResults.map((s) => ({
-          store_name: s.store_name,
-          price: s.price,
-          currency: s.currency || selectedCountry.currency,
-          url: s.url,
-          in_stock: s.in_stock,
-          rating: s.rating,
-          reviews_count: s.reviews_count,
-        }))
+      ? serpShoppingResults
+          .filter((s) => s.url && s.url !== "#" && s.price)
+          .map((s) => ({
+            store_name: s.store_name,
+            product_title: s.product_title,  // keep exact SerpAPI product title per store
+            price: s.price,
+            currency: s.currency || selectedCountry.currency,
+            url: s.url,                       // real direct product URL from Google Shopping
+            in_stock: s.in_stock ?? true,
+            rating: s.rating,
+            reviews_count: s.reviews_count,
+            delivery: s.delivery,
+          }))
       : (result.stores || []);
 
-    setProduct({ ...result, stores: mergedStores, image_url: imageUrl, search_query: q });
+    // Use the most specific product name: from SerpAPI's top result or LLM
+    const productName = serpShoppingResults[0]?.product_title || result.name;
+
+    setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
 
     // Persist and clear optimistic entry
     base44.entities.SearchHistory.create({ query: q, verdict: result.verdict });

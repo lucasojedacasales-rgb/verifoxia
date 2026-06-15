@@ -39,21 +39,31 @@ export default function StoreComparison({ stores }) {
                    className={`border-b border-white/5 last:border-0 ${isBest ? "bg-green-500/5" : ""}`}
                  >
                    <td className="py-3 pr-4">
-                      <div className="flex items-center gap-2">
-                        {isBest && (
-                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0">
-                            Mejor
-                          </Badge>
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-2">
+                          {isBest && (
+                            <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0">
+                              Mejor
+                            </Badge>
+                          )}
+                          <a
+                            href={store.url && store.url !== "#" ? store.url : undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white font-medium hover:text-blue-400 flex items-center gap-1 transition-colors"
+                          >
+                            {store.store_name}
+                            <ExternalLink className="w-3 h-3 text-slate-500" />
+                          </a>
+                        </div>
+                        {store.product_title && (
+                          <span className="text-slate-500 text-xs truncate max-w-[220px]" title={store.product_title}>
+                            {store.product_title}
+                          </span>
                         )}
-                        <a
-                          href={store.url || "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-white font-medium hover:text-blue-400 flex items-center gap-1 transition-colors"
-                        >
-                          {store.store_name}
-                          <ExternalLink className="w-3 h-3 text-slate-500" />
-                        </a>
+                        {store.delivery && (
+                          <span className="text-green-400 text-xs">{store.delivery}</span>
+                        )}
                       </div>
                     </td>
                     <td className="py-3 px-4 text-right">
@@ -115,20 +125,28 @@ export default function StoreComparison({ stores }) {
           return (
             <div key={i} className={`border border-white/10 rounded-xl p-4 ${isBest ? "bg-green-500/10 border-green-500/30" : "bg-slate-700/30"}`}>
               <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-start gap-2 flex-1">
-                  {isBest && (
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0 shrink-0">
-                      Mejor
-                    </Badge>
+                <div className="flex flex-col gap-0.5 flex-1">
+                  <div className="flex items-center gap-2">
+                    {isBest && (
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0 shrink-0">
+                        Mejor
+                      </Badge>
+                    )}
+                    <a
+                      href={store.url && store.url !== "#" ? store.url : undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white font-semibold hover:text-blue-400 transition-colors"
+                    >
+                      {store.store_name}
+                    </a>
+                  </div>
+                  {store.product_title && (
+                    <span className="text-slate-500 text-xs line-clamp-1">{store.product_title}</span>
                   )}
-                  <a
-                    href={store.url || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white font-semibold hover:text-blue-400 transition-colors"
-                  >
-                    {store.store_name}
-                  </a>
+                  {store.delivery && (
+                    <span className="text-green-400 text-xs">{store.delivery}</span>
+                  )}
                 </div>
                 {store.in_stock ? (
                   <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
