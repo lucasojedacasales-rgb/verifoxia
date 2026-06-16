@@ -9,6 +9,7 @@ import TechSpecsTable from "@/components/TechSpecsTable";
 import AdBanner from "@/components/AdBanner";
 import { trackCompare } from "@/lib/analytics";
 import useSEO from "@/hooks/useSEO";
+import CompareErrorBoundary from "@/components/CompareErrorBoundary";
 
 export default function Compare() {
   const { selectedCountry, changeCountry, countries } = useCountry();
@@ -34,141 +35,29 @@ export default function Compare() {
     setError(null);
 
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Eres un experto en comparación de productos. El usuario quiere comparar DOS productos para decidir cuál comprar.
-
-País: ${selectedCountry.name} (${selectedCountry.code})
-Moneda: ${selectedCountry.currency} (símbolo: ${selectedCountry.symbol})
-
-PRODUCTO A: "${queryA}"
-PRODUCTO B: "${queryB}"
-
-INSTRUCCIONES:
-1. Detecta si los productos son tecnológicos (teléfono, tablet, portátil, smartwatch, auriculares, GPU, CPU, cámara, etc.).
-2. Si son tecnológicos, rellena "tech_specs" con especificaciones reales y precisas. Si no, devuelve arrays vacíos.
-3. Devuelve precios en ${selectedCountry.currency}.
-
-Devuelve JSON con esta estructura EXACTA (sin texto adicional):
-{
-  "is_tech": true,
-  "product_a": {
-    "name": "nombre completo y modelo exacto",
-    "price_range": "rango de precios",
-    "best_price": 999,
-    "best_store": "nombre tienda",
-    "rating": 4.5,
-    "pros": ["pro1", "pro2", "pro3"],
-    "cons": ["con1", "con2"],
-    "best_for": "perfil de usuario ideal",
-    "tech_specs": [
-      { "label": "Procesador", "value": "valor exacto" }
-    ]
-  },
-  "product_b": {
-    "name": "nombre completo y modelo exacto",
-    "price_range": "rango de precios",
-    "best_price": 899,
-    "best_store": "nombre tienda",
-    "rating": 4.3,
-    "pros": ["pro1", "pro2", "pro3"],
-    "cons": ["con1", "con2"],
-    "best_for": "perfil de usuario ideal",
-    "tech_specs": [
-      { "label": "Procesador", "value": "valor exacto" }
-    ]
-  },
-  "head_to_head": [
-    { "criterion": "Precio", "winner": "A", "detail": "detalle concreto" },
-    { "criterion": "Rendimiento", "winner": "B", "detail": "detalle" },
-    { "criterion": "Pantalla", "winner": "empate", "detail": "detalle" },
-    { "criterion": "Batería", "winner": "A", "detail": "detalle" },
-    { "criterion": "Cámara", "winner": "B", "detail": "detalle" },
-    { "criterion": "Relación calidad-precio", "winner": "A", "detail": "detalle" }
-  ],
-  "overall_winner": "A",
-  "winner_reason": "Explicación de 2-3 oraciones",
-  "recommendation": "Consejo personalizado para el usuario"
-}`,
-        response_json_schema: {
-          type: "object",
-          required: ["is_tech", "product_a", "product_b", "head_to_head", "overall_winner", "winner_reason", "recommendation"],
-          properties: {
-            is_tech: { type: "boolean" },
-            product_a: {
-              type: "object",
-              required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for", "tech_specs"],
-              properties: {
-                name: { type: "string" },
-                price_range: { type: "string" },
-                best_price: { type: "number" },
-                best_store: { type: "string" },
-                rating: { type: "number" },
-                pros: { type: "array", items: { type: "string" } },
-                cons: { type: "array", items: { type: "string" } },
-                best_for: { type: "string" },
-                tech_specs: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    required: ["label", "value"],
-                    properties: { label: { type: "string" }, value: { type: "string" } }
-                  }
-                }
-              }
-            },
-            product_b: {
-              type: "object",
-              required: ["name", "price_range", "best_price", "best_store", "rating", "pros", "cons", "best_for", "tech_specs"],
-              properties: {
-                name: { type: "string" },
-                price_range: { type: "string" },
-                best_price: { type: "number" },
-                best_store: { type: "string" },
-                rating: { type: "number" },
-                pros: { type: "array", items: { type: "string" } },
-                cons: { type: "array", items: { type: "string" } },
-                best_for: { type: "string" },
-                tech_specs: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    required: ["label", "value"],
-                    properties: { label: { type: "string" }, value: { type: "string" } }
-                  }
-                }
-              }
-            },
-            head_to_head: {
-              type: "array",
-              items: {
-                type: "object",
-                required: ["criterion", "winner", "detail"],
-                properties: {
-                  criterion: { type: "string" },
-                  winner: { type: "string" },
-                  detail: { type: "string" }
-                }
-              }
-            },
-            overall_winner: { type: "string" },
-            winner_reason: { type: "string" },
-            recommendation: { type: "string" }
-          }
-        }
+      const response = await base44.functions.invoke("compareProducts", {
+        queryA: queryA.trim(),
+        queryB: queryB.trim(),
+        countryName: selectedCountry.name,
+        countryCode: selectedCountry.code,
+        currency: selectedCountry.currency,
+        symbol: selectedCountry.symbol,
       });
 
-      // InvokeLLM puede devolver el JSON directo o anidado en .data (según contexto)
-      const data = result?.product_a ? result : result?.data;
+      const data = response?.data;
 
-      if (!data || !data.product_a || !data.product_b) {
-        throw new Error("Respuesta incompleta de la IA: " + JSON.stringify(result));
+      if (!data || data.error) {
+        throw new Error(data?.error || "Respuesta vacía del servidor");
+      }
+      if (!data.product_a || !data.product_b) {
+        throw new Error("La IA no devolvió datos completos. Inténtalo de nuevo.");
       }
 
       trackCompare(queryA.trim(), queryB.trim(), selectedCountry.code);
       setComparison(data);
     } catch (err) {
       console.error("Compare error:", err);
-      setError("No se pudo completar la comparativa. Inténtalo de nuevo.");
+      setError(err.message || "No se pudo completar la comparativa. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -216,7 +105,9 @@ Devuelve JSON con esta estructura EXACTA (sin texto adicional):
               disabled={loading || !queryA.trim() || !queryB.trim()}
               className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 h-11 px-10 font-semibold"
             >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Comparando...</> : "⚡ Comparar ahora"}
+              {loading
+                ? <><Loader2 className="w-4 h-4 animate-spin" /> Comparando...</>
+                : "⚡ Comparar ahora"}
             </Button>
           </div>
         </form>
@@ -236,7 +127,7 @@ Devuelve JSON con esta estructura EXACTA (sin texto adicional):
             <AlertCircle className="w-8 h-8 text-red-400" />
             <p className="text-red-300 font-medium">{error}</p>
             <button
-              onClick={() => { setError(null); setComparison(null); }}
+              onClick={() => { setError(null); }}
               className="mt-1 text-sm text-slate-400 underline hover:text-white"
             >
               Volver a intentar
@@ -247,118 +138,128 @@ Devuelve JSON con esta estructura EXACTA (sin texto adicional):
         {/* Results */}
         {!loading && comparison && (
           <div className="space-y-6">
+
             {/* Winner banner */}
-            {comparison.overall_winner && (
-              <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-5 flex gap-4">
-                <Trophy className="w-8 h-8 text-yellow-400 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-yellow-400 font-bold text-lg mb-1">
-                    {comparison.overall_winner === "empate"
-                      ? "¡Empate técnico!"
-                      : `Ganador: ${comparison.overall_winner === "A" ? comparison.product_a?.name : comparison.product_b?.name}`}
-                  </p>
-                  <p className="text-slate-300 text-sm">{comparison.winner_reason}</p>
-                  {comparison.recommendation && (
-                    <p className="text-slate-400 text-sm mt-2 italic">💡 {comparison.recommendation}</p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Side by side cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {[
-                { key: "product_a", side: "A", accent: "blue" },
-                { key: "product_b", side: "B", accent: "purple" }
-              ].map(({ key, side, accent }) => {
-                const p = comparison[key];
-                if (!p) return null;
-                const isWinner = comparison.overall_winner === side;
-                const borderClass = isWinner
-                  ? accent === "blue" ? "border-blue-500/40" : "border-purple-500/40"
-                  : "border-white/10";
-                const badgeClass = accent === "blue"
-                  ? "bg-blue-500/20 text-blue-300"
-                  : "bg-purple-500/20 text-purple-300";
-                const priceClass = accent === "blue" ? "text-blue-400" : "text-purple-400";
-
-                return (
-                  <div key={key} className={`bg-slate-800/60 border rounded-2xl p-5 ${borderClass}`}>
-                    {isWinner && (
-                      <div className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full mb-3 ${badgeClass}`}>
-                        <Trophy className="w-3 h-3" /> Ganador
-                      </div>
-                    )}
-                    <h3 className="text-white font-bold text-base mb-1">{p.name}</h3>
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className={`font-bold text-xl ${priceClass}`}>
-                        {p.best_price?.toLocaleString()} {selectedCountry.currency}
-                      </span>
-                      <span className="text-slate-500 text-sm">en {p.best_store}</span>
-                    </div>
-                    <div className="flex items-center gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3.5 h-3.5 ${i < Math.round(p.rating || 0) ? "text-yellow-400 fill-yellow-400" : "text-slate-600"}`}
-                        />
-                      ))}
-                      <span className="text-slate-400 text-xs ml-1">{p.rating?.toFixed(1)}</span>
-                    </div>
-                    <div className="space-y-1.5 mb-3">
-                      {p.pros?.map((pro, i) => (
-                        <p key={i} className="text-green-400 text-xs flex gap-1.5"><span>✓</span>{pro}</p>
-                      ))}
-                      {p.cons?.map((con, i) => (
-                        <p key={i} className="text-red-400 text-xs flex gap-1.5"><span>✗</span>{con}</p>
-                      ))}
-                    </div>
-                    {p.best_for && (
-                      <div className="bg-slate-900/50 rounded-lg px-3 py-2">
-                        <p className="text-slate-500 text-xs">Ideal para</p>
-                        <p className="text-slate-300 text-xs mt-0.5">{p.best_for}</p>
-                      </div>
+            <CompareErrorBoundary>
+              {comparison.overall_winner && (
+                <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-2xl p-5 flex gap-4">
+                  <Trophy className="w-8 h-8 text-yellow-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-yellow-400 font-bold text-lg mb-1">
+                      {comparison.overall_winner === "empate"
+                        ? "¡Empate técnico!"
+                        : `Ganador: ${comparison.overall_winner === "A" ? comparison.product_a?.name : comparison.product_b?.name}`}
+                    </p>
+                    <p className="text-slate-300 text-sm">{comparison.winner_reason}</p>
+                    {comparison.recommendation && (
+                      <p className="text-slate-400 text-sm mt-2 italic">💡 {comparison.recommendation}</p>
                     )}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              )}
+            </CompareErrorBoundary>
+
+            {/* Side by side cards */}
+            <CompareErrorBoundary>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[
+                  { key: "product_a", side: "A", accent: "blue" },
+                  { key: "product_b", side: "B", accent: "purple" }
+                ].map(({ key, side, accent }) => {
+                  const p = comparison[key];
+                  if (!p) return null;
+                  const isWinner = comparison.overall_winner === side;
+                  const borderClass = isWinner
+                    ? (accent === "blue" ? "border-blue-500/40" : "border-purple-500/40")
+                    : "border-white/10";
+                  const badgeClass = accent === "blue"
+                    ? "bg-blue-500/20 text-blue-300"
+                    : "bg-purple-500/20 text-purple-300";
+                  const priceClass = accent === "blue" ? "text-blue-400" : "text-purple-400";
+
+                  return (
+                    <div key={key} className={`bg-slate-800/60 border rounded-2xl p-5 ${borderClass}`}>
+                      {isWinner && (
+                        <div className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full mb-3 ${badgeClass}`}>
+                          <Trophy className="w-3 h-3" /> Ganador
+                        </div>
+                      )}
+                      <h3 className="text-white font-bold text-base mb-1">{p.name}</h3>
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className={`font-bold text-xl ${priceClass}`}>
+                          {typeof p.best_price === "number" ? p.best_price.toLocaleString() : p.best_price} {selectedCountry.currency}
+                        </span>
+                        <span className="text-slate-500 text-sm">en {p.best_store}</span>
+                      </div>
+                      <div className="flex items-center gap-1 mb-3">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-3.5 h-3.5 ${i < Math.round(p.rating || 0) ? "text-yellow-400 fill-yellow-400" : "text-slate-600"}`}
+                          />
+                        ))}
+                        <span className="text-slate-400 text-xs ml-1">{p.rating?.toFixed(1)}</span>
+                      </div>
+                      <div className="space-y-1.5 mb-3">
+                        {(p.pros || []).map((pro, i) => (
+                          <p key={i} className="text-green-400 text-xs flex gap-1.5"><span>✓</span>{pro}</p>
+                        ))}
+                        {(p.cons || []).map((con, i) => (
+                          <p key={i} className="text-red-400 text-xs flex gap-1.5"><span>✗</span>{con}</p>
+                        ))}
+                      </div>
+                      {p.best_for && (
+                        <div className="bg-slate-900/50 rounded-lg px-3 py-2">
+                          <p className="text-slate-500 text-xs">Ideal para</p>
+                          <p className="text-slate-300 text-xs mt-0.5">{p.best_for}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CompareErrorBoundary>
 
             <AdBanner slot="9217364670" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* Tech Specs */}
-            {comparison.is_tech &&
-              (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (
-                <TechSpecsTable productA={comparison.product_a} productB={comparison.product_b} />
-              )}
+            <CompareErrorBoundary>
+              {comparison.is_tech &&
+                (comparison.product_a?.tech_specs?.length > 0 || comparison.product_b?.tech_specs?.length > 0) && (
+                  <TechSpecsTable productA={comparison.product_a} productB={comparison.product_b} />
+                )}
+            </CompareErrorBoundary>
 
             <AdBanner slot="8142785294" format="auto" className="rounded-xl overflow-hidden" />
 
             {/* Head to head */}
-            {comparison.head_to_head?.length > 0 && (
-              <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-5">
-                <h3 className="text-white font-bold mb-4">Comparativa detallada</h3>
-                <div className="space-y-2">
-                  {comparison.head_to_head.map((row, i) => (
-                    <div key={i} className="grid grid-cols-3 gap-3 items-center py-2 border-b border-white/5 last:border-0">
-                      <span className="text-slate-300 text-sm font-medium">{row.criterion}</span>
-                      <span className="text-slate-400 text-xs">{row.detail}</span>
-                      <div className="flex justify-end">
-                        {row.winner === "empate" ? (
-                          <span className="text-yellow-400 text-xs font-semibold bg-yellow-500/10 px-2 py-0.5 rounded-full">Empate</span>
-                        ) : (
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${row.winner === "A" ? "text-blue-400 bg-blue-500/10" : "text-purple-400 bg-purple-500/10"}`}>
-                            {row.winner === "A"
-                              ? comparison.product_a?.name?.split(" ")[0]
-                              : comparison.product_b?.name?.split(" ")[0]}
-                          </span>
-                        )}
+            <CompareErrorBoundary>
+              {(comparison.head_to_head || []).length > 0 && (
+                <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-5">
+                  <h3 className="text-white font-bold mb-4">Comparativa detallada</h3>
+                  <div className="space-y-2">
+                    {comparison.head_to_head.map((row, i) => (
+                      <div key={i} className="grid grid-cols-3 gap-3 items-center py-2 border-b border-white/5 last:border-0">
+                        <span className="text-slate-300 text-sm font-medium">{row.criterion}</span>
+                        <span className="text-slate-400 text-xs">{row.detail}</span>
+                        <div className="flex justify-end">
+                          {row.winner === "empate" ? (
+                            <span className="text-yellow-400 text-xs font-semibold bg-yellow-500/10 px-2 py-0.5 rounded-full">Empate</span>
+                          ) : (
+                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${row.winner === "A" ? "text-blue-400 bg-blue-500/10" : "text-purple-400 bg-purple-500/10"}`}>
+                              {row.winner === "A"
+                                ? (comparison.product_a?.name || "").split(" ")[0]
+                                : (comparison.product_b?.name || "").split(" ")[0]}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </CompareErrorBoundary>
+
           </div>
         )}
 
