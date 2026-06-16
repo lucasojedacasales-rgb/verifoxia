@@ -162,6 +162,11 @@ export default function Home() {
             
             Contacto
           </a>
+          <a
+            href="/privacy"
+            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
+            Privacidad
+          </a>
         </div>
         <p className="text-slate-500 text-xs">
           © 2026 VERIFOX. Todos los derechos reservados.

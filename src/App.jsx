@@ -28,6 +28,7 @@ const SearchConsole = lazy(() => import('./pages/SearchConsole'));
 const WorkflowAgent = lazy(() => import('./pages/WorkflowAgent'));
 const SearchHistoryAgent = lazy(() => import('./pages/SearchHistoryAgent'));
 const StoreRedirect = lazy(() => import('./pages/StoreRedirect'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const PageNotFound = lazy(() => import('./lib/PageNotFound'));
 const UserNotRegisteredError = lazy(() => import('./components/UserNotRegisteredError'));
 
@@ -109,6 +110,7 @@ const AuthenticatedApp = () => {
                 <Route path="/workflow-agent" element={<WorkflowAgent />} />
                 <Route path="/history-agent" element={<SearchHistoryAgent />} />
                 <Route path="/store" element={<StoreRedirect />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
             </PageTransition>
