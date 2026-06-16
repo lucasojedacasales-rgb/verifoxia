@@ -157,15 +157,18 @@ Devuelve JSON con esta estructura EXACTA (sin texto adicional):
         }
       });
 
-      if (!result || !result.product_a || !result.product_b) {
-        throw new Error("Respuesta incompleta de la IA");
+      // InvokeLLM puede devolver el JSON directo o anidado en .data (según contexto)
+      const data = result?.product_a ? result : result?.data;
+
+      if (!data || !data.product_a || !data.product_b) {
+        throw new Error("Respuesta incompleta de la IA: " + JSON.stringify(result));
       }
 
       trackCompare(queryA.trim(), queryB.trim(), selectedCountry.code);
-      setComparison(result);
+      setComparison(data);
     } catch (err) {
       console.error("Compare error:", err);
-      setError("No se pudo completar la comparativa. Por favor, inténtalo de nuevo.");
+      setError("No se pudo completar la comparativa. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -229,9 +232,15 @@ Devuelve JSON con esta estructura EXACTA (sin texto adicional):
 
         {/* Error */}
         {!loading && error && (
-          <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-red-400">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <p className="text-sm">{error}</p>
+          <div className="flex flex-col items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
+            <AlertCircle className="w-8 h-8 text-red-400" />
+            <p className="text-red-300 font-medium">{error}</p>
+            <button
+              onClick={() => { setError(null); setComparison(null); }}
+              className="mt-1 text-sm text-slate-400 underline hover:text-white"
+            >
+              Volver a intentar
+            </button>
           </div>
         )}
 
