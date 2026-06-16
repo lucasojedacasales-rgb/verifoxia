@@ -1,14 +1,15 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 
 /**
  * usePullToRefresh
- * Attach the returned ref to a scrollable container.
+ * Uses non-passive touch listeners (required to call preventDefault on Android).
  * onRefresh must return a Promise.
  */
 export function usePullToRefresh(onRefresh) {
   const startY = useRef(null);
   const pulling = useRef(false);
   const indicatorRef = useRef(null);
+  const containerRef = useRef(null);
 
   const setIndicator = (pct) => {
     if (!indicatorRef.current) return;
@@ -22,15 +23,14 @@ export function usePullToRefresh(onRefresh) {
     }
   };
 
-  const onTouchStart = useCallback((e) => {
-    // Only pull from the top
+  const handleTouchStart = useCallback((e) => {
     const el = e.currentTarget;
     if (el.scrollTop !== 0) return;
     startY.current = e.touches[0].clientY;
     pulling.current = false;
   }, []);
 
-  const onTouchMove = useCallback((e) => {
+  const handleTouchMove = useCallback((e) => {
     if (startY.current === null) return;
     const el = e.currentTarget;
     if (el.scrollTop !== 0) { startY.current = null; return; }
@@ -38,11 +38,10 @@ export function usePullToRefresh(onRefresh) {
     if (dy <= 0) return;
     pulling.current = true;
     setIndicator(dy / 80);
-    // Prevent the default browser pull-to-refresh on Android
-    e.preventDefault();
+    e.preventDefault(); // needs non-passive listener
   }, []);
 
-  const onTouchEnd = useCallback(async () => {
+  const handleTouchEnd = useCallback(async () => {
     if (!pulling.current || startY.current === null) {
       startY.current = null;
       return;
@@ -50,7 +49,6 @@ export function usePullToRefresh(onRefresh) {
     startY.current = null;
     pulling.current = false;
 
-    // Show spinning state
     if (indicatorRef.current) {
       indicatorRef.current.style.transform = "translateY(0%)";
       indicatorRef.current.style.opacity = "1";
@@ -60,13 +58,27 @@ export function usePullToRefresh(onRefresh) {
 
     await onRefresh();
 
-    // Hide
     setIndicator(null);
     const spinner = indicatorRef.current?.querySelector("[data-spin]");
     if (spinner) spinner.classList.remove("animate-spin");
   }, [onRefresh]);
 
-  const scrollProps = { onTouchStart, onTouchMove, onTouchEnd };
+  // Register non-passive listeners via useEffect so preventDefault works on Android
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener("touchstart", handleTouchStart, { passive: true });
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    el.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", handleTouchStart);
+      el.removeEventListener("touchmove", handleTouchMove);
+      el.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  return { scrollProps, indicatorRef };
+  // scrollProps kept for backwards compat (no-op now that we use ref-based listeners)
+  const scrollProps = {};
+
+  return { scrollProps, indicatorRef, containerRef };
 }

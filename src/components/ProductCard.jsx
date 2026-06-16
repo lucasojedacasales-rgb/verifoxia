@@ -31,12 +31,12 @@ export default function ProductCard({ product }) {
   const TrendIcon = trend?.icon;
 
   return (
-    <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-6">
+    <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-4 sm:p-6">
       <div className="flex gap-4">
         <img
           src={product.image_url}
           alt={product.name}
-          className="w-24 h-24 object-cover rounded-xl bg-slate-700 shrink-0"
+          className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl bg-slate-700 shrink-0"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = `https://placehold.co/200x200/1e293b/94a3b8?text=${encodeURIComponent(product.name?.slice(0, 12) || 'Producto')}`;
@@ -48,13 +48,13 @@ export default function ProductCard({ product }) {
               {categoryLabels[product.category] || "Producto"}
             </Badge>
           </div>
-          <h1 className="text-white font-bold text-xl leading-tight mb-2">{product.name}</h1>
+          <h1 className="text-white font-bold text-base sm:text-xl leading-tight mb-2">{product.name}</h1>
           <p className="text-slate-400 text-sm leading-relaxed line-clamp-3">{product.description}</p>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-4 mt-5 pt-5 border-t border-white/10">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 pt-4 border-t border-white/10">
         <div>
           <p className="text-slate-500 text-xs mb-1">Rango de precio</p>
           {minPrice ? (

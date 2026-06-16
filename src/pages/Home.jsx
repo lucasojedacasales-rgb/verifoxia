@@ -40,7 +40,7 @@ export default function Home() {
     }
     setTimeout(res, 600);
   }), []);
-  const { scrollProps, indicatorRef } = usePullToRefresh(onRefresh);
+  const { indicatorRef, containerRef } = usePullToRefresh(onRefresh);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -55,14 +55,14 @@ export default function Home() {
 
   return (
     <div
+      ref={containerRef}
       className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-y-auto relative"
-      style={{ overscrollBehaviorY: "none" }}
-      {...scrollProps}>
+      style={{ overscrollBehavior: "none" }}>
       
       <PullToRefreshIndicator ref={indicatorRef} />
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
+      <section className="flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-20 text-center">
         {user?.full_name &&
         <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-4 animate-fade-in hidden">
             
@@ -74,31 +74,31 @@ export default function Home() {
           <span className="text-blue-300 text-sm font-medium">{t.intro_badge}</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-black text-white mb-4 leading-tight uppercase tracking-tight">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-4 leading-tight uppercase tracking-tight">
           <span className="text-white">VERI</span><span className="text-orange-500">FOX</span><br />
-          <span className="text-blue-400 normal-case font-bold text-3xl md:text-5xl">{t.hero_title_2}</span>
+          <span className="text-blue-400 normal-case font-bold text-2xl sm:text-4xl md:text-5xl">{t.hero_title_2}</span>
         </h1>
-        <p className="text-slate-400 text-lg md:text-xl max-w-xl mb-10">
+        <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-xl mb-8">
           {t.hero_sub}
         </p>
 
         {/* Search bar */}
-        <form onSubmit={handleSearch} className="w-full max-w-2xl flex gap-3" role="search">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" aria-hidden="true" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t.search_placeholder}
-              className="pl-12 h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl focus:ring-2 focus:ring-blue-500"
-              aria-label="Buscar producto" />
-            
+        <form onSubmit={handleSearch} className="w-full max-w-2xl space-y-2 sm:space-y-0 sm:flex sm:gap-3" role="search">
+          <div className="relative flex-1 flex gap-2 sm:gap-0">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" aria-hidden="true" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t.search_placeholder}
+                className="pl-12 h-12 sm:h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl focus:ring-2 focus:ring-blue-500"
+                aria-label="Buscar producto" />
+            </div>
+            <ImageSearchButton />
           </div>
-          <ImageSearchButton />
           <Button
             type="submit"
-            className="h-14 px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base min-h-[44px] focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            
+            className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold text-base min-h-[44px] focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             {t.search_btn}
           </Button>
         </form>
@@ -114,7 +114,7 @@ export default function Home() {
         </button>
 
         {/* Popular searches */}
-        <div className="flex flex-wrap gap-2 mt-6 justify-center">
+        <div className="flex flex-wrap gap-2 mt-5 justify-center">
           <span className="text-slate-500 text-sm" aria-label="Búsquedas populares">{t.popular}</span>
           {popular.map((p) =>
           <button
