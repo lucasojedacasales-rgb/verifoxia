@@ -10,8 +10,6 @@ import AppHeader from './components/AppHeader';
 import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
 import { trackPageView } from './lib/analytics';
-import Compare from './pages/Compare';
-
 // Auth pages
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
@@ -21,6 +19,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
+const Compare = lazy(() => import('./pages/Compare'));
 const Settings = lazy(() => import('./pages/Settings'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -97,7 +96,7 @@ const AuthenticatedApp = () => {
           <Routes>
             <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
             <Route path="/search" element={<Suspense fallback={<PageLoader />}><SearchResults /></Suspense>} />
-            <Route path="/compare" element={<Compare />} />
+            <Route path="/compare" element={<Suspense fallback={<PageLoader />}><Compare /></Suspense>} />
             <Route path="/settings" element={<Suspense fallback={<PageLoader />}><Settings /></Suspense>} />
             <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
             <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
