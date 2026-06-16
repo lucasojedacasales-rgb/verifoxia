@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
+import { TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import SearchAutocomplete from "@/components/SearchAutocomplete";
 import SearchHistory from "@/components/SearchHistory";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import AdBanner from "@/components/AdBanner";
@@ -30,10 +30,11 @@ export default function Home() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/search?q=${encodeURIComponent(query.trim())}&country=${selectedCountry.code}`);
+  const handleSearch = (e, directQuery) => {
+    if (e?.preventDefault) e.preventDefault();
+    const q = (directQuery || query).trim();
+    if (!q) return;
+    navigate(`/search?q=${encodeURIComponent(q)}&country=${selectedCountry.code}`);
   };
 
   const featureIcons = [TrendingUp, Star, Shield, Zap];
@@ -68,15 +69,12 @@ export default function Home() {
         {/* Search bar */}
         <form onSubmit={handleSearch} className="w-full max-w-2xl space-y-2 sm:space-y-0 sm:flex sm:gap-3" role="search">
           <div className="relative flex-1 flex gap-2 sm:gap-0">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" aria-hidden="true" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t.search_placeholder}
-                className="pl-12 h-12 sm:h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl focus:ring-2 focus:ring-blue-500"
-                aria-label="Buscar producto" />
-            </div>
+            <SearchAutocomplete
+              value={query}
+              onChange={setQuery}
+              onSearch={(q) => handleSearch(null, q)}
+              placeholder={t.search_placeholder}
+            />
             <ImageSearchButton />
           </div>
           <Button
