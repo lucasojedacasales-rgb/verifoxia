@@ -15,9 +15,9 @@ export default function PageTransition({ children }) {
   return (
     // Clip only horizontally so vertical scroll is never blocked
     <div style={{ overflowX: "clip", position: "relative" }}>
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={location.pathname + location.search}
+          key={location.pathname}
           variants={variants}
           initial="initial"
           animate="animate"
