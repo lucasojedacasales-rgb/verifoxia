@@ -6,7 +6,6 @@ import { Suspense, lazy, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
-import PageTransition from './components/PageTransition';
 import AppHeader from './components/AppHeader';
 import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
@@ -101,8 +100,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={
           <>
             <AppHeader />
-            <PageTransition>
-              <Routes>
+            <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/compare" element={<Compare />} />
@@ -116,7 +114,6 @@ const AuthenticatedApp = () => {
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
-            </PageTransition>
             <BottomTabBar />
             <DisclaimerBanner />
           </>
