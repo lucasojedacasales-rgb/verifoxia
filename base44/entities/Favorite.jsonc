@@ -50,6 +50,11 @@
     "country_code": {
       "type": "string",
       "description": "Pa\u00eds donde se guard\u00f3 la oferta"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Nota o descripci\u00f3n opcional del favorito"
     }
   },
   "required": [
