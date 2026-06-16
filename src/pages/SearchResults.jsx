@@ -26,6 +26,7 @@ import SatisfactionIndex from "@/components/SatisfactionIndex";
 import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import FavoriteButton from "@/components/FavoriteButton";
+import { trackSearch } from "@/lib/analytics";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -242,6 +243,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
     const productName = serpShoppingResults[0]?.product_title || result.name;
 
     setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
+
+    // Track analytics
+    trackSearch(q, selectedCountry.code);
 
     // Persist and clear optimistic entry
     base44.entities.SearchHistory.create({ query: q, verdict: result.verdict });

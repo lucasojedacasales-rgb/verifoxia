@@ -1,8 +1,8 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
@@ -10,6 +10,7 @@ import PageTransition from './components/PageTransition';
 import AppHeader from './components/AppHeader';
 import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
+import { trackPageView } from './lib/analytics';
 
 // Auth pages
 const Login = lazy(() => import('./pages/Login'));
@@ -42,6 +43,8 @@ const PageLoader = () => (
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
   useTabStacks(); // Track last URL per tab stack
+  const location = useLocation();
+  useEffect(() => { trackPageView(location.pathname + location.search); }, [location]);
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {

@@ -9,6 +9,7 @@ import { useCountry } from "@/hooks/useCountry";
 import { fetchProductContext } from "@/hooks/useProductData";
 import TechSpecsTable from "@/components/TechSpecsTable";
 import AdBanner from "@/components/AdBanner";
+import { trackCompare } from "@/lib/analytics";
 
 export default function Compare() {
   const navigate = useNavigate();
@@ -166,6 +167,7 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
       }
     });
 
+    trackCompare(queryA.trim(), queryB.trim(), selectedCountry.code);
     setComparison(result);
     setLoading(false);
   };
