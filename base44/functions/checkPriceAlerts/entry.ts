@@ -26,8 +26,19 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // This function can be called by admins manually or by scheduler
-    // For webhook/scheduler use, we use service role directly
+    // Allow only authenticated admin users or internal scheduler calls
+    // The scheduler passes a shared secret header to bypass user auth
+    const schedulerSecret = Deno.env.get("SCHEDULER_SECRET");
+    const incomingSecret = req.headers.get("x-scheduler-secret");
+    const isScheduler = schedulerSecret && incomingSecret === schedulerSecret;
+
+    if (!isScheduler) {
+      const user = await base44.auth.me();
+      if (!user || user.role !== "admin") {
+        return Response.json({ error: "Forbidden: Admin access required" }, { status: 403 });
+      }
+    }
+
     const activeAlerts = await base44.asServiceRole.entities.PriceAlert.filter({ status: "active" });
 
     if (!activeAlerts.length) {
