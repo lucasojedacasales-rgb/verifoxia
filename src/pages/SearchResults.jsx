@@ -27,6 +27,7 @@ import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import FavoriteButton from "@/components/FavoriteButton";
 import { trackSearch } from "@/lib/analytics";
+import useSEO from "@/hooks/useSEO";
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -34,6 +35,14 @@ export default function SearchResults() {
   const navigate = useNavigate();
   const { selectedCountry } = useCountry();
   const { lang, t } = useLanguage();
+
+  useSEO({
+    title: query ? `${query} — Comparar precios` : "Resultados de búsqueda",
+    description: query
+      ? `Compara los mejores precios para "${query}" en todas las tiendas. Análisis IA, detección de fraude y alertas de precio gratis en VERIFOX.`
+      : "Compara precios de productos en tiempo real con inteligencia artificial.",
+    canonical: `https://verifox.app/search?q=${encodeURIComponent(query)}`,
+  });
 
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);

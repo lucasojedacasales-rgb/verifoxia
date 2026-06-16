@@ -1,9 +1,16 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import useSEO from "@/hooks/useSEO";
 
 export default function About() {
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Acerca de VERIFOX — Comparador de precios con IA",
+    description: "Conoce VERIFOX, la plataforma de comparación de precios con inteligencia artificial. Nuestra misión es ayudarte a ahorrar dinero con información transparente y análisis detallados.",
+    canonical: "https://verifox.app/about",
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">

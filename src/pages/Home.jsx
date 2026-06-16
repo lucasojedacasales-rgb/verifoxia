@@ -12,6 +12,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { base44 } from "@/api/base44Client";
+import useSEO from "@/hooks/useSEO";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -20,6 +21,12 @@ export default function Home() {
   const navigate = useNavigate();
   const { selectedCountry } = useCountry();
   const { t } = useLanguage();
+
+  useSEO({
+    title: "Comparador de precios con IA — Encuentra la mejor oferta",
+    description: "VERIFOX compara precios de miles de tiendas en tiempo real. Usa IA para detectar fraudes, predecir tendencias y crear alertas de precio gratis. ¡Ahorra dinero hoy!",
+    canonical: "https://verifox.app/",
+  });
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});

@@ -1,8 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield } from "lucide-react";
+import useSEO from "@/hooks/useSEO";
 
 export default function PrivacyPolicy() {
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Política de Privacidad — VERIFOX",
+    description: "Lee la política de privacidad de VERIFOX. Información sobre cómo recopilamos, usamos y protegemos tus datos personales conforme al RGPD.",
+    canonical: "https://verifox.app/privacy",
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white">

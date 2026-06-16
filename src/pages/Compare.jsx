@@ -10,10 +10,17 @@ import { fetchProductContext } from "@/hooks/useProductData";
 import TechSpecsTable from "@/components/TechSpecsTable";
 import AdBanner from "@/components/AdBanner";
 import { trackCompare } from "@/lib/analytics";
+import useSEO from "@/hooks/useSEO";
 
 export default function Compare() {
   const navigate = useNavigate();
   const { selectedCountry, changeCountry, countries } = useCountry();
+
+  useSEO({
+    title: "Comparar productos — ¿Cuál es mejor?",
+    description: "Compara dos productos cara a cara con IA. Precios, especificaciones técnicas, valoraciones y veredicto final para ayudarte a elegir la mejor opción.",
+    canonical: "https://verifox.app/compare",
+  });
 
   const [queryA, setQueryA] = useState("");
   const [queryB, setQueryB] = useState("");
