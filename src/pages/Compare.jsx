@@ -33,6 +33,7 @@ export default function Compare() {
     setLoading(true);
     setComparison(null);
 
+    try {
     const [contextA, contextB] = await Promise.all([
       fetchProductContext(queryA),
       fetchProductContext(queryB)
@@ -176,7 +177,11 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
 
     trackCompare(queryA.trim(), queryB.trim(), selectedCountry.code);
     setComparison(result);
-    setLoading(false);
+    } catch (err) {
+      console.error("Compare error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const winnerColor = { A: "blue", B: "purple", empate: "yellow" };
@@ -195,7 +200,7 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
       </div>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
-        <form onSubmit={analyzeComparison} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <form onSubmit={analyzeComparison} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" noValidate>
           <div>
             <label className="text-blue-400 text-xs font-semibold uppercase tracking-wide mb-2 block">Producto A</label>
             <div className="relative">
@@ -265,16 +270,19 @@ IMPORTANTE: Para tech_specs incluye TODOS los datos relevantes disponibles: proc
                 const p = comparison[key];
                 if (!p) return null;
                 const isWinner = comparison.overall_winner === side;
+                const borderClass = isWinner ? (accent === "blue" ? "border-blue-500/40" : "border-purple-500/40") : "border-white/10";
+                const badgeBgClass = accent === "blue" ? "bg-blue-500/20 text-blue-300" : "bg-purple-500/20 text-purple-300";
+                const priceColorClass = accent === "blue" ? "text-blue-400" : "text-purple-400";
                 return (
-                  <div key={key} className={`bg-slate-800/60 border rounded-2xl p-5 ${isWinner ? `border-${accent}-500/40` : "border-white/10"}`}>
+                  <div key={key} className={`bg-slate-800/60 border rounded-2xl p-5 ${borderClass}`}>
                     {isWinner && (
-                      <div className={`inline-flex items-center gap-1 bg-${accent}-500/20 text-${accent}-300 text-xs font-semibold px-2 py-0.5 rounded-full mb-3`}>
+                      <div className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full mb-3 ${badgeBgClass}`}>
                         <Trophy className="w-3 h-3" /> Ganador
                       </div>
                     )}
                     <h3 className="text-white font-bold text-base mb-1">{p.name}</h3>
                     <div className="flex items-center gap-3 mb-3">
-                      <span className={`text-${accent}-400 font-bold text-xl`}>{p.best_price?.toLocaleString()} {selectedCountry.currency}</span>
+                      <span className={`font-bold text-xl ${priceColorClass}`}>{p.best_price?.toLocaleString()} {selectedCountry.currency}</span>
                       <span className="text-slate-500 text-sm">en {p.best_store}</span>
                     </div>
                     <div className="flex items-center gap-1 mb-3">
