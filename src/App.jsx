@@ -10,6 +10,7 @@ import AppHeader from './components/AppHeader';
 import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
 import { trackPageView } from './lib/analytics';
+import Compare from './pages/Compare';
 
 // Auth pages
 const Login = lazy(() => import('./pages/Login'));
@@ -20,7 +21,6 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 // Lazy load all page components for code splitting
 const Home = lazy(() => import('./pages/Home'));
 const SearchResults = lazy(() => import('./pages/SearchResults'));
-const Compare = lazy(() => import('./pages/Compare'));
 const Settings = lazy(() => import('./pages/Settings'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -34,18 +34,17 @@ const UserNotRegisteredError = lazy(() => import('./components/UserNotRegistered
 
 // Loading fallback component
 const PageLoader = () => (
-  <div className="fixed inset-0 flex items-center justify-center bg-slate-950">
+  <div className="flex items-center justify-center py-24">
     <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
   </div>
 );
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
-  useTabStacks(); // Track last URL per tab stack
+  useTabStacks();
   const location = useLocation();
   useEffect(() => { trackPageView(location.pathname + location.search); }, [location]);
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -54,20 +53,17 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return (
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={null}>
           <UserNotRegisteredError />
         </Suspense>
       );
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
       navigateToLogin();
       return null;
     } else {
-      // Unknown error (network issues, etc.) — show retry screen instead of blank
       return (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-slate-950 gap-4 px-6 text-center">
           <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-2">
@@ -86,46 +82,42 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {/* Public auth routes — no header/tabbar */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+    <Routes>
+      {/* Public auth routes — no header/tabbar */}
+      <Route path="/login" element={<Suspense fallback={null}><Login /></Suspense>} />
+      <Route path="/register" element={<Suspense fallback={null}><Register /></Suspense>} />
+      <Route path="/forgot-password" element={<Suspense fallback={null}><ForgotPassword /></Suspense>} />
+      <Route path="/reset-password" element={<Suspense fallback={null}><ResetPassword /></Suspense>} />
 
-        {/* App routes */}
-        <Route path="*" element={
-          <>
-            <AppHeader />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/search-console" element={<SearchConsole />} />
-                <Route path="/workflow-agent" element={<WorkflowAgent />} />
-                <Route path="/history-agent" element={<SearchHistoryAgent />} />
-                <Route path="/store" element={<StoreRedirect />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="*" element={<PageNotFound />} />
-              </Routes>
-            <BottomTabBar />
-            <DisclaimerBanner />
-          </>
-        } />
-      </Routes>
-    </Suspense>
+      {/* App routes */}
+      <Route path="*" element={
+        <>
+          <AppHeader />
+          <Routes>
+            <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
+            <Route path="/search" element={<Suspense fallback={<PageLoader />}><SearchResults /></Suspense>} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/settings" element={<Suspense fallback={<PageLoader />}><Settings /></Suspense>} />
+            <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
+            <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
+            <Route path="/search-console" element={<Suspense fallback={<PageLoader />}><SearchConsole /></Suspense>} />
+            <Route path="/workflow-agent" element={<Suspense fallback={<PageLoader />}><WorkflowAgent /></Suspense>} />
+            <Route path="/history-agent" element={<Suspense fallback={<PageLoader />}><SearchHistoryAgent /></Suspense>} />
+            <Route path="/store" element={<Suspense fallback={<PageLoader />}><StoreRedirect /></Suspense>} />
+            <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>} />
+            <Route path="*" element={<Suspense fallback={<PageLoader />}><PageNotFound /></Suspense>} />
+          </Routes>
+          <BottomTabBar />
+          <DisclaimerBanner />
+        </>
+      } />
+    </Routes>
   );
 };
 
 
 function App() {
-
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
