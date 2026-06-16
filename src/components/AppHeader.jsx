@@ -41,8 +41,8 @@ export default function AppHeader() {
 
   return (
     <header
-      className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0"
-      style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
+      className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 shrink-0"
+      style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 0.75rem)", paddingBottom: "0.75rem" }}
       role="banner"
     >
       <div className="max-w-6xl mx-auto flex items-center gap-3">

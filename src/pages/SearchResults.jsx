@@ -1,8 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { Search, Bell } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
@@ -49,16 +47,6 @@ export default function SearchResults() {
   const [product, setProduct] = useState(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [pendingHistoryEntry, setPendingHistoryEntry] = useState(null);
-
-  const onRefresh = useCallback(() => {
-    // End WebView native pull-to-refresh if available
-    if (window.__TRUSTIFY_NATIVE__ && window.__TRUSTIFY_NATIVE__.endRefresh) {
-      window.__TRUSTIFY_NATIVE__.endRefresh();
-    }
-    if (query) return analyzeProduct(query);
-    return Promise.resolve();
-  }, [query, selectedCountry.code]);
-  const { indicatorRef, containerRef } = usePullToRefresh(onRefresh);
 
   useEffect(() => {
     if (query) analyzeProduct(query);
@@ -270,9 +258,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 relative">
+    <div className="min-h-screen bg-slate-950">
       {/* Search bar below global header */}
-      <div className="sticky top-[calc(env(safe-area-inset-top,0px)+60px)] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3 shrink-0">
+      <div className="sticky top-[52px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-2">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
@@ -291,8 +279,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         </div>
       </div>
 
-      <PullToRefreshIndicator ref={indicatorRef} />
-      <main ref={containerRef} className="flex-1 overflow-y-auto w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-8 md:max-w-6xl md:mx-auto" style={{ overscrollBehavior: "none" }}>
+      <main className="w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-12 max-w-6xl mx-auto">
         {loading && (
           <div className="w-full space-y-3">
             <SearchLoadingAnimation query={query} />

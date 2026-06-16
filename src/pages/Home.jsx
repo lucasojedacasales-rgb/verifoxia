@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, TrendingUp, Shield, Star, Zap, SplitSquareHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,6 @@ import AdBanner from "@/components/AdBanner";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 // hooks used for selectedCountry (search URL) and translations
-import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { base44 } from "@/api/base44Client";
 import useSEO from "@/hooks/useSEO";
 
@@ -32,16 +30,6 @@ export default function Home() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const onRefresh = useCallback(() => new Promise((res) => {
-    setRefreshKey((k) => k + 1);
-    // End WebView native pull-to-refresh if available
-    if (window.__TRUSTIFY_NATIVE__ && window.__TRUSTIFY_NATIVE__.endRefresh) {
-      window.__TRUSTIFY_NATIVE__.endRefresh();
-    }
-    setTimeout(res, 600);
-  }), []);
-  const { indicatorRef, containerRef } = usePullToRefresh(onRefresh);
-
   const handleSearch = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -54,13 +42,8 @@ export default function Home() {
   const popular = ["iPhone 15", "Samsung 4K TV", "Nike Air Max", "AirPods Pro", "Kindle", "PS5"];
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-y-auto relative"
-      style={{ overscrollBehavior: "none" }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
       
-      <PullToRefreshIndicator ref={indicatorRef} />
-
       {/* Hero */}
       <section className="flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-20 text-center">
         {user?.full_name &&
