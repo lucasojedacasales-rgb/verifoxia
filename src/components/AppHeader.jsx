@@ -42,7 +42,12 @@ export default function AppHeader() {
   return (
     <header
       className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 shrink-0"
-      style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 0.75rem)", paddingBottom: "0.75rem" }}
+      style={{
+        paddingTop: "max(env(safe-area-inset-top, 0px), 0.75rem)",
+        paddingBottom: "0.75rem",
+        // Expose header height as CSS var so sticky children can offset correctly
+        "--header-height": "calc(max(env(safe-area-inset-top, 0px), 0.75rem) + 0.75rem + 40px)",
+      }}
       role="banner"
     >
       <div className="max-w-6xl mx-auto flex items-center gap-3">
@@ -114,7 +119,7 @@ export default function AppHeader() {
                 <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5">
                   <Globe className="w-3 h-3" /> País / Moneda
                 </p>
-                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto pr-1">
+                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-scroll pr-1" style={{ WebkitOverflowScrolling: "touch" }}>
                   {countries.map((c) => (
                     <button
                       key={c.code}

@@ -260,7 +260,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Search bar below global header */}
-      <div className="sticky top-[52px] z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3">
+      <div className="sticky z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ top: "var(--header-height, 52px)" }}>
         <div className="max-w-6xl mx-auto flex items-center gap-2">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">

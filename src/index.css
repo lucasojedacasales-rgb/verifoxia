@@ -89,10 +89,20 @@
   body {
     @apply bg-background text-foreground font-body;
     overscroll-behavior: none;
+    /* Smooth momentum scroll in iOS WebView */
+    -webkit-overflow-scrolling: touch;
   }
 
   button, a, nav {
     user-select: none;
     -webkit-user-select: none;
+    /* Prevent tap highlight flash on mobile */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Ensure no overflow-hidden leaks from framer-motion wrappers */
+  [data-framer-portal-host],
+  [data-projection-id] {
+    touch-action: pan-y;
   }
 }
