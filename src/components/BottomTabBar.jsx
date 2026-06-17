@@ -1,10 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Clock, SplitSquareHorizontal, Settings } from "lucide-react";
+import { Home, Clock, SplitSquareHorizontal, Settings, Heart } from "lucide-react";
 import { useTabStacks } from "@/hooks/useTabStacks";
 
 const tabs = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/search", icon: Clock, label: "Búsquedas" },
+  { to: "/favorites", icon: Heart, label: "Favoritos" },
   { to: "/compare", icon: SplitSquareHorizontal, label: "Comparar" },
   { to: "/settings", icon: Settings, label: "Ajustes" },
 ];
