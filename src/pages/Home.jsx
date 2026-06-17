@@ -85,11 +85,11 @@ export default function Home() {
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 leading-tight uppercase tracking-tight relative">
           <span className="text-white">VERI</span><span className="text-orange-500">FOX</span><br />
           <span className="text-blue-400 normal-case font-bold text-2xl sm:text-4xl md:text-5xl">
-            Para de pagar de más.
+            Deja de pagar de más.
           </span>
         </h1>
         <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-xl mb-8 relative">
-          Nuestra IA analiza miles de tiendas, estudia reseñas y te dice en segundos si un producto vale lo que cuesta — y si es buen momento para comprarlo.
+          Nuestra IA analiza miles de tiendas, estudia reseñas reales y te dice en segundos si un producto merece la pena, cuál es su precio justo y si es el momento adecuado para comprarlo.
         </p>
 
         {/* Search bar */}
