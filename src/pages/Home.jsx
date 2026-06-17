@@ -11,6 +11,9 @@ import PriceAlertsList from "@/components/PriceAlertsList";
 import DataSources from "@/components/DataSources";
 import TestimonialStrip from "@/components/TestimonialStrip";
 import SchemaOrg from "@/components/SchemaOrg";
+import CategoryGrid from "@/components/CategoryGrid";
+import StoreStrip from "@/components/StoreStrip";
+import TrendingSearches from "@/components/TrendingSearches";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 // hooks used for selectedCountry (search URL) and translations
@@ -137,6 +140,15 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Store Strip */}
+      <StoreStrip />
+
+      {/* Categories */}
+      <CategoryGrid />
+
+      {/* Trending */}
+      <TrendingSearches />
 
       {/* Price Alerts — only shown when user has active alerts */}
       <PriceAlertsList />
