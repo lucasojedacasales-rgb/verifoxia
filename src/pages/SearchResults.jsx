@@ -24,6 +24,7 @@ import SatisfactionIndex from "@/components/SatisfactionIndex";
 import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import FavoriteButton from "@/components/FavoriteButton";
+import VerifoxScore from "@/components/VerifoxScore";
 import { trackSearch } from "@/lib/analytics";
 import useSEO from "@/hooks/useSEO";
 
@@ -66,6 +67,10 @@ export default function SearchResults() {
 
     const serpData = serpApiResponse?.data;
     const serpShoppingResults = serpData?.shopping_results || [];
+    const isUrlSearch = serpData?.is_url_search || false;
+    const effectiveProductName = serpData?.effective_query || q;
+    const urlPageContext = serpData?.url_page_context || "";
+    const sourceUrl = serpData?.source_url || null;
 
     // Build SerpAPI context text for the LLM
     let serpContextText = "";
@@ -88,7 +93,7 @@ export default function SearchResults() {
         prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
 IMPORTANTE: Responde TODO el contenido textual (description, ai_recommendation, pros, cons, best_time_to_buy, ai_verdict_reasons, fraud_flags, safe_signals, best_alternative.reason, best_alternative.why_better) en el idioma: ${lang.name} (código: ${lang.code}).
       
-El usuario busca: "${q}"
+El usuario busca: "${isUrlSearch ? effectiveProductName : q}"${isUrlSearch ? `\nProducto extraído de URL: ${sourceUrl}` : ""}${urlPageContext ? `\nContexto de la página del producto: ${urlPageContext}` : ""}
 País del usuario: ${selectedCountry.name} (${selectedCountry.code})
 Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
@@ -236,8 +241,8 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
           }))
       : (result.stores || []);
 
-    // Use the most specific product name: from SerpAPI's top result or LLM
-    const productName = serpShoppingResults[0]?.product_title || result.name;
+    // Use the most specific product name: from SerpAPI's top result or LLM or extracted URL title
+    const productName = serpShoppingResults[0]?.product_title || result.name || effectiveProductName;
 
     setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
 
@@ -302,6 +307,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                 <ProductCard product={product} />
               </div>
               <div className="flex flex-col gap-3 sm:gap-4">
+                <VerifoxScore product={product} />
                 <VerdictBanner product={product} />
                 <button
                   onClick={() => setShowAlertModal(true)}

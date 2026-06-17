@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, TrendingUp, Clock, X } from "lucide-react";
+import { Search, TrendingUp, Clock, X, Link } from "lucide-react";
 import { Input } from "@/components/ui/input";
+
+function isUrl(str) {
+  try { new URL(str); return str.startsWith("http"); } catch { return false; }
+}
 
 const POPULAR = [
   "iPhone 15", "Samsung Galaxy S24", "MacBook Air", "AirPods Pro",
@@ -93,7 +97,10 @@ export default function SearchAutocomplete({ value, onChange, onSearch, placehol
 
   return (
     <div ref={containerRef} className={`relative flex-1 ${className || ""}`}>
-      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10 pointer-events-none" aria-hidden="true" />
+      {isUrl(value)
+        ? <Link className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400 z-10 pointer-events-none" aria-hidden="true" />
+        : <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 z-10 pointer-events-none" aria-hidden="true" />
+      }
       <Input
         ref={inputRef}
         value={value}
@@ -108,7 +115,16 @@ export default function SearchAutocomplete({ value, onChange, onSearch, placehol
         className="pl-12 h-12 sm:h-14 text-base bg-white/10 border-white/20 text-white placeholder:text-slate-400 rounded-xl focus:ring-2 focus:ring-blue-500 pr-4"
       />
 
-      {open && hasSuggestions && (
+      {open && isUrl(value) && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-blue-500/30 rounded-xl shadow-2xl shadow-black/40 z-50 px-4 py-3 flex items-center gap-3">
+          <Link className="w-5 h-5 text-blue-400 shrink-0" />
+          <div>
+            <p className="text-white text-sm font-medium">Analizar producto desde enlace</p>
+            <p className="text-slate-400 text-xs">Pulsá Buscar y la IA extraerá el artículo y calculará el VERIFOX Score</p>
+          </div>
+        </div>
+      )}
+      {open && !isUrl(value) && hasSuggestions && (
         <div
           role="listbox"
           className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-white/10 rounded-xl shadow-2xl shadow-black/40 overflow-hidden z-50"
@@ -176,6 +192,7 @@ export default function SearchAutocomplete({ value, onChange, onSearch, placehol
           <div className="h-1" />
         </div>
       )}
+      
     </div>
   );
 }
