@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { ArrowLeft, TrendingUp, MousePointerClick, DollarSign, Store, ExternalLink, BarChart3 } from "lucide-react";
+import { ArrowLeft, TrendingUp, MousePointerClick, DollarSign, Store, ExternalLink, BarChart3, Trophy, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useSEO from "@/hooks/useSEO";
 
@@ -46,7 +46,7 @@ export default function AffiliateDashboard() {
       .sort((a, b) => b.clicks - a.clicks)
       .slice(0, 10);
 
-    // Top products
+    // Top products by clicks
     const productMap = {};
     clicks.forEach((c) => {
       const key = c.product_name;
@@ -58,6 +58,12 @@ export default function AffiliateDashboard() {
       .sort((a, b) => b.clicks - a.clicks)
       .slice(0, 10);
 
+    // Top products by commission value
+    const topProductsByValue = Object.values(productMap)
+      .filter((p) => p.commission > 0)
+      .sort((a, b) => b.commission - a.commission)
+      .slice(0, 8);
+
     // Per day
     const dayMap = {};
     clicks.forEach((c) => {
@@ -68,7 +74,13 @@ export default function AffiliateDashboard() {
     });
     const perDay = Object.values(dayMap).sort((a, b) => a.day.localeCompare(b.day));
 
-    return { total, withAffiliate: withAffiliate.length, totalCommission, avgCommissionPct, topStores, topProducts, perDay };
+    // Conversion rate per store (affiliate clicks / total clicks)
+    const storeConversion = Object.values(storeMap).map((s) => {
+      const affiliateClicks = clicks.filter((c) => c.store_name === s.name && c.estimated_commission_pct > 0).length;
+      return { ...s, affiliateClicks, conversionPct: s.clicks > 0 ? (affiliateClicks / s.clicks) * 100 : 0 };
+    }).sort((a, b) => b.commission - a.commission).slice(0, 8);
+
+    return { total, withAffiliate: withAffiliate.length, totalCommission, avgCommissionPct, topStores, topProducts, topProductsByValue, storeConversion, perDay };
   }, [clicks]);
 
   return (
@@ -207,6 +219,88 @@ export default function AffiliateDashboard() {
               </div>
             </div>
 
+            {/* Productos con mayor comisión estimada */}
+            {stats.topProductsByValue.length > 0 && (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-yellow-400" />
+                  Productos con mayor valor estimado
+                </h2>
+                <div className="space-y-3">
+                  {stats.topProductsByValue.map((p, i) => {
+                    const maxVal = stats.topProductsByValue[0].commission;
+                    const pct = maxVal > 0 ? (p.commission / maxVal) * 100 : 0;
+                    return (
+                      <div key={p.name} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className={`text-xs font-bold w-5 h-5 rounded flex items-center justify-center shrink-0 ${i < 3 ? "bg-yellow-500/20 text-yellow-400" : "bg-slate-700 text-slate-400"}`}>
+                              {i + 1}
+                            </span>
+                            <span className="text-slate-200 truncate">{p.name}</span>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0 ml-2">
+                            <span className="text-slate-400 text-xs">{p.clicks} clics</span>
+                            <span className="text-green-400 font-semibold text-sm">{p.commission.toFixed(2)} €</span>
+                          </div>
+                        </div>
+                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Rendimiento por tienda */}
+            {stats.storeConversion.length > 0 && (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-purple-400" />
+                  Rendimiento por tienda
+                </h2>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left">
+                    <thead>
+                      <tr className="text-slate-400 text-xs border-b border-white/10">
+                        <th className="pb-2 pr-4 font-medium">Tienda</th>
+                        <th className="pb-2 pr-4 font-medium text-right">Clics</th>
+                        <th className="pb-2 pr-4 font-medium text-right">Con afiliado</th>
+                        <th className="pb-2 pr-4 font-medium text-right">% conversión</th>
+                        <th className="pb-2 font-medium text-right">Comisión est.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.storeConversion.map((s) => (
+                        <tr key={s.name} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                          <td className="py-2 pr-4 text-slate-200 capitalize font-medium">{s.name}</td>
+                          <td className="py-2 pr-4 text-slate-400 text-right">{s.clicks}</td>
+                          <td className="py-2 pr-4 text-slate-400 text-right">{s.affiliateClicks}</td>
+                          <td className="py-2 pr-4 text-right">
+                            <span className={`font-medium ${s.conversionPct > 50 ? "text-green-400" : s.conversionPct > 0 ? "text-yellow-400" : "text-slate-500"}`}>
+                              {s.conversionPct.toFixed(0)}%
+                            </span>
+                          </td>
+                          <td className="py-2 text-right">
+                            {s.commission > 0 ? (
+                              <span className="text-green-400 font-semibold">{s.commission.toFixed(2)} €</span>
+                            ) : (
+                              <span className="text-slate-600">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* Tabla de últimos clics */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-5 overflow-x-auto">
               <h2 className="text-white font-semibold mb-4">Últimos clics</h2>
@@ -217,6 +311,7 @@ export default function AffiliateDashboard() {
                     <th className="pb-2 pr-3 font-medium">Tienda</th>
                     <th className="pb-2 pr-3 font-medium">País</th>
                     <th className="pb-2 pr-3 font-medium">Comisión</th>
+                    <th className="pb-2 pr-3 font-medium">Valor est.</th>
                     <th className="pb-2 font-medium">Fecha</th>
                   </tr>
                 </thead>
@@ -229,6 +324,13 @@ export default function AffiliateDashboard() {
                       <td className="py-2 pr-3">
                         {c.estimated_commission_pct > 0 ? (
                           <span className="text-green-400">{c.estimated_commission_pct}%</span>
+                        ) : (
+                          <span className="text-slate-600">—</span>
+                        )}
+                      </td>
+                      <td className="py-2 pr-3">
+                        {c.estimated_value > 0 ? (
+                          <span className="text-green-300 font-medium">{c.estimated_value.toFixed(2)} €</span>
                         ) : (
                           <span className="text-slate-600">—</span>
                         )}
