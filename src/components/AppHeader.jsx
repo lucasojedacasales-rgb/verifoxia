@@ -108,7 +108,7 @@ export default function AppHeader() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-white text-sm font-medium truncate">
-                        👋 Hola, {user.full_name?.split(" ")[0] || "usuario"}
+                        👋 Hola, {user.display_name || user.full_name?.split(" ")[0] || "usuario"}
                       </p>
                       <p className="text-slate-400 text-xs truncate">{user.email}</p>
                     </div>
@@ -200,7 +200,7 @@ export default function AppHeader() {
           user={user}
           onClose={() => setShowEditProfile(false)}
           onSaved={(newName) => {
-            setUser((prev) => prev ? { ...prev, full_name: newName } : prev);
+            setUser((prev) => prev ? { ...prev, display_name: newName } : prev);
           }}
         />
       )}

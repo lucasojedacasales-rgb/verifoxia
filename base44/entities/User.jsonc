@@ -1,4 +1,6 @@
 {
+  "name": "User",
+  "type": "object",
   "properties": {
     "role": {
       "type": "string",
@@ -7,11 +9,13 @@
         "admin",
         "user"
       ]
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Nombre a mostrar en la app (editable por el usuario)"
     }
   },
   "required": [
     "role"
-  ],
-  "name": "User",
-  "type": "object"
+  ]
 }

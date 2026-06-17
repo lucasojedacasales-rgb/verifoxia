@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { X, User, Mail, Check, Loader2 } from "lucide-react";
+import { X, User, Mail, Check, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { base44 } from "@/api/base44Client";
 
 export default function EditProfileModal({ user, onClose, onSaved }) {
-  const [name, setName] = useState(user?.full_name || "");
+  const [name, setName] = useState(user?.display_name || "");
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -19,10 +19,10 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
     setSaving(true);
     setError("");
     try {
-      await base44.auth.updateMe({ full_name: trimmed });
+      await base44.auth.updateMe({ display_name: trimmed });
       setDone(true);
       onSaved?.(trimmed);
-      setTimeout(() => onClose(), 1200);
+      setTimeout(() => onClose(), 1500);
     } catch (_) {
       setError("No se pudo guardar. Intenta de nuevo.");
     } finally {
@@ -30,20 +30,22 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
     }
   };
 
+  const initialName = user?.display_name || "";
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 bg-black/60 backdrop-blur-sm"
-      style={{ paddingBottom: "max(env(safe-area-inset-bottom, 12px), 12px)" }}
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm"
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       onClick={onClose}
     >
       <div
-        className="bg-slate-900 border border-white/15 rounded-2xl shadow-2xl w-full max-w-sm max-h-[60vh] sm:max-h-[85vh] overflow-y-auto overscroll-contain"
+        className="bg-slate-900 border border-white/15 rounded-2xl shadow-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto overscroll-contain"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Editar perfil"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 sticky top-0 bg-slate-900 rounded-t-2xl">
           <h2 className="text-white font-semibold text-sm">Editar perfil</h2>
           <button
             onClick={onClose}
@@ -57,11 +59,11 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
         {/* Body */}
         <div className="px-4 py-4 space-y-4">
           {done ? (
-            <div className="flex flex-col items-center py-4 gap-3">
-              <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                <Check className="w-6 h-6 text-green-400" />
+            <div className="flex flex-col items-center py-6 gap-3">
+              <div className="w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center">
+                <Check className="w-7 h-7 text-green-400" />
               </div>
-              <p className="text-green-300 text-sm font-medium">Perfil actualizado</p>
+              <p className="text-green-300 text-sm font-semibold">Perfil actualizado</p>
             </div>
           ) : (
             <>
@@ -76,6 +78,7 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
                   className="bg-white/10 border-white/20 text-white placeholder:text-slate-500 h-10"
                   placeholder="Tu nombre"
                   aria-label="Nombre"
+                  autoFocus
                 />
               </div>
 
@@ -93,7 +96,10 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
               </div>
 
               {error && (
-                <p className="text-red-400 text-xs">{error}</p>
+                <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5">
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <p className="text-red-300 text-sm">{error}</p>
+                </div>
               )}
             </>
           )}
@@ -101,7 +107,7 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
 
         {/* Footer */}
         {!done && (
-          <div className="px-4 py-3 border-t border-white/10 flex justify-end gap-2">
+          <div className="px-4 py-3 border-t border-white/10 flex justify-end gap-2 sticky bottom-0 bg-slate-900 rounded-b-2xl">
             <Button
               variant="ghost"
               onClick={onClose}
@@ -111,7 +117,7 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={saving || name.trim() === user?.full_name}
+              disabled={saving || name.trim() === initialName}
               className="bg-blue-500 hover:bg-blue-600 h-9 min-w-[80px]"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar"}
