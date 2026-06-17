@@ -28,6 +28,10 @@ import VerifoxScore from "@/components/VerifoxScore";
 import { trackSearch } from "@/lib/analytics";
 import useSEO from "@/hooks/useSEO";
 
+function isUrl(str) {
+  try { new URL(str); return str.startsWith("http"); } catch { return false; }
+}
+
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
   const query = urlParams.get("q") || "";
@@ -88,6 +92,7 @@ export default function SearchResults() {
     // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
     const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
 
+    const imagePromptQuery = isUrlSearch ? effectiveProductName : q;
     const [result, imageResult] = await Promise.all([
       base44.integrations.Core.InvokeLLM({
         prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
@@ -217,9 +222,11 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
           }
         }
       }),
-      base44.integrations.Core.GenerateImage({
-        prompt: `Professional product photo of ${q}, clean white background, high quality, commercial photography style, studio lighting`
-      })
+      imagePromptQuery && !isUrl(imagePromptQuery)
+        ? base44.integrations.Core.GenerateImage({
+            prompt: `Professional product photo of ${imagePromptQuery}, clean white background, high quality, commercial photography style, studio lighting`
+          }).catch(() => null)
+        : Promise.resolve(null)
     ]);
 
     const imageUrl = imageResult?.url || productContext.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
