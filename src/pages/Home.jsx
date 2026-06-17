@@ -11,7 +11,6 @@ import PriceAlertsList from "@/components/PriceAlertsList";
 import DataSources from "@/components/DataSources";
 import TestimonialStrip from "@/components/TestimonialStrip";
 import SchemaOrg from "@/components/SchemaOrg";
-import CategoryGrid from "@/components/CategoryGrid";
 import StoreStrip from "@/components/StoreStrip";
 import TrendingSearches from "@/components/TrendingSearches";
 import AIExplainer from "@/components/AIExplainer";
@@ -148,9 +147,6 @@ export default function Home() {
 
       {/* Store Strip */}
       <StoreStrip />
-
-      {/* Categories */}
-      <CategoryGrid />
 
       {/* Trending */}
       <TrendingSearches />
