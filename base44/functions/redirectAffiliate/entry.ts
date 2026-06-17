@@ -64,13 +64,30 @@ Deno.serve(async (req) => {
 
     const publisherId = Deno.env.get("AWIN_PUBLISHER_ID") || null;
     const merchant = findMerchant(store_name);
+    const AMAZON_TAG = "lukrator90-21";
 
     let affiliateUrl = store_url;
     let estimatedCommissionPct = 0;
     let estimatedValue = 0;
 
-    if (publisherId && merchant) {
-      // Generar deeplink AWIN
+    // Amazon Associates deeplink (prioridad sobre AWIN)
+    const isAmazon = (store_name || "").toLowerCase().includes("amazon") ||
+                     (store_url || "").includes("amazon.");
+    if (isAmazon) {
+      try {
+        const url = new URL(store_url);
+        url.searchParams.set("tag", AMAZON_TAG);
+        // Limpiar params de tracking innecesarios para una URL limpia
+        url.searchParams.delete("ref");
+        url.searchParams.delete("linkCode");
+        affiliateUrl = url.toString();
+        estimatedCommissionPct = 4;
+        estimatedValue = estimated_price ? (estimated_price * 4 / 100) : 0;
+      } catch (_) {
+        affiliateUrl = store_url;
+      }
+    } else if (publisherId && merchant) {
+      // Generar deeplink AWIN para otras tiendas
       const encodedUrl = encodeURIComponent(store_url);
       const clickRef = `verifox_${Date.now()}_${store_name.replace(/\s/g, "_")}`;
       affiliateUrl = `https://www.awin1.com/cread.php?awinmid=${merchant.mid}&awinaffid=${publisherId}&ued=${encodedUrl}&clickref=${clickRef}`;
