@@ -68,7 +68,7 @@ export default function Home() {
       <SchemaOrg type="FAQ" />
       
       {/* Hero */}
-      <section className="relative flex flex-col items-center justify-center px-4 sm:px-6 pt-10 sm:pt-16 pb-12 text-center overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center px-4 sm:px-6 pt-10 sm:pt-16 pb-12 text-center">
         {/* Decorative glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
