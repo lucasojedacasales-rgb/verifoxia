@@ -25,6 +25,7 @@ import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import FavoriteButton from "@/components/FavoriteButton";
 import VerifoxScore from "@/components/VerifoxScore";
+import IntentInterpreter from "@/components/IntentInterpreter";
 import { trackSearch } from "@/lib/analytics";
 import useSEO from "@/hooks/useSEO";
 
@@ -50,6 +51,7 @@ export default function SearchResults() {
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
+  const [intent, setIntent] = useState(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [pendingHistoryEntry, setPendingHistoryEntry] = useState(null);
 
@@ -60,8 +62,27 @@ export default function SearchResults() {
   const analyzeProduct = async (q) => {
     setLoading(true);
     setProduct(null);
+    setIntent(null);
     // Optimistic history entry — shown immediately while LLM runs
     setPendingHistoryEntry({ query: q, verdict: null, _pending: true, id: null });
+
+    // Detect user intent in parallel with other fetches
+    const intentPromise = base44.integrations.Core.InvokeLLM({
+      prompt: `Analiza la intención de búsqueda del usuario: "${q}".
+Extrae: categoría del producto, uso principal, prioridad más importante, y presupuesto si se menciona.
+Si no puedes detectar algún campo, omítelo (no pongas null ni "no especificado").
+Responde SOLO con JSON. Ejemplo:
+{"category":"Televisor","use":"Gaming","priority":"Resolución 4K","budget":"Sin límite"}`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          category: { type: "string" },
+          use: { type: "string" },
+          priority: { type: "string" },
+          budget: { type: "string" },
+        }
+      }
+    }).then(r => { setIntent(r); }).catch(() => {});
 
     // Fetch real product context + SerpAPI shopping results in parallel
     const [productContext, serpApiResponse] = await Promise.all([
@@ -309,6 +330,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
 
         {!loading && product && (
           <div className="w-full space-y-4 sm:space-y-6">
+            <IntentInterpreter intent={intent} />
             <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
               <div className="lg:col-span-2">
                 <ProductCard product={product} />
