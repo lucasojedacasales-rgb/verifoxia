@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,7 @@ export default function SearchResults() {
   const [intent, setIntent] = useState(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [pendingHistoryEntry, setPendingHistoryEntry] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (query) analyzeProduct(query);
@@ -63,68 +64,72 @@ export default function SearchResults() {
     setLoading(true);
     setProduct(null);
     setIntent(null);
-    // Optimistic history entry — shown immediately while LLM runs
+    setError(null);
     setPendingHistoryEntry({ query: q, verdict: null, _pending: true, id: null });
 
-    // Detect user intent in parallel with other fetches
-    const intentPromise = base44.integrations.Core.InvokeLLM({
-      prompt: `Analiza la intención de búsqueda del usuario: "${q}".
+    try {
+      // Detect user intent in parallel with other fetches
+      const intentPromise = base44.integrations.Core.InvokeLLM({
+        prompt: `Analiza la intención de búsqueda del usuario: "${q}".
 Extrae: categoría del producto, uso principal, prioridad más importante, y presupuesto si se menciona.
 Si no puedes detectar algún campo, omítelo (no pongas null ni "no especificado").
 Responde SOLO con JSON. Ejemplo:
 {"category":"Televisor","use":"Gaming","priority":"Resolución 4K","budget":"Sin límite"}`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          category: { type: "string" },
-          use: { type: "string" },
-          priority: { type: "string" },
-          budget: { type: "string" },
+        response_json_schema: {
+          type: "object",
+          properties: {
+            category: { type: "string" },
+            use: { type: "string" },
+            priority: { type: "string" },
+            budget: { type: "string" },
+          }
         }
+      }).catch(() => null);
+
+      // Fetch real product context + SerpAPI shopping results in parallel
+      const [productContext, serpApiResponse, intentResult] = await Promise.all([
+        fetchProductContext(q),
+        base44.functions.invoke("searchProducts", { query: q, country_code: selectedCountry.code }).catch(() => null),
+        intentPromise
+      ]);
+
+      if (intentResult) setIntent(intentResult);
+
+      const serpData = serpApiResponse?.data;
+      const serpShoppingResults = serpData?.shopping_results || [];
+      const isUrlSearch = serpData?.is_url_search || false;
+      const effectiveProductName = serpData?.effective_query || q;
+      const urlPageContext = serpData?.url_page_context || "";
+      const sourceUrl = serpData?.source_url || null;
+
+      // Build SerpAPI context text for the LLM
+      let serpContextText = "";
+      if (serpShoppingResults.length > 0) {
+        serpContextText = `\n=== PRECIOS REALES DE GOOGLE SHOPPING (SerpAPI) — USA ESTOS DATOS DIRECTAMENTE ===\n`;
+        serpShoppingResults.forEach((item, i) => {
+          serpContextText += `${i + 1}. Tienda: ${item.store_name} | Producto: "${item.product_title}" | Precio: ${item.price_str || item.price + " " + item.currency} | URL: ${item.url}`;
+          if (item.rating) serpContextText += ` | Rating: ${item.rating}/5 (${item.reviews_count?.toLocaleString() || "?"} reseñas)`;
+          if (item.delivery) serpContextText += ` | Envío: ${item.delivery}`;
+          serpContextText += "\n";
+        });
+        serpContextText += `IMPORTANTE: Los precios y tiendas de arriba son REALES y verificados. Úsalos directamente en el campo "stores" sin modificarlos.\n=== FIN DE PRECIOS REALES ===\n`;
       }
-    }).then(r => { setIntent(r); }).catch(() => {});
 
-    // Fetch real product context + SerpAPI shopping results in parallel
-    const [productContext, serpApiResponse] = await Promise.all([
-      fetchProductContext(q),
-      base44.functions.invoke("searchProducts", { query: q, country_code: selectedCountry.code }).catch(() => null),
-    ]);
+      // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
+      const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
 
-    const serpData = serpApiResponse?.data;
-    const serpShoppingResults = serpData?.shopping_results || [];
-    const isUrlSearch = serpData?.is_url_search || false;
-    const effectiveProductName = serpData?.effective_query || q;
-    const urlPageContext = serpData?.url_page_context || "";
-    const sourceUrl = serpData?.source_url || null;
-
-    // Build SerpAPI context text for the LLM
-    let serpContextText = "";
-    if (serpShoppingResults.length > 0) {
-      serpContextText = `\n=== PRECIOS REALES DE GOOGLE SHOPPING (SerpAPI) — USA ESTOS DATOS DIRECTAMENTE ===\n`;
-      serpShoppingResults.forEach((item, i) => {
-        serpContextText += `${i + 1}. Tienda: ${item.store_name} | Producto: "${item.product_title}" | Precio: ${item.price_str || item.price + " " + item.currency} | URL: ${item.url}`;
-        if (item.rating) serpContextText += ` | Rating: ${item.rating}/5 (${item.reviews_count?.toLocaleString() || "?"} reseñas)`;
-        if (item.delivery) serpContextText += ` | Envío: ${item.delivery}`;
-        serpContextText += "\n";
-      });
-      serpContextText += `IMPORTANTE: Los precios y tiendas de arriba son REALES y verificados. Úsalos directamente en el campo "stores" sin modificarlos.\n=== FIN DE PRECIOS REALES ===\n`;
-    }
-
-    // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
-    const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
-
-    const imagePromptQuery = isUrlSearch ? effectiveProductName : q;
-    const [result, imageResult] = await Promise.all([
-      base44.integrations.Core.InvokeLLM({
-        prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
+      const imagePromptQuery = isUrlSearch ? effectiveProductName : q;
+      const [result, imageResult] = await Promise.all([
+        base44.integrations.Core.InvokeLLM({
+          prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
 IMPORTANTE: Responde TODO el contenido textual (description, ai_recommendation, pros, cons, best_time_to_buy, ai_verdict_reasons, fraud_flags, safe_signals, best_alternative.reason, best_alternative.why_better) en el idioma: ${lang.name} (código: ${lang.code}).
-      
+        
 El usuario busca: "${isUrlSearch ? effectiveProductName : q}"${isUrlSearch ? `\nProducto extraído de URL: ${sourceUrl}` : ""}${urlPageContext ? `\nContexto de la página del producto: ${urlPageContext}` : ""}
 País del usuario: ${selectedCountry.name} (${selectedCountry.code})
 Moneda local: ${selectedCountry.currency} (${selectedCountry.symbol})
 
 === CONTEXTO REAL DEL PRODUCTO (extraído de Wikipedia y DuckDuckGo) ===
-${productContext.contextText || "No se encontró contexto adicional."}
+${productContext?.contextText || "No se encontró contexto adicional."}
 === FIN DEL CONTEXTO ===${serpContextText}
 
 === TIENDAS DISPONIBLES EN ${selectedCountry.name.toUpperCase()} ===
@@ -185,103 +190,113 @@ REGLA DE TIENDAS: Si hay datos de SerpAPI, usa EXACTAMENTE esas tiendas con sus 
 REGLA DE NOMBRE: El campo "name" debe ser el nombre EXACTO y COMPLETO del producto (modelo, versión, color, capacidad) tal como aparece en los resultados de SerpAPI.
 Para "fraud_risk": analiza si el producto suele tener reseñas sospechosas, cambios de ficha o historial de precios inflados artificialmente. Sé honesto y específico en "fraud_flags" y "safe_signals".
 Para "best_alternative": sugiere un producto alternativo real y concreto que el usuario debería considerar.`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            name: { type: "string" },
-            description: { type: "string" },
-            category: { type: "string" },
-            stores: {
-              type: "array",
-              items: {
+          response_json_schema: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              description: { type: "string" },
+              category: { type: "string" },
+              stores: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    store_name: { type: "string" },
+                    price: { type: "number" },
+                    currency: { type: "string" },
+                    url: { type: "string" },
+                    in_stock: { type: "boolean" },
+                    rating: { type: "number" },
+                    reviews_count: { type: "number" }
+                  }
+                }
+              },
+              pros: { type: "array", items: { type: "string" } },
+              cons: { type: "array", items: { type: "string" } },
+              best_time_to_buy: { type: "string" },
+              price_trend: { type: "string" },
+              ai_recommendation: { type: "string" },
+              ai_score: { type: "number" },
+              verdict: { type: "string" },
+              ai_verdict_reasons: { type: "array", items: { type: "string" } },
+              fraud_risk: { type: "string" },
+              fraud_flags: { type: "array", items: { type: "string" } },
+              safe_signals: { type: "array", items: { type: "string" } },
+              satisfaction_index: {
                 type: "object",
                 properties: {
-                  store_name: { type: "string" },
-                  price: { type: "number" },
-                  currency: { type: "string" },
-                  url: { type: "string" },
-                  in_stock: { type: "boolean" },
-                  rating: { type: "number" },
-                  reviews_count: { type: "number" }
-                }
+                  quality:     { type: "number" },
+                  durability:  { type: "number" },
+                  value:       { type: "number" },
+                  support:     { type: "number" },
+                  return_rate: { type: "string" }
+                },
+                required: ["quality", "durability", "value", "support", "return_rate"]
+              },
+              best_alternative: {
+                type: "object",
+                properties: {
+                  name:               { type: "string" },
+                  reason:             { type: "string" },
+                  why_better:         { type: "string" },
+                  score:              { type: "number" },
+                  price_diff_pct:     { type: "number" },
+                  incident_reduction: { type: "number" }
+                },
+                required: ["name", "reason", "why_better", "score"]
               }
-            },
-            pros: { type: "array", items: { type: "string" } },
-            cons: { type: "array", items: { type: "string" } },
-            best_time_to_buy: { type: "string" },
-            price_trend: { type: "string" },
-            ai_recommendation: { type: "string" },
-            ai_score: { type: "number" },
-            verdict: { type: "string" },
-            ai_verdict_reasons: { type: "array", items: { type: "string" } },
-            fraud_risk: { type: "string" },
-            fraud_flags: { type: "array", items: { type: "string" } },
-            safe_signals: { type: "array", items: { type: "string" } },
-            satisfaction_index: {
-              type: "object",
-              properties: {
-                quality:     { type: "number" },
-                durability:  { type: "number" },
-                value:       { type: "number" },
-                support:     { type: "number" },
-                return_rate: { type: "string" }
-              },
-              required: ["quality", "durability", "value", "support", "return_rate"]
-            },
-            best_alternative: {
-              type: "object",
-              properties: {
-                name:               { type: "string" },
-                reason:             { type: "string" },
-                why_better:         { type: "string" },
-                score:              { type: "number" },
-                price_diff_pct:     { type: "number" },
-                incident_reduction: { type: "number" }
-              },
-              required: ["name", "reason", "why_better", "score"]
             }
           }
-        }
-      }),
-      imagePromptQuery && !isUrl(imagePromptQuery)
-        ? base44.integrations.Core.GenerateImage({
-            prompt: `Professional product photo of ${imagePromptQuery}, clean white background, high quality, commercial photography style, studio lighting`
-          }).catch(() => null)
-        : Promise.resolve(null)
-    ]);
+        }),
+        imagePromptQuery && !isUrl(imagePromptQuery)
+          ? base44.integrations.Core.GenerateImage({
+              prompt: `Professional product photo of ${imagePromptQuery}, clean white background, high quality, commercial photography style, studio lighting`
+            }).catch(() => null)
+          : Promise.resolve(null)
+      ]);
 
-    const imageUrl = imageResult?.url || productContext.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
+      if (!result) {
+        setError("No pudimos analizar este producto. Intenta con otra búsqueda.");
+        setLoading(false);
+        setPendingHistoryEntry(null);
+        return;
+      }
 
-    // Always use SerpAPI data directly when available — real URLs, real prices, real product titles
-    const mergedStores = serpShoppingResults.length > 0
-      ? serpShoppingResults
-          .filter((s) => s.url && s.url !== "#" && s.price)
-          .map((s) => ({
-            store_name: s.store_name,
-            product_title: s.product_title,  // keep exact SerpAPI product title per store
-            price: s.price,
-            currency: s.currency || selectedCountry.currency,
-            url: s.url,                       // real direct product URL from Google Shopping
-            in_stock: s.in_stock ?? true,
-            rating: s.rating,
-            reviews_count: s.reviews_count,
-            delivery: s.delivery,
-          }))
-      : (result.stores || []);
+      const imageUrl = imageResult?.url || productContext?.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
 
-    // Use the most specific product name: from SerpAPI's top result or LLM or extracted URL title
-    const productName = serpShoppingResults[0]?.product_title || result.name || effectiveProductName;
+      // Always use SerpAPI data directly when available
+      const mergedStores = serpShoppingResults.length > 0
+        ? serpShoppingResults
+            .filter((s) => s.url && s.url !== "#" && s.price)
+            .map((s) => ({
+              store_name: s.store_name,
+              product_title: s.product_title,
+              price: s.price,
+              currency: s.currency || selectedCountry.currency,
+              url: s.url,
+              in_stock: s.in_stock ?? true,
+              rating: s.rating,
+              reviews_count: s.reviews_count,
+              delivery: s.delivery,
+            }))
+        : (result.stores || []);
 
-    setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
+      const productName = serpShoppingResults[0]?.product_title || result.name || effectiveProductName;
 
-    // Track analytics
-    trackSearch(q, selectedCountry.code);
+      setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
 
-    // Persist and clear optimistic entry
-    base44.entities.SearchHistory.create({ query: q, verdict: result.verdict });
-    setPendingHistoryEntry(null);
+      // Track analytics
+      trackSearch(q, selectedCountry.code);
 
-    setLoading(false);
+      // Persist search history
+      base44.entities.SearchHistory.create({ query: q, verdict: result.verdict }).catch(() => {});
+      setPendingHistoryEntry(null);
+    } catch (err) {
+      setError("No pudimos analizar este producto. Intenta con otra búsqueda.");
+      setPendingHistoryEntry(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearch = (e) => {
@@ -297,15 +312,16 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         <div className="max-w-6xl mx-auto flex items-center gap-2">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t.search_other}
                 className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-slate-400 h-9"
+                aria-label="Buscar productos"
               />
             </div>
-            <Button type="submit" className="bg-blue-500 hover:bg-blue-600 h-9 px-4">
+            <Button type="submit" className="bg-blue-500 hover:bg-blue-600 h-9 px-4" aria-label="Realizar búsqueda">
               Buscar
             </Button>
           </form>
@@ -320,6 +336,21 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
           </div>
         )}
 
+        {error && !loading && (
+          <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
+            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <p className="text-red-300 font-medium">{error}</p>
+              <button
+                onClick={() => analyzeProduct(query)}
+                className="text-red-400 hover:text-red-300 text-sm underline mt-2 min-h-[44px] flex items-center"
+                aria-label="Reintentar búsqueda">
+                Reintentar
+              </button>
+            </div>
+          </div>
+        )}
+
         {showAlertModal && product && (
           <PriceAlertModal
             product={product}
@@ -328,7 +359,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
           />
         )}
 
-        {!loading && product && (
+        {!loading && product && !error && (
           <div className="w-full space-y-4 sm:space-y-6">
             <IntentInterpreter intent={intent} />
             <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
@@ -340,9 +371,9 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                 <VerdictBanner product={product} />
                 <button
                   onClick={() => setShowAlertModal(true)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg sm:rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all text-sm sm:text-base min-h-[44px]"
-                  >
-                  <Bell className="w-4 h-4" />
+                  className="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg sm:rounded-xl text-blue-400 hover:text-blue-300 font-medium transition-all text-sm sm:text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Crear alerta de precio para este producto">
+                  <Bell className="w-4 h-4" aria-hidden="true" />
                   {t.create_alert}
                 </button>
                 <FavoriteButton product={product} country={selectedCountry} />
@@ -379,7 +410,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
           </div>
         )}
 
-        {!loading && !product && (
+        {!loading && !product && !error && (
           <div className="text-center py-20 text-slate-400">
             Introduce un producto para analizar
           </div>
