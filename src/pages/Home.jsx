@@ -6,6 +6,10 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import SearchHistory from "@/components/SearchHistory";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import AdBanner from "@/components/AdBanner";
+import HowItWorks from "@/components/HowItWorks";
+import DataSources from "@/components/DataSources";
+import TestimonialStrip from "@/components/TestimonialStrip";
+import SchemaOrg from "@/components/SchemaOrg";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 // hooks used for selectedCountry (search URL) and translations
@@ -58,6 +62,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+      <SchemaOrg type="WebApplication" />
+      <SchemaOrg type="Organization" />
+      <SchemaOrg type="FAQ" />
       
       {/* Hero */}
       <section className="relative flex flex-col items-center justify-center px-4 sm:px-6 pt-10 sm:pt-16 pb-12 text-center overflow-hidden">
@@ -130,6 +137,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Cómo funciona */}
+      <HowItWorks />
+
       {/* Features */}
       <section className="px-6 py-10 max-w-5xl mx-auto">
         <h2 className="text-center text-white font-bold text-xl sm:text-2xl mb-6 tracking-tight">
@@ -151,6 +161,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Data sources */}
+      <DataSources />
+
       {/* Trust strip */}
       <section className="px-6 py-4 max-w-5xl mx-auto">
         <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-2xl px-5 py-4 flex flex-wrap gap-3 justify-center items-center">
@@ -163,6 +176,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <TestimonialStrip />
+
       {/* Anuncio AdSense */}
       <section className="px-6 py-8 max-w-5xl mx-auto">
         <AdBanner slot="3742564892" format="auto" className="rounded-lg sm:rounded-xl overflow-hidden" />
@@ -173,30 +189,32 @@ export default function Home() {
         <SearchHistory key={refreshKey} />
       </section>
 
-      {/* Footer with links to About and Contact */}
-      <footer className="bg-slate-900/50 border-t border-white/10 px-6 py-6 text-center">
-        <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-6 mb-4">
-          <a
-            href="/about"
-            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
-            
-            Acerca de
-          </a>
-          <a
-            href="/contact"
-            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
-            
-            Contacto
-          </a>
-          <a
-            href="/privacy"
-            className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
-            Privacidad
-          </a>
+      {/* Footer */}
+      <footer className="bg-slate-900/80 border-t border-white/10 px-6 py-8 text-center">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <a href="/about" className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
+              Sobre VERIFOX
+            </a>
+            <a href="/contact" className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
+              Contacto
+            </a>
+            <a href="/privacy" className="text-slate-400 hover:text-blue-400 transition-colors text-sm font-medium min-h-[44px] flex items-center">
+              Privacidad
+            </a>
+          </div>
+
+          {/* Disclaimer integrado en el footer */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 mb-4 max-w-2xl mx-auto text-left">
+            <p className="text-slate-400 text-xs leading-relaxed">
+              <strong className="text-slate-300">Aviso legal:</strong> Los precios, disponibilidad y recomendaciones mostrados en VERIFOX son orientativos y se obtienen de fuentes externas (Google Shopping, IA). VERIFOX no vende productos ni garantiza la exactitud de los datos. Verifica siempre el precio final en la tienda antes de comprar.
+            </p>
+          </div>
+
+          <p className="text-slate-500 text-xs">
+            © 2026 <span className="text-white font-bold">VERI</span><span className="text-orange-500 font-bold">FOX</span>. Todos los derechos reservados.
+          </p>
         </div>
-        <p className="text-slate-500 text-xs">
-          © 2026 VERIFOX. Todos los derechos reservados.
-        </p>
       </footer>
     </div>);
 

@@ -7,7 +7,6 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
 import AppHeader from './components/AppHeader';
-import DisclaimerBanner from './components/DisclaimerBanner';
 import { useTabStacks } from './hooks/useTabStacks';
 import { trackPageView } from './lib/analytics';
 // Auth pages
@@ -108,7 +107,6 @@ const AuthenticatedApp = () => {
             <Route path="*" element={<Suspense fallback={<PageLoader />}><PageNotFound /></Suspense>} />
           </Routes>
           <BottomTabBar />
-          <DisclaimerBanner />
         </>
       } />
     </Routes>
