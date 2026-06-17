@@ -1,0 +1,75 @@
+{
+  "name": "AffiliateClick",
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string",
+      "description": "Nombre del producto clickeado"
+    },
+    "store_name": {
+      "type": "string",
+      "description": "Nombre de la tienda destino"
+    },
+    "store_url": {
+      "type": "string",
+      "description": "URL original de la tienda"
+    },
+    "affiliate_url": {
+      "type": "string",
+      "description": "URL con tracking de afiliado generada"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "Pa\u00eds del usuario que clicke\u00f3"
+    },
+    "search_query": {
+      "type": "string",
+      "description": "B\u00fasqueda que origin\u00f3 este producto"
+    },
+    "estimated_commission_pct": {
+      "type": "number",
+      "description": "Porcentaje de comisi\u00f3n estimado"
+    },
+    "estimated_value": {
+      "type": "number",
+      "description": "Valor estimado de la comisi\u00f3n en moneda local"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Moneda del valor estimado"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "clicked",
+        "converted",
+        "expired"
+      ],
+      "default": "clicked",
+      "description": "Estado del click"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "ID de sesi\u00f3n para agrupar clics"
+    }
+  },
+  "required": [
+    "product_name",
+    "store_name",
+    "store_url"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,14 +1,25 @@
 import { ExternalLink, CheckCircle, XCircle, Star, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAffiliateLink } from "@/hooks/useAffiliateLink";
 
-export default function StoreComparison({ stores, productName = "" }) {
+export default function StoreComparison({ stores, productName = "", searchQuery = "", countryCode = "ES" }) {
+  const { openAffiliateLink } = useAffiliateLink();
   if (!stores.length) return null;
   const sorted = [...stores].sort((a, b) => (a.price || 0) - (b.price || 0));
   const minPrice = sorted[0]?.price;
 
   const goToStore = (store) => {
     if (!store.url || store.url === "#") return;
-    window.open(store.url, "_blank", "noopener,noreferrer");
+    const price = store.price || 0;
+    openAffiliateLink({
+      storeUrl: store.url,
+      storeName: store.store_name,
+      productName: store.product_title || productName,
+      searchQuery,
+      countryCode,
+      currency: store.currency || "EUR",
+      estimatedPrice: price
+    });
   };
 
   return (

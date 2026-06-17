@@ -379,7 +379,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                 <FavoriteButton product={product} country={selectedCountry} />
               </div>
             </div>
-            <StoreComparison stores={product.stores || []} productName={product.name} />
+            <StoreComparison stores={product.stores || []} productName={product.name} searchQuery={query} countryCode={selectedCountry.code} />
 
             {/* Anuncio AdSense — entre comparativa de tiendas y reseñas */}
             <AdBanner slot="9217364670" format="auto" className="rounded-lg sm:rounded-xl overflow-hidden" />

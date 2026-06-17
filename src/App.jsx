@@ -26,6 +26,7 @@ const SearchConsole = lazy(() => import('./pages/SearchConsole'));
 const WorkflowAgent = lazy(() => import('./pages/WorkflowAgent'));
 const SearchHistoryAgent = lazy(() => import('./pages/SearchHistoryAgent'));
 const StoreRedirect = lazy(() => import('./pages/StoreRedirect'));
+const AffiliateDashboard = lazy(() => import('./pages/AffiliateDashboard'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const PageNotFound = lazy(() => import('./lib/PageNotFound'));
 const UserNotRegisteredError = lazy(() => import('./components/UserNotRegisteredError'));
@@ -104,6 +105,7 @@ const AuthenticatedApp = () => {
             <Route path="/history-agent" element={<Suspense fallback={<PageLoader />}><SearchHistoryAgent /></Suspense>} />
             <Route path="/store" element={<Suspense fallback={<PageLoader />}><StoreRedirect /></Suspense>} />
             <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>} />
+            <Route path="/affiliate" element={<Suspense fallback={<PageLoader />}><AffiliateDashboard /></Suspense>} />
             <Route path="*" element={<Suspense fallback={<PageLoader />}><PageNotFound /></Suspense>} />
           </Routes>
           <BottomTabBar />
