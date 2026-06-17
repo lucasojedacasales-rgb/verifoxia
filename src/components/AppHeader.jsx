@@ -62,7 +62,7 @@ export default function AppHeader() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
         ) : (
-          <div className="flex items-center gap-2 shrink-0" aria-label="Verifox">
+          <button onClick={() => navigate("/")} className="flex items-center gap-2 shrink-0" aria-label="Ir al inicio">
             <img
               src="https://media.base44.com/images/public/6a2e1f2e45b60383a960c225/d049c4265_UseAIImageJun16202600_47_52.png"
               alt="Verifox logo"
@@ -71,7 +71,7 @@ export default function AppHeader() {
             <span className="font-black text-base tracking-tight uppercase">
               <span className="text-white">VERI</span><span className="text-orange-500">FOX</span>
             </span>
-          </div>
+          </button>
         )}
 
         {location.pathname === "/settings" && (
