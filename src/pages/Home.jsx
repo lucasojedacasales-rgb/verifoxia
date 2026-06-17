@@ -14,6 +14,9 @@ import SchemaOrg from "@/components/SchemaOrg";
 import CategoryGrid from "@/components/CategoryGrid";
 import StoreStrip from "@/components/StoreStrip";
 import TrendingSearches from "@/components/TrendingSearches";
+import AIExplainer from "@/components/AIExplainer";
+import ScoreExamples from "@/components/ScoreExamples";
+import TrustSection from "@/components/TrustSection";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 // hooks used for selectedCountry (search URL) and translations
@@ -82,10 +85,12 @@ export default function Home() {
 
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white mb-4 leading-tight uppercase tracking-tight relative">
           <span className="text-white">VERI</span><span className="text-orange-500">FOX</span><br />
-          <span className="text-blue-400 normal-case font-bold text-2xl sm:text-4xl md:text-5xl">{t.hero_title_2}</span>
+          <span className="text-blue-400 normal-case font-bold text-2xl sm:text-4xl md:text-5xl">
+            Para de pagar de más.
+          </span>
         </h1>
         <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-xl mb-8 relative">
-          {t.hero_sub}
+          Nuestra IA analiza miles de tiendas, estudia reseñas y te dice en segundos si un producto vale lo que cuesta — y si es buen momento para comprarlo.
         </p>
 
         {/* Search bar */}
@@ -152,6 +157,15 @@ export default function Home() {
 
       {/* Price Alerts — only shown when user has active alerts */}
       <PriceAlertsList />
+
+      {/* Ejemplos reales de puntuaciones */}
+      <ScoreExamples />
+
+      {/* Cómo funciona la IA */}
+      <AIExplainer />
+
+      {/* Por qué confiar */}
+      <TrustSection />
 
       {/* Cómo funciona */}
       <HowItWorks />
