@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Globe, ChevronDown, LogIn, LogOut, User } from "lucide-react";
+import { ArrowLeft, Globe, ChevronDown, LogIn, LogOut, User, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";
 import { base44 } from "@/api/base44Client";
+import EditProfileModal from "@/components/EditProfileModal";
 
 export default function AppHeader() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function AppHeader() {
   const { lang, changeLanguage, languages } = useLanguage();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -102,12 +104,19 @@ export default function AppHeader() {
                     <div className="w-7 h-7 bg-blue-500/30 rounded-full flex items-center justify-center shrink-0">
                       <User className="w-3.5 h-3.5 text-blue-400" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-white text-sm font-medium truncate">
                         👋 Hola, {user.full_name?.split(" ")[0] || "usuario"}
                       </p>
                       <p className="text-slate-400 text-xs truncate">{user.email}</p>
                     </div>
+                    <button
+                      onClick={() => { setShowEditProfile(true); setOpen(false); }}
+                      className="text-slate-500 hover:text-slate-300 p-1 rounded-lg hover:bg-white/10 transition-colors shrink-0 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      aria-label="Editar perfil"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 ) : (
                   <p className="text-slate-400 text-sm">Bienvenido a VERIFOX</p>
@@ -183,6 +192,16 @@ export default function AppHeader() {
           )}
         </div>
       </div>
+
+      {showEditProfile && user && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setShowEditProfile(false)}
+          onSaved={(newName) => {
+            setUser((prev) => prev ? { ...prev, full_name: newName } : prev);
+          }}
+        />
+      )}
     </header>
   );
 }
