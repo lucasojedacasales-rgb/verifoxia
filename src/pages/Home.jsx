@@ -7,6 +7,7 @@ import SearchHistory from "@/components/SearchHistory";
 import ImageSearchButton from "@/components/ImageSearchButton";
 import AdBanner from "@/components/AdBanner";
 import HowItWorks from "@/components/HowItWorks";
+import PriceAlertsList from "@/components/PriceAlertsList";
 import DataSources from "@/components/DataSources";
 import TestimonialStrip from "@/components/TestimonialStrip";
 import SchemaOrg from "@/components/SchemaOrg";
@@ -136,6 +137,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Price Alerts — only shown when user has active alerts */}
+      <PriceAlertsList />
 
       {/* Cómo funciona */}
       <HowItWorks />

@@ -132,7 +132,7 @@ export default function AppHeader() {
                   {countries.map((c) => (
                     <button
                       key={c.code}
-                      onClick={() => changeCountry(c)}
+                      onClick={() => { changeCountry(c); setOpen(false); }}
                       className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs transition-all text-left ${
                         selectedCountry.code === c.code
                           ? "bg-blue-500/20 border border-blue-500/40 text-blue-300"
@@ -154,7 +154,7 @@ export default function AppHeader() {
                   {languages.map((l) => (
                     <button
                       key={l.code}
-                      onClick={() => changeLanguage(l)}
+                      onClick={() => { changeLanguage(l); setOpen(false); }}
                       className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs transition-all text-left ${
                         lang.code === l.code
                           ? "bg-blue-500/20 border border-blue-500/40 text-blue-300"

@@ -31,9 +31,9 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-12 sm:pt-0 px-4 bg-black/60 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
       <div
-        className="bg-slate-900 border border-white/15 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+        className="bg-slate-900 border border-white/15 rounded-2xl shadow-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Editar perfil"
