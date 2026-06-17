@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import BottomTabBar from './components/BottomTabBar';
 import AppHeader from './components/AppHeader';
+import PageTransition from './components/PageTransition';
 import { useTabStacks } from './hooks/useTabStacks';
 import { trackPageView } from './lib/analytics';
 // Auth pages
@@ -94,22 +95,24 @@ const AuthenticatedApp = () => {
       <Route path="*" element={
         <>
           <AppHeader />
-          <Routes>
-            <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
-            <Route path="/search" element={<Suspense fallback={<PageLoader />}><SearchResults /></Suspense>} />
-            <Route path="/compare" element={<Suspense fallback={<PageLoader />}><Compare /></Suspense>} />
-            <Route path="/settings" element={<Suspense fallback={<PageLoader />}><Settings /></Suspense>} />
-            <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
-            <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
-            <Route path="/search-console" element={<Suspense fallback={<PageLoader />}><SearchConsole /></Suspense>} />
-            <Route path="/workflow-agent" element={<Suspense fallback={<PageLoader />}><WorkflowAgent /></Suspense>} />
-            <Route path="/history-agent" element={<Suspense fallback={<PageLoader />}><SearchHistoryAgent /></Suspense>} />
-            <Route path="/store" element={<Suspense fallback={<PageLoader />}><StoreRedirect /></Suspense>} />
-            <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>} />
-            <Route path="/affiliate" element={<Suspense fallback={<PageLoader />}><AffiliateDashboard /></Suspense>} />
-            <Route path="/favorites" element={<Suspense fallback={<PageLoader />}><Favorites /></Suspense>} />
-            <Route path="*" element={<Suspense fallback={<PageLoader />}><PageNotFound /></Suspense>} />
-          </Routes>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
+              <Route path="/search" element={<Suspense fallback={<PageLoader />}><SearchResults /></Suspense>} />
+              <Route path="/compare" element={<Suspense fallback={<PageLoader />}><Compare /></Suspense>} />
+              <Route path="/settings" element={<Suspense fallback={<PageLoader />}><Settings /></Suspense>} />
+              <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
+              <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
+              <Route path="/search-console" element={<Suspense fallback={<PageLoader />}><SearchConsole /></Suspense>} />
+              <Route path="/workflow-agent" element={<Suspense fallback={<PageLoader />}><WorkflowAgent /></Suspense>} />
+              <Route path="/history-agent" element={<Suspense fallback={<PageLoader />}><SearchHistoryAgent /></Suspense>} />
+              <Route path="/store" element={<Suspense fallback={<PageLoader />}><StoreRedirect /></Suspense>} />
+              <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>} />
+              <Route path="/affiliate" element={<Suspense fallback={<PageLoader />}><AffiliateDashboard /></Suspense>} />
+              <Route path="/favorites" element={<Suspense fallback={<PageLoader />}><Favorites /></Suspense>} />
+              <Route path="*" element={<Suspense fallback={<PageLoader />}><PageNotFound /></Suspense>} />
+            </Routes>
+          </PageTransition>
           <BottomTabBar />
         </>
       } />

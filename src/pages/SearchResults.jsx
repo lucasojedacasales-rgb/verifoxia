@@ -310,7 +310,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
       {/* Search bar below global header */}
       <div className="sticky z-10 bg-slate-900/95 backdrop-blur border-b border-white/10 px-4 py-3" style={{ top: "var(--header-height, 52px)" }}>
         <div className="max-w-6xl mx-auto flex items-center gap-2">
-          <form onSubmit={handleSearch} className="flex-1 flex gap-2">
+          <form onSubmit={handleSearch} className="flex-1 flex gap-2" role="search" aria-label="Buscar productos">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
               <Input
@@ -318,7 +318,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t.search_other}
                 className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-slate-400 h-9"
-                aria-label="Buscar productos"
+                aria-label="Término de búsqueda"
               />
             </div>
             <Button type="submit" className="bg-blue-500 hover:bg-blue-600 h-9 px-4" aria-label="Realizar búsqueda">
@@ -328,7 +328,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         </div>
       </div>
 
-      <main className="w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-12 max-w-6xl mx-auto">
+      <main role="main" aria-busy={loading} aria-label="Resultados del análisis" className="w-full px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-12 max-w-6xl mx-auto">
         {loading && (
           <div className="w-full space-y-3">
             <SearchLoadingAnimation query={query} />

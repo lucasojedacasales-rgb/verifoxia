@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import PullToRefreshIndicator from "@/components/PullToRefreshIndicator";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Shield, Star, Zap, SplitSquareHorizontal, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,6 +42,18 @@ export default function Home() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
+  const handleRefresh = useCallback(async () => {
+    setRefreshKey(k => k + 1);
+    if (window.__TRUSTIFY_NATIVE__?.endRefresh) window.__TRUSTIFY_NATIVE__.endRefresh();
+  }, []);
+
+  useEffect(() => {
+    window.__onNativeRefresh = handleRefresh;
+    return () => { delete window.__onNativeRefresh; };
+  }, [handleRefresh]);
+
+  const { indicatorRef, containerRef } = usePullToRefresh(handleRefresh);
+
   const handleSearch = (e, directQuery) => {
     if (e?.preventDefault) e.preventDefault();
     const q = (directQuery || query).trim();
@@ -67,7 +81,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+    <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+      <PullToRefreshIndicator ref={indicatorRef} />
       <SchemaOrg type="WebApplication" />
       <SchemaOrg type="Organization" />
       <SchemaOrg type="FAQ" />
