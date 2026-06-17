@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Faltan store_url, store_name o product_name" }, { status: 400 });
     }
 
-    const publisherId = null;
+    const publisherId = Deno.env.get("AWIN_PUBLISHER_ID") || null;
     const merchant = findMerchant(store_name);
 
     let affiliateUrl = store_url;
