@@ -32,7 +32,25 @@ export default function PriceAlertsList() {
     );
   }
 
-  if (!alerts.length) return null;
+  if (!alerts.length) {
+    return (
+      <section className="px-6 py-6 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <Bell className="w-4 h-4 text-blue-400" />
+          <h2 className="text-white font-bold text-lg">Tus alertas de precio</h2>
+        </div>
+        <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-6 text-center">
+          <p className="text-slate-400 text-sm mb-3">No tienes alertas activas. Crea una al buscar un producto y pulsar el icono de campana.</p>
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-400 hover:text-blue-300 text-sm font-medium underline underline-offset-4"
+          >
+            Buscar productos
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="px-6 py-6 max-w-5xl mx-auto">
