@@ -51,6 +51,11 @@
     "session_id": {
       "type": "string",
       "description": "ID de sesi\u00f3n para agrupar clics"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Descripci\u00f3n adicional del click de afiliado"
     }
   },
   "required": [
