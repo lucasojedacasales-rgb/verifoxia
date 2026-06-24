@@ -24,6 +24,7 @@ import SatisfactionIndex from "@/components/SatisfactionIndex";
 import SearchResultsSkeleton from "@/components/SearchResultsSkeleton";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import FavoriteButton from "@/components/FavoriteButton";
+import ShareButton from "@/components/ShareButton";
 import VerifoxScore from "@/components/VerifoxScore";
 import IntentInterpreter from "@/components/IntentInterpreter";
 import { trackSearch } from "@/lib/analytics";
@@ -377,6 +378,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
                   {t.create_alert}
                 </button>
                 <FavoriteButton product={product} country={selectedCountry} />
+                <ShareButton product={product} />
               </div>
             </div>
             <StoreComparison stores={product.stores || []} productName={product.name} searchQuery={query} countryCode={selectedCountry.code} />
