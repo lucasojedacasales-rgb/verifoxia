@@ -7,6 +7,20 @@ export default function StoreComparison({ stores, productName = "", searchQuery 
   if (!stores.length) return null;
   const sorted = [...stores].sort((a, b) => (a.price || 0) - (b.price || 0));
   const minPrice = sorted[0]?.price;
+  const hasRealPrices = stores.some((store) => store.data_source === "google_shopping");
+
+  const sourceBadge = (source) => (
+    <Badge
+      variant="outline"
+      className={
+        source === "google_shopping"
+          ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30 text-xs px-1.5 py-0"
+          : "bg-amber-500/15 text-amber-300 border-amber-500/30 text-xs px-1.5 py-0"
+      }
+    >
+      {source === "google_shopping" ? "Dato real" : "Estimado IA"}
+    </Badge>
+  );
 
   const goToStore = (store) => {
     if (!store.url || store.url === "#") return;
@@ -18,7 +32,7 @@ export default function StoreComparison({ stores, productName = "", searchQuery 
       searchQuery,
       countryCode,
       currency: store.currency || "EUR",
-      estimatedPrice: price
+      estimatedPrice: price,
     });
   };
 
@@ -28,6 +42,12 @@ export default function StoreComparison({ stores, productName = "", searchQuery 
         <Trophy className="w-5 h-5 text-yellow-400" />
         Comparación de tiendas
       </h2>
+
+      {!hasRealPrices && (
+        <div className="mb-4 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+          No hemos encontrado precios reales suficientes; esta comparación puede contener estimaciones.
+        </div>
+      )}
 
       {/* Desktop table */}
       <div className="hidden md:block overflow-x-auto">
@@ -57,10 +77,11 @@ export default function StoreComparison({ stores, productName = "", searchQuery 
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-2">
                           {isBest && (
-                            <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0">
+                            <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0">
                               Mejor
                             </Badge>
                           )}
+                          {sourceBadge(store.data_source)}
                           <button
                             onClick={() => goToStore(store)}
                             className="text-white font-medium hover:text-blue-400 flex items-center gap-1 transition-colors"
@@ -140,10 +161,11 @@ export default function StoreComparison({ stores, productName = "", searchQuery 
                 <div className="flex flex-col gap-0.5 flex-1">
                   <div className="flex items-center gap-2">
                     {isBest && (
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0 shrink-0">
+                      <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1.5 py-0 shrink-0">
                         Mejor
                       </Badge>
                     )}
+                    {sourceBadge(store.data_source)}
                     <button
                       onClick={() => goToStore(store)}
                       className="text-white font-semibold hover:text-blue-400 transition-colors text-left"

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Globe, ChevronDown, LogIn, LogOut, User, Pencil, Heart, Check, Languages } from "lucide-react";
+import { ArrowLeft, Globe, ChevronDown, LogOut, User, Pencil, Heart, Check, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCountry } from "@/hooks/useCountry";
 import { useLanguage } from "@/hooks/useLanguage";

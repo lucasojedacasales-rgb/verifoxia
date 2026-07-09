@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Camera, Upload, Loader2 } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { useCountry } from "@/hooks/useCountry";
@@ -7,24 +7,33 @@ import { useCountry } from "@/hooks/useCountry";
 export default function ImageSearchButton() {
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { selectedCountry } = useCountry();
 
   const handleFile = async (file) => {
     if (!file) return;
     setLoading(true);
+    setError("");
 
-    // Upload image
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    try {
+      // Upload image
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
 
-    // Use Google Vision API via backend function
-    const response = await base44.functions.invoke("analyzeImage", { image_url: file_url });
-    const productName = response?.data?.product_name;
+      // Use Google Vision API via backend function
+      const response = await base44.functions.invoke("analyzeImage", { image_url: file_url });
+      const productName = response?.data?.product_name;
 
-    setLoading(false);
-
-    if (productName) {
-      navigate(`/search?q=${encodeURIComponent(productName)}&country=${selectedCountry.code}`);
+      if (productName) {
+        navigate(`/search?q=${encodeURIComponent(productName)}&country=${selectedCountry.code}`);
+      } else {
+        setError("No se pudo identificar el producto.");
+      }
+    } catch {
+      setError("No se pudo analizar la imagen.");
+    } finally {
+      setLoading(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
@@ -52,6 +61,11 @@ export default function ImageSearchButton() {
           {loading ? "Identificando..." : "Buscar por foto"}
         </span>
       </button>
+      {error && (
+        <p className="mt-2 text-xs text-red-300" role="status">
+          {error}
+        </p>
+      )}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calculator, Package, ChevronDown, ChevronUp, Loader2, Info } from "lucide-react";
+import { Calculator, ChevronDown, ChevronUp, Loader2, Info } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function TotalCostCalculator({ product, country }) {

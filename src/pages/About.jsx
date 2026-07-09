@@ -9,7 +9,7 @@ export default function About() {
   useSEO({
     title: "Acerca de VERIFOX — Comparador de precios con IA",
     description: "Conoce VERIFOX, la plataforma de comparación de precios con inteligencia artificial. Nuestra misión es ayudarte a ahorrar dinero con información transparente y análisis detallados.",
-    canonical: "https://verifox.app/about",
+    canonical: "https://verifoxia.com/about",
   });
 
   return (
@@ -39,16 +39,16 @@ export default function About() {
             </h1>
             <div className="space-y-4 text-slate-300 text-lg leading-relaxed">
               <p>
-                VERIFOX es una plataforma web innovadora diseñada para transformar la manera en que los consumidores compran productos en línea. En un mercado saturado de opciones y precios variables, VERIFOX utiliza inteligencia artificial avanzada para proporcionar recomendaciones precisas y confiables sobre dónde comprar, cuándo comprar y si vale la pena invertir en un producto específico.
+                VERIFOX es una plataforma web diseñada para mejorar la manera en que los consumidores comparan productos en línea. En un mercado saturado de opciones y precios variables, VERIFOX utiliza inteligencia artificial para ofrecer recomendaciones orientativas sobre dónde comprar, cuándo comprar y si vale la pena invertir en un producto específico.
               </p>
               <p>
-                Nuestra misión es empoderar a los compradores con información transparente y análisis detallados. Comparamos automáticamente precios de múltiples tiendas en tu país, evaluamos la fiabilidad de los productos basándonos en reseñas y datos históricos, y ofrecemos predicciones de tendencias de precios para que nunca pierdas una oportunidad de ahorro.
+                Nuestra misión es empoderar a los compradores con información transparente y análisis detallados. Comparamos precios disponibles de múltiples tiendas en tu país, evaluamos señales de fiabilidad basadas en reseñas y datos externos, y ofrecemos estimaciones de tendencias para ayudarte a detectar oportunidades de ahorro.
               </p>
               <p>
                 VERIFOX está dirigido a consumidores inteligentes que desean tomar decisiones informadas antes de realizar una compra. Ya sea que busques un producto específico, desees comparar alternativas, o simplemente quieras estar atento a cambios de precio, VERIFOX es tu aliado de confianza en el mundo del e-commerce.
               </p>
               <p>
-                VERIFOX fue construido por un equipo apasionado de desarrolladores y diseñadores que creen que la transparencia y la accesibilidad a la información son derechos de todo consumidor. Utilizamos tecnologías modernas y APIs de fuentes confiables para garantizar que siempre recibas datos precisos y actualizados sobre los productos que te interesan.
+                VERIFOX fue construido por un equipo apasionado de desarrolladores y diseñadores que creen que la transparencia y la accesibilidad a la información son derechos de todo consumidor. Utilizamos tecnologías modernas y APIs de fuentes externas para mostrar datos disponibles y señalar cuándo una comparación contiene estimaciones.
               </p>
             </div>
           </section>
@@ -58,7 +58,7 @@ export default function About() {
             <ul className="space-y-3 text-slate-300">
               <li className="flex gap-3">
                 <span className="text-blue-400 font-bold">✓</span>
-                <span>Comparación de precios en tiempo real de múltiples tiendas</span>
+                <span>Comparación de precios disponibles de múltiples tiendas</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-blue-400 font-bold">✓</span>

@@ -1,4 +1,4 @@
-import { Search, Sparkles, ShieldCheck, Bell, TrendingUp, ArrowRight } from "lucide-react";
+import { Search, Sparkles, ShieldCheck, Bell, ArrowRight } from "lucide-react";
 
 const steps = [
   {
@@ -10,7 +10,7 @@ const steps = [
   {
     icon: Sparkles,
     title: "La IA analiza por ti",
-    desc: "Comparamos precios en tiempo real de cientos de tiendas, analizamos reseñas, detectamos fraudes y calculamos la puntuación Verifox.",
+    desc: "Comparamos precios disponibles, analizamos reseñas, revisamos señales de riesgo y calculamos la puntuación Verifox.",
     color: "bg-purple-500/20 text-purple-400 border-purple-500/20"
   },
   {

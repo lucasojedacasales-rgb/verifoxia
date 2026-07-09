@@ -34,8 +34,8 @@ export default function Home() {
 
   useSEO({
     title: "Comparador de precios con IA — Encuentra la mejor oferta",
-    description: "VERIFOX compara precios de miles de tiendas en tiempo real. Usa IA para detectar fraudes, predecir tendencias y crear alertas de precio gratis. ¡Ahorra dinero hoy!",
-    canonical: "https://verifox.app/",
+    description: "VERIFOX compara precios disponibles de tiendas online. Usa IA para revisar señales de confianza, tendencias y alertas de precio gratis.",
+    canonical: "https://verifoxia.com/",
   });
 
   useEffect(() => {
@@ -67,9 +67,9 @@ export default function Home() {
   const popular = ["iPhone 15", "Samsung 4K TV", "Nike Air Max", "AirPods Pro", "Kindle", "PS5"];
 
   const stats = [
-    { value: "50K+", label: "Productos analizados" },
-    { value: "200+", label: "Tiendas comparadas" },
-    { value: "98%", label: "Precisión de IA" },
+    { value: "Datos", label: "De fuentes externas" },
+    { value: "Tiendas", label: "Según disponibilidad" },
+    { value: "IA", label: "Apoyo al análisis" },
     { value: "Gratis", label: "Siempre" },
   ];
 
@@ -104,7 +104,7 @@ export default function Home() {
           </span>
         </h1>
         <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-xl mb-8 relative">
-          Nuestra IA analiza miles de tiendas, estudia reseñas reales y te dice en segundos si un producto merece la pena, cuál es su precio justo y si es el momento adecuado para comprarlo.
+          Nuestra IA combina precios disponibles, reseñas y señales de confianza para ayudarte a decidir si un producto merece la pena, cuál puede ser su precio razonable y si conviene esperar.
         </p>
 
         {/* Search bar */}
@@ -208,7 +208,7 @@ export default function Home() {
       {/* Trust strip */}
       <section className="px-6 py-4 max-w-5xl mx-auto">
         <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-2xl px-5 py-4 flex flex-wrap gap-3 justify-center items-center">
-          {["Análisis 100% gratuito", "Sin registro obligatorio", "Datos en tiempo real", "IA verificada"].map(item => (
+          {["Análisis gratuito", "Sin registro obligatorio", "Fuentes externas identificadas", "Estimaciones señaladas"].map(item => (
             <div key={item} className="flex items-center gap-1.5 text-sm text-slate-300">
               <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
               {item}

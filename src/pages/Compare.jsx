@@ -16,7 +16,7 @@ export default function Compare() {
   useSEO({
     title: "Comparar productos — ¿Cuál es mejor?",
     description: "Compara dos productos cara a cara con IA.",
-    canonical: "https://verifox.app/compare",
+    canonical: "https://verifoxia.com/compare",
   });
 
   const [queryA, setQueryA] = useState("");

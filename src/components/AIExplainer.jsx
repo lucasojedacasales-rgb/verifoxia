@@ -1,8 +1,8 @@
 const steps = [
   {
     step: "01",
-    title: "Analizamos miles de tiendas",
-    desc: "Consultamos Google Shopping y más de 200 tiendas en tiempo real para obtener los precios actuales.",
+    title: "Consultamos fuentes externas",
+    desc: "Usamos Google Shopping y tiendas disponibles por país para obtener referencias de precio cuando hay datos suficientes.",
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/20",

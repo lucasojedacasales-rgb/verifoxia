@@ -30,9 +30,8 @@ import IntentInterpreter from "@/components/IntentInterpreter";
 import { trackSearch } from "@/lib/analytics";
 import useSEO from "@/hooks/useSEO";
 
-function isUrl(str) {
-  try { new URL(str); return str.startsWith("http"); } catch { return false; }
-}
+const getProductPlaceholder = (name) =>
+  `https://placehold.co/400x400/1e293b/94a3b8?text=${encodeURIComponent(name?.slice(0, 24) || "Producto")}`;
 
 export default function SearchResults() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -44,9 +43,9 @@ export default function SearchResults() {
   useSEO({
     title: query ? `${query} — Comparar precios` : "Resultados de búsqueda",
     description: query
-      ? `Compara los mejores precios para "${query}" en todas las tiendas. Análisis IA, detección de fraude y alertas de precio gratis en VERIFOX.`
-      : "Compara precios de productos en tiempo real con inteligencia artificial.",
-    canonical: `https://verifox.app/search?q=${encodeURIComponent(query)}`,
+      ? `Compara precios disponibles para "${query}". Análisis IA, señales de confianza y alertas de precio gratis en VERIFOX.`
+      : "Compara precios disponibles de productos con inteligencia artificial.",
+    canonical: `https://verifoxia.com/search?q=${encodeURIComponent(query)}`,
   });
 
   const [searchQuery, setSearchQuery] = useState(query);
@@ -119,8 +118,7 @@ Responde SOLO con JSON. Ejemplo:
       // Get category-aware stores for this country (we use "otro" initially; LLM will detect real category)
       const storesText = getStoresPromptText(selectedCountry.code, "otro", q);
 
-      const imagePromptQuery = isUrlSearch ? effectiveProductName : q;
-      const [result, imageResult] = await Promise.all([
+      const [result] = await Promise.all([
         base44.integrations.Core.InvokeLLM({
           prompt: `Eres un experto en comparación de precios y análisis de productos de compras online.
 IMPORTANTE: Responde TODO el contenido textual (description, ai_recommendation, pros, cons, best_time_to_buy, ai_verdict_reasons, fraud_flags, safe_signals, best_alternative.reason, best_alternative.why_better) en el idioma: ${lang.name} (código: ${lang.code}).
@@ -248,12 +246,7 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
               }
             }
           }
-        }),
-        imagePromptQuery && !isUrl(imagePromptQuery)
-          ? base44.integrations.Core.GenerateImage({
-              prompt: `Professional product photo of ${imagePromptQuery}, clean white background, high quality, commercial photography style, studio lighting`
-            }).catch(() => null)
-          : Promise.resolve(null)
+        })
       ]);
 
       if (!result) {
@@ -263,7 +256,10 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
         return;
       }
 
-      const imageUrl = imageResult?.url || productContext?.wikiImageUrl || serpShoppingResults[0]?.image_url || null;
+      /** @type {any} */
+      const analysis = typeof result === "object" && result !== null ? result : {};
+      const productName = serpShoppingResults[0]?.product_title || analysis.name || effectiveProductName;
+      const imageUrl = serpShoppingResults[0]?.image_url || productContext?.wikiImageUrl || getProductPlaceholder(productName);
 
       // Always use SerpAPI data directly when available
       const mergedStores = serpShoppingResults.length > 0
@@ -279,18 +275,20 @@ Para "best_alternative": sugiere un producto alternativo real y concreto que el 
               rating: s.rating,
               reviews_count: s.reviews_count,
               delivery: s.delivery,
+              data_source: "google_shopping",
             }))
-        : (result.stores || []);
+        : (analysis.stores || []).map((store) => ({
+            ...store,
+            data_source: "ai_estimated",
+          }));
 
-      const productName = serpShoppingResults[0]?.product_title || result.name || effectiveProductName;
-
-      setProduct({ ...result, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
+      setProduct({ ...analysis, name: productName, stores: mergedStores, image_url: imageUrl, search_query: q });
 
       // Track analytics
       trackSearch(q, selectedCountry.code);
 
       // Persist search history
-      base44.entities.SearchHistory.create({ query: q, verdict: result.verdict }).catch(() => {});
+      base44.entities.SearchHistory.create({ query: q, verdict: analysis.verdict }).catch(() => {});
       setPendingHistoryEntry(null);
     } catch (err) {
       setError("No pudimos analizar este producto. Intenta con otra búsqueda.");
