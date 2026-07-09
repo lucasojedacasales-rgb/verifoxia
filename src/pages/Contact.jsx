@@ -63,10 +63,10 @@ export default function Contact() {
                 <div>
                   <h3 className="text-white font-semibold mb-2">Email</h3>
                   <a
-                    href="mailto:contact@verifox.app"
+                    href="mailto:contact@verifoxia.com"
                     className="text-blue-400 hover:text-blue-300 transition-colors"
                   >
-                    contact@verifox.app
+                    contact@verifoxia.com
                   </a>
                   <p className="text-slate-400 text-sm mt-2">
                     Responderemos en menos de 24 horas

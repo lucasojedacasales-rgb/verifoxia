@@ -2,7 +2,7 @@
  * FraudDetector — Detector de productos "trampa"
  * Muestra señales de alerta sobre opiniones falsas, precios inflados, etc.
  */
-import { ShieldAlert, ShieldCheck, ShieldX, AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { ShieldAlert, ShieldCheck, ShieldX, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 const riskConfig = {
   bajo:   { color: "text-green-400", bg: "from-green-500/10 to-green-500/5", border: "border-green-500/20", Icon: ShieldCheck,  label: "Riesgo Bajo",  dot: "bg-green-400" },

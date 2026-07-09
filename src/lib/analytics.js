@@ -45,10 +45,18 @@ export const trackPriceAlert = (productName, targetPrice, currency) => {
 };
 
 /** El usuario hace clic en una tienda para ver el precio */
-export const trackStoreClick = (storeName, productName, price) => {
+export const trackStoreClick = ({
+  storeName,
+  productName,
+  countryCode,
+  estimatedPrice,
+  currency,
+}) => {
   gtag("event", "store_click", {
     store_name: storeName,
     product_name: productName,
-    price,
+    country_code: countryCode,
+    estimated_price: estimatedPrice,
+    currency,
   });
 };

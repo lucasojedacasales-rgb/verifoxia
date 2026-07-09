@@ -11,8 +11,8 @@ const pillars = [
   },
   {
     icon: RefreshCw,
-    title: "Actualizaciones en tiempo real",
-    desc: "Cada búsqueda lanza una consulta en vivo. No mostramos precios de hace semanas.",
+    title: "Consulta por búsqueda",
+    desc: "Cada análisis intenta obtener datos actuales de fuentes externas y muestra estimaciones cuando no hay precios suficientes.",
     color: "text-green-400",
     bg: "bg-green-500/10",
     border: "border-green-500/20",
@@ -20,7 +20,7 @@ const pillars = [
   {
     icon: Brain,
     title: "IA entrenada para compras",
-    desc: "Nuestro modelo analiza millones de reseñas y tendencias de precio para darte un veredicto fundamentado.",
+    desc: "La IA ayuda a resumir reseñas, precios y señales de riesgo para darte un veredicto orientativo.",
     color: "text-purple-400",
     bg: "bg-purple-500/10",
     border: "border-purple-500/20",
@@ -36,15 +36,15 @@ const pillars = [
   {
     icon: ShieldCheck,
     title: "Detección de fraudes activa",
-    desc: "Identificamos precios inflados artificialmente, productos falsificados y tiendas no fiables.",
+    desc: "Señalamos indicios de precios inflados, productos dudosos o tiendas que requieren una revisión extra.",
     color: "text-red-400",
     bg: "bg-red-500/10",
     border: "border-red-500/20",
   },
   {
     icon: Users,
-    title: "Comunidad de compradores",
-    desc: "Miles de usuarios buscan cada día en VERIFOX. Sus patrones de búsqueda mejoran las predicciones de precio.",
+    title: "Historial útil",
+    desc: "Tus búsquedas, favoritos y alertas ayudan a organizar mejor tus decisiones de compra.",
     color: "text-cyan-400",
     bg: "bg-cyan-500/10",
     border: "border-cyan-500/20",
@@ -82,7 +82,7 @@ export default function TrustSection() {
       {/* Quote / CTA */}
       <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl px-6 py-5 text-center">
         <p className="text-slate-300 text-sm sm:text-base italic mb-1">
-          "La puntuación no es una opinión. Es el resultado de analizar precio, historial, reseñas y fiabilidad del vendedor — todo en segundos."
+          "La puntuación es una ayuda para decidir: combina precio, reseñas y señales de fiabilidad, pero siempre conviene verificar el dato final en la tienda."
         </p>
         <p className="text-slate-500 text-xs">— Equipo <span className="text-white font-bold">VERI</span><span className="text-orange-500 font-bold">FOX</span></p>
       </div>

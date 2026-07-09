@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useCountry } from "@/hooks/useCountry";

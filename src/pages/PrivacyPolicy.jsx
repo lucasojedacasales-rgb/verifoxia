@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
   useSEO({
     title: "Política de Privacidad — VERIFOX",
     description: "Lee la política de privacidad de VERIFOX. Información sobre cómo recopilamos, usamos y protegemos tus datos personales conforme al RGPD.",
-    canonical: "https://verifox.app/privacy",
+    canonical: "https://verifoxia.com/privacy",
   });
 
   return (
@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
         <Section title="4. Servicios de terceros">
           <p className="text-slate-300">VERIFOX utiliza los siguientes servicios externos que pueden procesar tus datos:</p>
           <ul className="space-y-2 list-disc list-inside text-slate-300 mt-3">
-            <li><strong>Google Shopping / SerpAPI:</strong> para obtener precios y disponibilidad de productos en tiempo real.</li>
+            <li><strong>Google Shopping / SerpAPI:</strong> para obtener precios y disponibilidad de productos cuando hay resultados para tu búsqueda.</li>
             <li><strong>Google Vision API:</strong> para analizar imágenes en búsquedas visuales.</li>
             <li><strong>Google AdSense:</strong> para mostrar publicidad relevante. Google puede usar cookies propias.</li>
             <li><strong>Google OAuth:</strong> si inicias sesión con Google, se comparte tu nombre y correo con nosotros.</li>
@@ -122,8 +122,8 @@ export default function PrivacyPolicy() {
           </ul>
           <p className="mt-3 text-slate-300">
             Para ejercer estos derechos, contáctanos en{" "}
-            <a href="mailto:privacy@verifox.app" className="text-blue-400 underline">
-              privacy@verifox.app
+            <a href="mailto:privacy@verifoxia.com" className="text-blue-400 underline">
+              privacy@verifoxia.com
             </a>.
           </p>
         </Section>
@@ -156,8 +156,8 @@ export default function PrivacyPolicy() {
             Si tienes preguntas sobre esta Política de Privacidad, contáctanos:
           </p>
           <ul className="mt-3 space-y-1 text-slate-300">
-            <li>📧 <a href="mailto:privacy@verifox.app" className="text-blue-400 underline">privacy@verifox.app</a></li>
-            <li>🌐 <a href="/contact" className="text-blue-400 underline">verifox.app/contact</a></li>
+            <li>📧 <a href="mailto:privacy@verifoxia.com" className="text-blue-400 underline">privacy@verifoxia.com</a></li>
+            <li>🌐 <a href="/contact" className="text-blue-400 underline">verifoxia.com/contact</a></li>
           </ul>
         </Section>
       </div>

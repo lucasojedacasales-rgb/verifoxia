@@ -4,12 +4,12 @@ const sources = [
   {
     icon: Globe,
     title: "Google Shopping",
-    desc: "Precios, tiendas y disponibilidad en tiempo real mediante SerpAPI. Comparamos ofertas de cientos de comercios verificados en tu país."
+    desc: "Precios, tiendas y disponibilidad mediante SerpAPI cuando hay resultados para tu búsqueda y país."
   },
   {
     icon: Cpu,
     title: "Inteligencia Artificial",
-    desc: "Modelos de lenguaje avanzados analizan reseñas, detectan patrones de fraude, predicen tendencias y generan recomendaciones personalizadas."
+    desc: "Modelos de lenguaje ayudan a resumir reseñas, detectar señales de riesgo y generar recomendaciones orientativas."
   },
   {
     icon: Database,
@@ -46,7 +46,7 @@ export default function DataSources() {
       </div>
 
       <p className="text-slate-500 text-xs text-center mt-6">
-        VERIFOX no vende productos directamente. Todos los precios y enlaces redirigen a las tiendas originales.
+        VERIFOX no vende productos directamente. Todos los precios deben verificarse en la tienda antes de comprar.
       </p>
     </section>
   );

@@ -30,7 +30,7 @@ export const TRANSLATIONS = {
     hero_sub: "Compara precios, reseñas y fiabilidad de cualquier producto. Nuestra IA te dice si conviene comprarlo ahora.",
     features: [
       { title: "Compara precios", desc: "Encuentra el mejor precio entre múltiples tiendas online" },
-      { title: "Analiza reseñas", desc: "Evaluamos miles de opiniones para darte un resumen honesto" },
+      { title: "Analiza reseñas", desc: "Resumimos opiniones disponibles para darte una lectura más clara" },
       { title: "Verifica fiabilidad", desc: "Comprobamos la reputación del vendedor y la calidad del producto" },
       { title: "Predictor de precio IA", desc: "Predice si el precio subirá o bajará y cuándo es mejor comprar" },
     ],
@@ -50,7 +50,7 @@ export const TRANSLATIONS = {
     hero_sub: "Compare prices, reviews and reliability of any product. Our AI tells you if it's worth buying now.",
     features: [
       { title: "Compare prices", desc: "Find the best price across multiple online stores" },
-      { title: "Analyze reviews", desc: "We evaluate thousands of opinions for an honest summary" },
+      { title: "Analyze reviews", desc: "We summarize available opinions for a clearer read" },
       { title: "Verify reliability", desc: "We check seller reputation and product quality" },
       { title: "AI price predictor", desc: "Predicts if the price will rise or fall and when to buy" },
     ],

@@ -11,7 +11,7 @@ export default function StoreStrip() {
   return (
     <section className="px-4 sm:px-6 py-4 max-w-5xl mx-auto">
       <p className="text-slate-500 text-xs font-semibold uppercase tracking-wide mb-3">
-        Comparamos precios en más de 200 tiendas, incluyendo
+        Consultamos tiendas disponibles según país y producto, incluyendo
       </p>
       <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1 scrollbar-hide" style={{ WebkitOverflowScrolling: "touch" }}>
         {stores.map(({ name, logo, bg, border }) => (
@@ -30,7 +30,7 @@ export default function StoreStrip() {
           </div>
         ))}
         <div className="flex items-center justify-center shrink-0 h-10 px-4 rounded-xl border border-white/10 bg-white/5">
-          <span className="text-slate-400 text-xs font-medium whitespace-nowrap">+200 más →</span>
+          <span className="text-slate-400 text-xs font-medium whitespace-nowrap">y otras tiendas →</span>
         </div>
       </div>
     </section>
